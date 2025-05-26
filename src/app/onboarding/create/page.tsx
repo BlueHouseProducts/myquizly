@@ -92,7 +92,7 @@ export default function Home() {
         ))}
       </svg>
 
-      <div className="mx-8e mt-4 z-30 md:mt-0 *:z-20 text-center flex justify-center items-center mr-24 flex-col flex-1 select-none">
+      <div className="max-w-3xl w-full mt-4 z-30 md:mt-0 *:z-20 text-center flex justify-center items-center mr-24 flex-col flex-1 select-none">
         <h1 className=" text-white text-3xl md:text-6xl font-extrabold drop-shadow-lg max-w-4xl leading-tight">
           Welcome to QuizlyGCSE
         </h1>
@@ -100,13 +100,14 @@ export default function Home() {
         <motion.div
           initial={{ y: -5, opacity: 0.5 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white flex flex-col justify-center items-center rounded-md px-12 py-4 mt-12 flex-shrink-0"
+          className="bg-transparent w-full flex flex-col justify-center items-center rounded-md px-12 py-4 mt-12 flex-shrink-0"
         >
-          <Onboarding_AccountForm />
+          <Onboarding_AccountForm type="create" />
           <Link
             href="/onboarding"
-            className="text-black w-full mt-2 text-start text-xl"
+            className="text-white mt-6 inline-flex items-center gap-2 text-lg md:text-xl hover:underline"
           >
+            <ChevronLeft className="w-5 h-5" />
             Back
           </Link>
         </motion.div>

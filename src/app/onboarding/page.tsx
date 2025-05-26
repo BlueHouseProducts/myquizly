@@ -48,7 +48,11 @@ export default function Home() {
 
   return (
     <div
-      className="relative flex md:flex-row flex-col items-center justify-center md:justify-start min-h-screen bg-gradient-to-br from-purple-700/50 to-blue-600/50 overflow-hidden"
+      className={`relative flex md:flex-row flex-col items-center justify-center md:justify-start min-h-screen overflow-hidden transition-colors duration-700 ease-in-out bg-gradient-to-br
+    ${isCreating 
+        ? " from-purple-700/50 to-green-400/50" 
+        : "from-purple-700/50 to-blue-600/50"}
+    `}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ width: "100vw", height: "100vh" }}
@@ -107,12 +111,11 @@ export default function Home() {
               <Link className="w-fit mt-2 text-3xl z-40 bg-white text-black rounded-md underline flex flex-row gap-2 items-center justify-center" href="/onboarding/login"><LogIn />Login instead</Link>
             </div>
           </motion.div> } { isCreating &&
-          <motion.div initial={{opacity: 0, x: -30}} animate={{opacity: 1, x: 0}} exit={{opacity: 0, x: 30}} key="isCreating">
-            <div className="flex flex-col gap-2 mt-4">
-              <h1 className="text-black text-4xl">Create an account</h1>
+          <motion.div className="w-full" initial={{opacity: 0, x: -30}} animate={{opacity: 1, x: 0}} exit={{opacity: 0, x: 30}} key="isCreating">
+            <div className="flex flex-col gap-2 mt-4 max-w-3xl w-full">
               <Onboarding_AccountForm type="create" />
 
-              <button className="text-black mt-2 text-2xl underline text-start flex flex-row justify-start items-center" onClick={() => setIsCreating(false)}> <ChevronLeft /> Back</button>
+              <button className="text-black w-full mt-2 text-2xl underline text-center flex flex-row justify-center items-center" onClick={() => setIsCreating(false)}> <ChevronLeft /> Back</button>
             </div>
           </motion.div> }
         </AnimatePresence>
