@@ -1,14 +1,26 @@
+"use client";
+
 import { account } from "@/lib/appwriteClient";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default async function Root() {
-  // for now, just redirect to /onboarding
-  let user;
-  try { user = await account.get() } catch { user = null };
+export default function Root() {  
+  const r = useRouter();
+  
+  useEffect(() => {
+    // This effect runs on the client side to handle redirection
+    const user = account.get();
+    user.then((user) => {
+      if (user) {
+        // If the user is logged in, redirect to the dashboard
+        r.push("/dashboard");
+      } else {
+        r.push("/onboarding");
+      }
+    }).catch(() => {
+      r.push("/onboarding");
+    });
+  });
 
-  if (user) {
-    return redirect("/dashboard");
-  }
-
-  return redirect("/onboarding");
+  return <p>Redirecting...</p>;
 }
