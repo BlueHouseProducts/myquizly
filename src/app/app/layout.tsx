@@ -3,6 +3,7 @@
 import { AppTopNavbar } from "@/comp/navs/app_top_nav";
 import { account, client } from "@/lib/appwriteClient";
 import { usePathname, useRouter } from "next/navigation";
+import path from "path";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const r = useRouter();
@@ -19,7 +20,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   
   const enabled_item = 
     pathname.startsWith("/app/dashboard") ? "overview" : 
-    pathname.startsWith("/app/settings") ? "account" : 
+    pathname.startsWith("/app/settings") ? "account" :
+    pathname.startsWith("/app/maths") ? "maths" :
     "overview"; // Default to overview if no specific item is matched
 
   return (

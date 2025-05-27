@@ -11,7 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <main className="flex flex-row flex-1 bg-pink-200 dark:bg-blue-950/50 overflow-hidden">
       <AppLeftNav title="Overview">
-        <NavItem href="/app/dashboard/" icon={<LayoutDashboard size={20} />} label="Subject Overview" active={pathname === "/app/dashboard"} />
+        <NavItem href="/app/dashboard/" icon={<LayoutDashboard size={20} />} label="User Overview" active={pathname === "/app/dashboard"} />
         <NavItem href="/app/dashboard/#" icon={<History size={20} />} label="Quiz History" active={pathname === "/app/dashboard/#"} />
       </AppLeftNav>
       

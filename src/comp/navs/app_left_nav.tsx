@@ -30,7 +30,7 @@ export function AppLeftNav({title, children}: {title: string, children?: React.R
 }
 
 export function AppLeftContents({children}: {children: React.ReactNode}) {
-  return <motion.div initial={{scale: 0.99, opacity: 0}} animate={{scale: 1, opacity: 1}} transition={{duration: 0.3, easings: ["easeInOut"], delay: 0.2}} className="pt-4 flex-1 pl-4 bg-pink-100 dark:bg-blue-950 rounded-tl-[8px]">
+  return <motion.div initial={{scale: 0.99, opacity: 0}} animate={{scale: 1, opacity: 1}} transition={{duration: 0.3, easings: ["easeInOut"], delay: 0.2}} className="overflow-y-auto pt-4 flex-1 pl-4 bg-pink-100 dark:bg-blue-950 rounded-tl-[12px]">
     {children}
   </motion.div>
 }
