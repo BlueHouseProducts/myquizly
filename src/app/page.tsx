@@ -13,7 +13,7 @@ export default function Root() {
     user.then((user) => {
       if (user) {
         // If the user is logged in, redirect to the dashboard
-        r.push("/dashboard");
+        r.push("/app/dashboard");
       } else {
         r.push("/onboarding");
       }

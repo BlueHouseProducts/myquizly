@@ -1,53 +1,88 @@
 "use client";
 
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { account } from "@/lib/appwriteClient";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import { TooltipContent } from "@radix-ui/react-tooltip";
-import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand } from "lucide-react";
+import { AppwriteException } from "appwrite";
+import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand, User, LogOut, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths" | "cs" | "science" | "english" | "history" | "french" | "music" | "rs" | "account"}) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mShowAll, setMShowAll] = useState(true);
+
+  async function Logout() {
+    try {
+      await account.deleteSession("current");
+      window.location.href = "/";
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        alert("An error occurred while logging out: " + error.message);
+      }
+    }
+  }
 
   return (
-    <header className="w-full z-50 bg-white/10">
+    <header className={!isOpen ? "w-screen overflow-hidden z-50 bg-pink-200 dark:bg-blue-950/50" : "w-screen overflow-hidden z-50 xl:bg-pink-200 xl:dark:bg-blue-950/50 bg-pink-300 dark:bg-blue-900/50"}>
+      {/* Top Navbar */}
       <div className="w-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-start gap-8 items-center h-16 w-full">
+        <div className="flex justify-between lg:justify-start gap-8 items-center h-16 w-full">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/dashboard" className="text-2xl font-bold text-white">
-              <span className="text-purple-400">Quizly</span>
-              <span className="text-white/80 hidden xl:inline-block">: GCSEs</span>
+            <Link href="/dashboard" className="text-2xl font-bold text-blue-400 dark:text-white">
+              <span className="text-purple-900 dark:text-purple-400">Quizly</span>
             </Link>
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex space-x-8 text-white/80 text-sm font-medium">
-            <Link href="/dashboard" className="hover:text-white transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
-            <Link href="#" className="hover:text-white transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
+          <nav className="hidden lg:flex lg:flex-grow space-x-8 text-white/80 text-sm font-medium">
+            <Link href="/app/dashboard" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-white transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
+            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
           </nav>
 
           <div className="hidden xl:flex items-center space-x-4 flex-1 justify-end">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link href="/account" className="text-white hover:text-purple-400">
-                    <Settings strokeWidth={enabled_item === "account" ? 3 : 2} />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="bg-purple-400 p-2 rounded-sm text-lg text-black">Account Settings</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button>
+                  <Settings className="text-black dark:text-white" strokeWidth={enabled_item === "account" ? 3 : 2} />
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent style={{perspective: "1px"}} className="w-56 bg-blue-200 dark:bg-blue-950 mx-2 rounded-[8px] border-separate  my-2">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => window.location.href = "/app/dashboard"} className="focus:bg-purple-400/50 focus:underline  focus:px-4 transition-all">
+                    <User />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => window.location.href = "/app/settings"} className="focus:bg-purple-400/50 focus:underline  focus:px-4 transition-all">
+                    <Settings />
+                    Settings
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all" onClick={() => window.location.href = "https://github.com/BlueHouseProducts/quizly-mygcse"}> <SiGithub /> GitHub</DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all" onClick={() => window.location.href = "/support"}>
+                  <HelpCircle />
+                  Support
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={Logout} className="focus:bg-red-300 dark:focus:bg-red-400/50 focus:px-4 transition-all focus:text-red-700 dark:focus:text-red-300">
+                  <LogOut />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
           </div>
 
@@ -66,38 +101,9 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths
 
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="lg:hidden px-4 pb-4 pt-4 space-y-4 flex-1 h-fit bg-black/40 backdrop-blur-md text-white/80">
-          <Link href="/dashboard" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><LayoutDashboard />Overview</Link>
-          <Link href="/account" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><Settings />Account</Link>
-          <div className="w-full flex flex-row gap-2 items-center">
-            <h3>Subjects</h3>
-            
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button onClick={() => setMShowAll(!mShowAll)} className="text-white hover:text-purple-400">
-                    <Expand />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="bg-purple-400 p-2 rounded-lg text-lg text-black">Show/hide subjects</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <div className="w-full border-white border-[2px]"></div>
-          </div>
-
-          {mShowAll && (<>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><Calculator />Maths</Link>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><Cpu />Computer Science</Link>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><TestTube />Science</Link>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><Book />English</Link>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><Sword />History</Link>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><BookType />French</Link>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><Music />Music</Link>
-          <Link href="#" className="hover:text-white w-full flex flex-row gap-2 text-2xl"><Sparkle />RS</Link>
-          </>)}
+        <div className="lg:hidden absolute w-full flex-1 h-fit bg-black/40 backdrop-blur-md text-white/80">
+          <Link href="/dashboard" className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><LayoutDashboard />Overview</Link>
+          <Link href="/settings" className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><Settings />Account</Link>
         </div>
       )}
     </header>
