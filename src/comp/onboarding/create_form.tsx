@@ -34,7 +34,7 @@ export const Onboarding_AccountForm = ({ type }: { type: "create" | "login" }) =
           await account.createEmailPasswordSession(value.email, value.password);
         }
 
-        window.location.href = "/dashboard"; // Redirect after successful login/creation
+        window.location.href = "/app/dashboard"; // Redirect after successful login/creation
       } catch (e) {
         if (e instanceof AppwriteException && e.message) {
           setErrorMsg(e.message);

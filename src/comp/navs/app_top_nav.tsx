@@ -31,14 +31,14 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths
         <div className="flex justify-between lg:justify-start gap-8 items-center h-16 w-full">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/dashboard" className="text-2xl font-bold text-blue-400 dark:text-white">
+            <Link href="/app/dashboard" className="text-2xl font-bold text-blue-400 dark:text-white">
               <span className="text-purple-900 dark:text-purple-400">Quizly</span>
             </Link>
           </div>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex lg:flex-grow space-x-8 text-white/80 text-sm font-medium">
-            <Link href="/app/dashboard" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-white transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
+            <Link href="/app/dashboard" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
             <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
             <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
             <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
@@ -57,27 +57,27 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths
                 </button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent style={{perspective: "1px"}} className="w-56 bg-blue-200 dark:bg-blue-950 mx-2 rounded-[8px] border-separate  my-2">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuContent style={{perspective: "1px"}} className="w-56 bg-blue-200 dark:bg-blue-950 mx-2 rounded-[8px] border-separate text-lg my-2">
+                <DropdownMenuLabel className="text-lg font-bold">My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => window.location.href = "/app/dashboard"} className="focus:bg-purple-400/50 focus:underline  focus:px-4 transition-all">
+                  <DropdownMenuItem onClick={() => window.location.href = "/app/dashboard"} className="focus:bg-purple-400/50 focus:underline text-lg focus:px-4 transition-all">
                     <User />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = "/app/settings"} className="focus:bg-purple-400/50 focus:underline  focus:px-4 transition-all">
+                  <DropdownMenuItem onClick={() => window.location.href = "/app/settings"} className="focus:bg-purple-400/50 focus:underline text-lg focus:px-4 transition-all">
                     <Settings />
                     Settings
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all" onClick={() => window.location.href = "https://github.com/BlueHouseProducts/quizly-mygcse"}> <SiGithub /> GitHub</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all" onClick={() => window.location.href = "/support"}>
+                <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "https://github.com/BlueHouseProducts/quizly-mygcse"}> <SiGithub /> GitHub</DropdownMenuItem>
+                <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "/support"}>
                   <HelpCircle />
                   Support
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={Logout} className="focus:bg-red-300 dark:focus:bg-red-400/50 focus:px-4 transition-all focus:text-red-700 dark:focus:text-red-300">
+                <DropdownMenuItem onClick={Logout} className="focus:bg-red-300 dark:focus:bg-red-400/50 focus:px-4 transition-all focus:text-red-700 dark:focus:text-red-300 text-lg">
                   <LogOut />
                   Log out
                 </DropdownMenuItem>
@@ -102,8 +102,9 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths
       {/* Mobile Nav */}
       {isOpen && (
         <div className="lg:hidden absolute w-full flex-1 h-fit bg-black/40 backdrop-blur-md text-white/80">
-          <Link href="/dashboard" className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><LayoutDashboard />Overview</Link>
-          <Link href="/settings" className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><Settings />Account</Link>
+          <Link href="/app/dashboard" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><LayoutDashboard />Overview</Link>
+          <Link href="/app/settings" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><Settings />Settings</Link>
+          <Link href="#" onClick={() => {setIsOpen(false); Logout()}} className="hover:text-red-200 text-red-500 w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-red-500/50 px-4 py-2"><LogOut />Logout</Link>
         </div>
       )}
     </header>
