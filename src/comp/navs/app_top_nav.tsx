@@ -3,6 +3,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { account } from "@/lib/appwriteClient";
+import { subjectType } from "@/lib/dbCompData";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { AppwriteException } from "appwrite";
@@ -10,7 +11,7 @@ import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Musi
 import Link from "next/link";
 import { useState } from "react";
 
-export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths" | "cs" | "science" | "english" | "history" | "french" | "music" | "rs" | "account"}) {
+export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "overview" | "account"}) {
   const [isOpen, setIsOpen] = useState(false);
 
   async function Logout() {
@@ -40,7 +41,7 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths
           <nav className="hidden lg:flex lg:flex-grow space-x-8 text-white/80 text-sm font-medium">
             <Link href="/app/dashboard" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
             <Link href="/app/maths" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
-            <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
+            <Link href="/app/cs" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
             <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
             <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
             <Link href="#" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>

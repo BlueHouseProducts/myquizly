@@ -2,20 +2,23 @@
 
 import { TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
 import { databases } from "@/lib/appwriteClient";
+import { dbData, subjectType } from "@/lib/dbCompData";
 import { Models, Query } from "appwrite";
 import { ChevronDown, ChevronRight, ChevronUp, CloudAlert } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function ListTablePage({subject, name, exam_board, subtopics}: {name: string, subject: string, exam_board: "edexcell", subtopics: {codes: string[], name: string}[]}) {
+export default function ListTablePage({subject, name, exam_board, subtopics}: {name: string, subject: subjectType, exam_board: "edexcel", subtopics: {codes: string[], name: string}[]}) {
   const [quizes, setQuizes] = useState<any[] | null>();
   const [loaded, setLoaded] = useState(false);
 
   const [openedSubTopics, setOpenedSubTopics] = useState([]);
+
+  const db: string = dbData.quiz_db.collections[subject];
   
   useEffect(() => {
-    try {if (subject === "maths") {
-      let promise = databases.listDocuments("68358fde0037593b1096", "68358ff6000ec3022f90",
+    try {if (dbData) {
+      let promise = databases.listDocuments("68358fde0037593b1096", db,
         [ 
           Query.equal('topic', name.toLowerCase())
         ]
@@ -25,6 +28,9 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
         setQuizes(response.documents);
         setLoaded(true);
       })
+    } else {
+      setQuizes(null);
+      setLoaded(true);
     } } catch (e) {
       console.log(e);
 
@@ -36,7 +42,7 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
   if (quizes && quizes.length === 0) {
     return <><div className="flex flex-row items-center gap-2 justify-start my-4 overflow-hidden">
         <CloudAlert size={40} />
-        <h2 className="text-xl">We didn't find any quizes with this topic!</h2>
+        <h2 className="text-xl">We didn't find any quizzes with this topic!</h2>
       </div>
       <Link href="." className="underline">Back to all topics...</Link></>
   }
@@ -44,13 +50,13 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
   if (!quizes && loaded) {
     return <><div className="flex flex-row items-center gap-2 justify-start my-4 overflow-hidden">
       <CloudAlert size={40} />
-      <h2 className="text-xl">Something failed getting quizes. Try again later.</h2>
+      <h2 className="text-xl">Something failed getting quizzes. Try again later.</h2>
     </div>
     <Link href="." className="underline">Back to all topics...</Link></>
   }
 
   if (!loaded) {
-    return <p>Loading quizes...</p>
+    return <p>Loading quizzes...</p>
   }
   
   const quizzesBySubtopic = subtopics
@@ -61,17 +67,17 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
       subtopicName: subtopic.name,
       quizzes: quizes
         .filter((quiz) =>
-          subtopic.codes.includes((quiz.edexcell_label || "").toLowerCase())
+          subtopic.codes.includes((quiz.label || "").toLowerCase())
         )
         .sort((a, b) =>
-          subtopic.codes.indexOf((a.edexcell_label || "").toLowerCase()) -
-          subtopic.codes.indexOf((b.edexcell_label || "").toLowerCase())
+          subtopic.codes.indexOf((a.label || "").toLowerCase()) -
+          subtopic.codes.indexOf((b.label || "").toLowerCase())
         )
     };
   })
   .filter((subtopic): subtopic is { subtopicName: string, quizzes: Models.Document[] } => !!subtopic); // removes nulls
 
-  const colour = exam_board === "edexcell" ?
+  const colour = exam_board === "edexcel" ?
     "pink-400" : ""
 
   return <div>
@@ -101,7 +107,7 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
                   
                 </h2>
                 <p className={`mx-2 px-2 rounded-full bg-pink-400 text-black text-md`}>
-                  ({subtopics[idx].codes[0].toUpperCase()}–{subtopics[idx].codes.slice(-1)[0].toUpperCase()})
+                  ({subtopics[idx].codes[0].toUpperCase()}{" – "}{subtopics[idx].codes.slice(-1)[0].toUpperCase()})
                 </p>
               </button>
               
@@ -109,7 +115,7 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
               <div className="flex flex-col gap-2 mt-2 hover:bg-pink-500/10 dark:hover:bg-blue-500/10 p-2 rounded-l-xl">
                 {subtopic.quizzes.map((quiz) => (
                   <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="flex flex-row gap-2 rounded-full py-2 px-4 ml-10 mr-10 bg-pink-600/30 dark:bg-blue-800" key={quiz.$id}>
-                    <span className={`px-2 rounded-full bg-pink-400 text-black`}>{quiz.edexcell_label.toUpperCase()}</span>
+                    <span className={`px-2 rounded-full bg-pink-400 text-black`}>{quiz.label.toUpperCase()}</span>
                     {quiz.name}
                   </Link>
                 ))}

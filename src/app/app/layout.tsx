@@ -22,6 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/app/dashboard") ? "overview" : 
     pathname.startsWith("/app/settings") ? "account" :
     pathname.startsWith("/app/maths") ? "maths" :
+    pathname.startsWith("/app/cs") ? "cs" :
     "overview"; // Default to overview if no specific item is matched
 
   return (

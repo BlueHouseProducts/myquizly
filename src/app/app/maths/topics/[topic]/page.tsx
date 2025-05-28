@@ -1,54 +1,14 @@
+import { TopicPage } from "@/comp/subjects/subtopic_items";
 import ListTablePage from "@/comp/topic_list/list_table_page";
-import { ChevronRight, CloudAlert } from "lucide-react";
-import Link from "next/link";
+import { subjectData } from "@/lib/dbCompData";
 
+const topics: {[key: string]: { codes: string[], name: string }[]} = subjectData.maths;
 
-const topics: {[key: string]: { codes: string[], name: string }[]} = {
-  algebra: [
-    {
-      codes: ["a1", "a2", "a3", "a4", "a5", "a6", "a7"].map((s) => s.toLowerCase()),
-      name: "Notation, vocabulary and manipulation",
-    }
-  ],
-}
-
-export {topics};
-export default async function MathsTopicPage({params}: {params: Promise<{topic: string}>}) {
-  const topic = (await params).topic.toLowerCase();
+export default async function MathsTopicPage({params} : {params: Promise<{topic: string}>}) {
+  const topic = (await params).topic;
   
-  function capitalise(val: string) {
-    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
-  }
+  return <TopicPage topic_={topic} topics={topics}>
+    <ListTablePage exam_board="edexcel" subject="maths" name={topic} subtopics={topics[topic.toLowerCase()]} />
+  </TopicPage>
 
-  if (!topics[topic]) {
-    return <>
-      <p className="select-none text-lg flex flex-row gap-2">
-      <Link className="hover:dark:text-blue-300 hover:text-blue-700 underline-offset-4 underline transition-colors" href="/app/maths/">Maths</Link> 
-     <ChevronRight />
-     <Link className="hover:dark:text-blue-300 hover:text-blue-700 underline-offset-4 underline transition-colors" href="/app/maths/topics">Topics</Link> 
-     <ChevronRight />
-     {capitalise(topic)}</p>
-    <h1 className="text-3xl md:text-4xl font-bold my-2">Quizes on {capitalise(topic)}</h1>
-
-    <><div className="flex flex-row items-center gap-2 justify-start my-4 overflow-hidden">
-      <CloudAlert size={40} />
-      <h2 className="text-xl">We don't think that topic exists!</h2>
-    </div>
-    <Link href="." className="underline">Back to all topics...</Link></>
-    </>
-  }
-
-  return <>
-    <p className="select-none text-lg flex flex-row gap-2">
-      <Link className="hover:dark:text-blue-300 hover:text-blue-700 underline-offset-4 underline transition-colors" href="/app/maths/">Maths</Link> 
-     <ChevronRight />
-     <Link className="hover:dark:text-blue-300 hover:text-blue-700 underline-offset-4 underline transition-colors" href="/app/maths/topics">Topics</Link> 
-     <ChevronRight />
-     {capitalise(topic)}</p>
-    
-    <h1 className="text-3xl md:text-4xl font-bold my-4">{capitalise(topic)}</h1>
-    <h2 className="text-2xl md:text-3xl mb-2">Quizes on {capitalise(topic)}</h2>
-
-    <ListTablePage exam_board="edexcell" subject="maths" name={capitalise(topic)} subtopics={topics[topic.toLowerCase()]} />
-  </>
 }
