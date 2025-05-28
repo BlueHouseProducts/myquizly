@@ -88,7 +88,7 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: "overview" | "maths
 
           {/* Mobile menu button */}
           <div className="lg:hidden flex-1 items-center flex justify-end">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-white">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-black dark:text-white">
               {isOpen ? (
                 <CircleX className="h-6 w-6" />
               ) : (

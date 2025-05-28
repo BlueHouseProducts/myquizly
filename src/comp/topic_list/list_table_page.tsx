@@ -3,13 +3,15 @@
 import { TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
 import { databases } from "@/lib/appwriteClient";
 import { Models, Query } from "appwrite";
-import { CloudAlert } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, CloudAlert } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function ListTablePage({subject, name, exam_board, subtopics}: {name: string, subject: string, exam_board: "edexcell", subtopics: {codes: string[], name: string}[]}) {
-  const [quizes, setQuizes] = useState<Models.Document[] | null>(null);
+  const [quizes, setQuizes] = useState<any[] | null>();
   const [loaded, setLoaded] = useState(false);
+
+  const [openedSubTopics, setOpenedSubTopics] = useState([]);
   
   useEffect(() => {
     try {if (subject === "maths") {
@@ -51,44 +53,70 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
     return <p>Loading quizes...</p>
   }
   
-  const quizzesBySubtopic = subtopics.map((subtopic) => {   
-    if (!quizes) { return }
+  const quizzesBySubtopic = subtopics
+  .map((subtopic) => {   
+    if (!quizes) return null;
 
     return {
       subtopicName: subtopic.name,
-      quizzes: quizes.filter((quiz) => subtopic.codes.includes((quiz.edexcell_label || "").toLowerCase())),
-    }
-  });
+      quizzes: quizes
+        .filter((quiz) =>
+          subtopic.codes.includes((quiz.edexcell_label || "").toLowerCase())
+        )
+        .sort((a, b) =>
+          subtopic.codes.indexOf((a.edexcell_label || "").toLowerCase()) -
+          subtopic.codes.indexOf((b.edexcell_label || "").toLowerCase())
+        )
+    };
+  })
+  .filter((subtopic): subtopic is { subtopicName: string, quizzes: Models.Document[] } => !!subtopic); // removes nulls
 
   const colour = exam_board === "edexcell" ?
     "pink-400" : ""
 
   return <div>
     <div className="overflow-x-hidden overflow-y-auto">
-      {quizzesBySubtopic.map(({ subtopicName, quizzes }: any) => (
-        <div key={subtopicName} className="mb-6">
-          <h2 className="text-xl font-bold mb-2 mt-4">{subtopicName}</h2>
-          {quizzes.length === 0 ? (
-            <p className="text-gray-500 italic">No quizzes for this subtopic</p>
-          ) : (
-            quizzes.map((quiz: any) => (
-              <Link key={quiz.$id} href={quiz.$id} className={`hover:scale-x-[105%] flex flex-row items-center justify-between gap-2 hover:bg-${colour}/20 hover:pr-6 hover:pl-10 transition-all p-2 rounded-xl border-${colour}/20 border-[2px] mr-4`}>
-                <div className="flex flex-row gap-4 items-center">
-                  <span className={`text-lg px-2 text-black bg-${colour} rounded-full h-fit`}>{quiz.edexcell_label}</span>
-                  <p className="text-lg">{quiz.name}</p>
-                </div>
-
-                <div className="hidden md:flex justify-start items-center ml-11 space-x-2 overflow-hidden">
-                  {
-                    quiz.tags.map((i: string) => {
-                      return <p className="text-lg bg-pink-300/80 border-pink-400 border-[1px] rounded-xl px-2 text-black" key={i}>{i}</p>
-                    })
+      {quizzesBySubtopic.map((subtopic, idx) => (
+        subtopic.quizzes.length > 0 ? (
+          <div key={`${subtopic.quizzes.toString()}.${idx.toString()}`} className="mb-6">
+            <div className="flex flex-col">
+              
+              <button
+                onClick={() => {
+                  if (openedSubTopics.includes(subtopic.subtopicName as never)) {
+                    // Remove the subtopic from the list (closing)
+                    setOpenedSubTopics(prev =>
+                      prev.filter(name => name !== subtopic.subtopicName)
+                    );
+                  } else {
+                    // Add the subtopic to the list (opening)
+                    setOpenedSubTopics(prev => [...prev, subtopic.subtopicName as never]);
                   }
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
+                }}
+                className="flex flex-row items-center space-x-4 hover:bg-pink-400/30 dark:hover:bg-blue-400/30 p-2 rounded-l-xl"
+              >
+                {openedSubTopics.includes(subtopic.subtopicName as never) ? <ChevronDown /> : <ChevronRight />}
+                <h2 className="text-xl font-bold">
+                  {subtopic.subtopicName}
+                  
+                </h2>
+                <p className={`mx-2 px-2 rounded-full bg-pink-400 text-black text-md`}>
+                  ({subtopics[idx].codes[0].toUpperCase()}–{subtopics[idx].codes.slice(-1)[0].toUpperCase()})
+                </p>
+              </button>
+              
+              { openedSubTopics.includes(subtopic.subtopicName as never) && (
+              <div className="flex flex-col gap-2 mt-2 hover:bg-pink-500/10 dark:hover:bg-blue-500/10 p-2 rounded-l-xl">
+                {subtopic.quizzes.map((quiz) => (
+                  <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="flex flex-row gap-2 rounded-full py-2 px-4 ml-10 mr-10 bg-pink-600/30 dark:bg-blue-800" key={quiz.$id}>
+                    <span className={`px-2 rounded-full bg-pink-400 text-black`}>{quiz.edexcell_label.toUpperCase()}</span>
+                    {quiz.name}
+                  </Link>
+                ))}
+              </div> )}
+            </div>
+          </div>
+        ) : null
       ))}
     </div>
   </div>
