@@ -1,14 +1,21 @@
-import { TopicItem, TopicList } from "@/comp/subjects/topics_items";
+import { AutoTopicItems, TopicItem, TopicList } from "@/comp/subjects/topics_items";
+import { subjectData } from "@/lib/dbCompData";
 import { Calculator, Cpu } from "lucide-react";
 import Link from "next/link";
 
+const topics = subjectData.cs;
+
 export default function Maths_Topics() {
+  if (!topics) {
+    return <p>This subject is not completed yet. Check back later.</p>
+  }
+  
   return <>
     <h1 className="text-3xl md:text-4xl font-bold">Computer Science Topics</h1>
 
     <ul className="w-full">
       <TopicList>
-        <TopicItem Url="systems" Badge="1.1" ImageLogo={Cpu} Title="Systems Architecture" />
+        <AutoTopicItems topics={topics} />
       </TopicList>
     </ul>
   </>

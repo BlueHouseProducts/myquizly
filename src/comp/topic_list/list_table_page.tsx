@@ -8,7 +8,7 @@ import { ChevronDown, ChevronRight, ChevronUp, CloudAlert } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function ListTablePage({subject, name, exam_board, subtopics}: {name: string, subject: subjectType, exam_board: "edexcel", subtopics: {codes: string[], name: string}[]}) {
+export default function ListTablePage({subject, name, subtopics}: {name: string, subject: subjectType, subtopics: {codes: string[], name: string}[]}) {
   const [quizes, setQuizes] = useState<any[] | null>();
   const [loaded, setLoaded] = useState(false);
 
@@ -76,9 +76,6 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
     };
   })
   .filter((subtopic): subtopic is { subtopicName: string, quizzes: Models.Document[] } => !!subtopic); // removes nulls
-
-  const colour = exam_board === "edexcel" ?
-    "pink-400" : ""
 
   return <div>
     <div className="overflow-x-hidden overflow-y-auto">

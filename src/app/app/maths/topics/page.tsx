@@ -1,14 +1,21 @@
-import { TopicList, TopicItem } from "@/comp/subjects/topics_items";
+import { TopicList, TopicItem, AutoTopicItems } from "@/comp/subjects/topics_items";
+import { subjectData } from "@/lib/dbCompData";
 import { Calculator } from "lucide-react";
 import Link from "next/link";
 
+const topics = subjectData.maths;
+
 export default function Maths_Topics() {
+  if (!topics) {
+    return <p>This subject is not completed yet. Check back later.</p>
+  }
+  
   return <>
     <h1 className="text-3xl md:text-4xl font-bold">Maths Topics</h1>
 
     <ul className="w-full">
       <TopicList>
-        <TopicItem Url="algebra" Badge="A" ImageLogo={Calculator} Title="Algebra" />
+        <AutoTopicItems topics={topics} />
       </TopicList>
     </ul>
   </>
