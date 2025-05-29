@@ -1,3 +1,5 @@
+import { subjectType } from "@/lib/dbCompData";
+import { Calculator, ChevronLeft, Cpu, FileQuestion, List } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
@@ -33,4 +35,24 @@ export function AppLeftContents({children}: {children: React.ReactNode}) {
   return <motion.div initial={{scale: 0.99, opacity: 0}} animate={{scale: 1, opacity: 1}} transition={{duration: 0.3, easings: ["easeInOut"], delay: 0.2}} className="overflow-y-auto pt-4 flex-1 pl-4 bg-pink-100 dark:bg-blue-950 rounded-tl-[12px]">
     {children}
   </motion.div>
+}
+
+export function QuizQuestionSidebar({pn, subject}: {pn: string, subject: subjectType}) {
+  if (!pn.startsWith(`/app/${subject}`)) { return <></> }
+
+  const quiz_item = 
+    subject === "maths" ? <Calculator size={20} />  
+    : subject === "cs" ? <Cpu size={20} />
+    : <></>
+
+  return <>
+    <NavItem href="#" icon={quiz_item} label="Quiz" active={true} />
+    <NavItem href="." icon={<ChevronLeft size={20} />} label="Back to subject" active={false} />
+    <div className="w-full p-2 border-t-[1px] border-white"></div>
+  </>
+}
+
+export function QuizMainSidebar({subject, pn}: {subject: subjectType, pn: string}) {
+  return <><NavItem href={`/app/${subject}/`} icon={<Calculator size={20} />} label="Overview" active={pn === `/app/${subject}`} />
+    <NavItem href={`/app/${subject}/topics`} icon={<List size={20} />} label="Topics" active={pn.startsWith(`/app/${subject}/topics`)} /></>
 }

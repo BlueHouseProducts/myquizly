@@ -99,7 +99,7 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
                     setOpenedSubTopics(prev => [...prev, subtopic.subtopicName as never]);
                   }
                 }}
-                className="flex flex-row items-center space-x-4 hover:bg-pink-400/30 dark:hover:bg-blue-400/30 p-2 rounded-l-xl"
+                className="flex flex-row items-center space-x-4 transition-colors hover:bg-pink-400/30 dark:hover:bg-blue-400/30 p-2 rounded-l-xl"
               >
                 {openedSubTopics.includes(subtopic.subtopicName as never) ? <ChevronDown /> : <ChevronRight />}
                 <h2 className="text-xl font-bold">
@@ -112,7 +112,7 @@ export default function ListTablePage({subject, name, exam_board, subtopics}: {n
               </button>
               
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
-              <div className="flex flex-col gap-2 mt-2 hover:bg-pink-500/10 dark:hover:bg-blue-500/10 p-2 rounded-l-xl">
+              <div className="flex flex-col gap-2 mt-2 transition-colors hover:bg-pink-500/10 dark:hover:bg-blue-500/10 p-2 rounded-l-xl">
                 {subtopic.quizzes.map((quiz) => (
                   <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="flex flex-row gap-2 rounded-full py-2 px-4 ml-10 mr-10 bg-pink-600/30 dark:bg-blue-800" key={quiz.$id}>
                     <span className={`px-2 rounded-full bg-pink-400 text-black`}>{quiz.label.toUpperCase()}</span>
