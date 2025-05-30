@@ -1,9 +1,10 @@
-import { TopicList, TopicItem, AutoTopicItems } from "@/comp/subjects/topics_items";
+import { AutoTopicItems, TopicItem, TopicList } from "@/comp/subjects/topics_items";
 import { subjectData } from "@/lib/dbCompData";
-import { Calculator } from "lucide-react";
+import { Calculator, Cpu } from "lucide-react";
 import Link from "next/link";
 
-const topics = subjectData.maths;
+const topics = subjectData.english;
+const name = "English"
 
 export default function Maths_Topics() {
   if (!topics) {
@@ -11,7 +12,7 @@ export default function Maths_Topics() {
   }
   
   return <>
-    <h1 className="text-3xl md:text-4xl font-bold">Maths Topics</h1>
+    <h1 className="text-3xl md:text-4xl font-bold">{name} Science Topics</h1>
 
     <ul className="w-full">
       <TopicList>

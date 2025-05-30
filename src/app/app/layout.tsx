@@ -23,6 +23,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/app/settings") ? "account" :
     pathname.startsWith("/app/maths") ? "maths" :
     pathname.startsWith("/app/cs") ? "cs" :
+    pathname.startsWith("/app/science") ? "science" :
+    pathname.startsWith("/app/history") ? "history" :
+    pathname.startsWith("/app/music") ? "music" :
+    pathname.startsWith("/app/rs") ? "rs" :
+    pathname.startsWith("/app/french") ? "french" :
+    pathname.startsWith("/app/english") ? "english" :
     "overview"; // Default to overview if no specific item is matched
 
   return (

@@ -3,7 +3,8 @@ import { subjectData } from "@/lib/dbCompData";
 import { Calculator, Cpu } from "lucide-react";
 import Link from "next/link";
 
-const topics = subjectData.cs;
+const topics = subjectData.music;
+const name = "Music"
 
 export default function Maths_Topics() {
   if (!topics) {
@@ -11,7 +12,7 @@ export default function Maths_Topics() {
   }
   
   return <>
-    <h1 className="text-3xl md:text-4xl font-bold">Computer Science Topics</h1>
+    <h1 className="text-3xl md:text-4xl font-bold">{name} Science Topics</h1>
 
     <ul className="w-full">
       <TopicList>
