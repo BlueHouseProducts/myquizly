@@ -3,6 +3,7 @@
 import { TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
 import { databases } from "@/lib/appwriteClient";
 import { dbData, subjectType } from "@/lib/dbCompData";
+import { GetQuizesFromTopic } from "@/lib/dbQuiz";
 import { Models, Query } from "appwrite";
 import { ChevronDown, ChevronRight, ChevronUp, CloudAlert } from "lucide-react";
 import Link from "next/link";
@@ -13,19 +14,13 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
   const [loaded, setLoaded] = useState(false);
 
   const [openedSubTopics, setOpenedSubTopics] = useState([]);
-
-  const db: string = dbData.quiz_db.collections[subject];
   
   useEffect(() => {
     try {if (dbData) {
-      let promise = databases.listDocuments("68358fde0037593b1096", db,
-        [ 
-          Query.equal('topic', name.toLowerCase())
-        ]
-      );
+      let promise = GetQuizesFromTopic(subject, name);
 
       promise.then((response) => {
-        setQuizes(response.documents);
+        setQuizes(response);
         setLoaded(true);
       })
     } else {

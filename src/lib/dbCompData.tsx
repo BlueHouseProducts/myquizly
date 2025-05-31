@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 
 type subjectType = "maths" | "cs" | "science" | "history" | "french" | "english" | "rs" | "music";
 
-const dbData : {quiz_db: {id: string, collections: {[key in subjectType]: string}}} = {
+const dbData : {quiz_db: {id: string, collections: {[key in subjectType]: string}}, users_db: {id: string, collections: {[key in "quiz_answers"]: string}}} = {
   quiz_db: {
     id: "68358fde0037593b1096",
 
@@ -16,6 +16,14 @@ const dbData : {quiz_db: {id: string, collections: {[key in subjectType]: string
       english: "68385d2d000d96fc007f",
       rs: "68387118000f1802d0ad",
       music: "68386f840015553c0b2e"
+    }
+  },
+
+  users_db: {
+    id: "68397faa0004a771ad72",
+
+    collections: {
+      quiz_answers: "68397fb0000897fb3503"
     }
   }
 }
