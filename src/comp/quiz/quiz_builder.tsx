@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { FillIn, MultipleChoice, QuizCard, QuizItem } from "./quiz_components";
+import { FillIn, FinalComponent, Flipcards, MultipleChoice, QuizCard, QuizItem } from "./quiz_components";
 
 function CreateDefaultValues(
   quiz_data: { q_id: string; type: string; [key: string]: object | string }[]
@@ -32,6 +32,11 @@ export default function QuizBuilder({
   const handleAnswered = () => {
     setTimeout(() => {
       setCurrentIndex((prev) => prev + 1);
+      const e = document.getElementById("_MAIN_CONTROL_FORM");
+      
+      setTimeout(() => {if (e) {
+        e.scrollTo({top: e.scrollHeight, behavior: "smooth"})
+      }}, 850)
     }, 200); // slight delay for animation smoothness
   };
 
@@ -53,7 +58,8 @@ export default function QuizBuilder({
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="w-full mt-2 flex flex-col items-center justify-start gap-4 overflow-x-hidden overflow-y-auto flex-1 h-full"
+        id="_MAIN_CONTROL_FORM"
+        className="w-full mt-2 mb-8 flex flex-col items-center justify-start gap-4 overflow-x-hidden overflow-y-auto flex-1 h-full"
       >
         <AnimatePresence mode="wait">
           {data.slice(0, currentIndex + 1).map((quizItem, index) => {
@@ -70,7 +76,6 @@ export default function QuizBuilder({
                         title={quizItem.multiple_choice.title}
                         options={quizItem.multiple_choice.options}
                         onAnswered={handleAnswered}
-
                         questionid={id}
                         quizid={quiz.id}
                         subject={quiz.subject}
@@ -82,24 +87,55 @@ export default function QuizBuilder({
             }
 
             if (type === "fill_in") {
-              return <QuizItem key={id}>
-                <form.Field name={id}>
-                  {(field) => (
-                    <FillIn formObject={field} onAnswered={handleAnswered} questionData={quizItem} quizData={quiz} />
-                  )}
-                </form.Field>
-              </QuizItem>
+              return (
+                <QuizItem key={id}>
+                  <form.Field name={id}>
+                    {(field) => (
+                      <FillIn
+                        formObject={field}
+                        onAnswered={handleAnswered}
+                        questionData={quizItem}
+                        quizData={quiz}
+                      />
+                    )}
+                  </form.Field>
+                </QuizItem>
+              );
+            }
+
+            if (type === "flipcard") {
+              return (
+                <QuizItem key={id}>
+                  <form.Field name={id}>
+                    {(field) => (
+                      <Flipcards
+                        formObject={field}
+                        onAnswered={handleAnswered}
+                        questionData={quizItem}
+                        quizData={quiz}
+                      />
+                    )}
+                  </form.Field>
+                </QuizItem>
+              );
             }
 
             return (
-              <QuizItem>
-                <QuizCard key={id}>
+              <QuizItem key={id}>
+                <QuizCard>
                   <p>Quiz build error: Type {type} does not exist.</p>
                 </QuizCard>
               </QuizItem>
             );
           })}
+
+          {/* ✅ Add this block AFTER all questions */}
+          {currentIndex >= data.length && (
+            <FinalComponent topic={quiz.topic} />
+          )}
         </AnimatePresence>
+
+        <p>Quiz is part of the Quizly Trademarks ©2025 BHP</p>
       </form>
     </div>
   );

@@ -5,7 +5,8 @@ import { CheckFillInItem, CheckMultipleChoice, GetFillInItem } from "@/lib/dbQui
 import { animate } from "motion";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import Link from "next/link";
+import { ChangeEventHandler, RefObject, useEffect, useRef, useState } from "react";
 
 export function QuizCard({children}: {children: React.ReactNode}) {
   return <div className="w-full bg-pink-300 dark:bg-blue-300 text-black px-6 py-8 rounded-xl shadow-lg shadow-pink-400/35 dark:shadow-blue-400/35">
@@ -141,13 +142,14 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
 export function FillIn({ formObject, onAnswered, questionData, quizData }: { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
   const [answeredElms, setAE] = useState<any>([]);
   const [isCorrect, setCorrect] = useState<boolean | null>(null);
-
   const [answered, setAnswered] = useState(false);
   const [filledValues, setFilledValues] = useState<{ [key: number]: string }>({});
 
+  // ADD: Refs to each input
+  const inputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
+
   useEffect(() => {
     const load = async () => {
-      const newVals: { [key: number]: string } = {};
       questionData.fill_in.text.forEach(async (item: string, idx: number) => {
         if (item === '__GAP__') {
           const val = await GetFillInItem(idx, quizData.id, quizData.subject, questionData.q_id);
@@ -164,22 +166,23 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
     } else {
       setCorrect(false);
     }
-    
+
     if (formObject.getValue() === "true" || formObject.getValue === "false") {
-      return
+      return;
     }
-    
+
     formObject.setValue(val);
     setAnswered(true);
-    onAnswered();
+    
+    setTimeout(onAnswered, 2000);
   }
-  
+
   return (
     <QuizCard>
       <p className="text-center text-xl pb-4 p-2">{questionData.fill_in.title}</p>
 
       <div className="flex flex-row space-x-0 flex-wrap">
-        { 
+        {
           questionData.fill_in.text.map((item: string, idx: number) => {
             if (item === "__GAP__") {
               const inputKey = answered ? `filled-${idx}` : `unfilled-${idx}`;
@@ -187,6 +190,7 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
               return (
                 <input
                   key={inputKey}
+                  ref={el => { inputRefs.current[idx] = el; }}
                   id={`${questionData.q_id}_${idx}`}
                   name={idx.toString()}
                   className={
@@ -213,8 +217,21 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
                           updated[idx] = isTrue;
                           setAE(updated);
 
-                          const totalGaps = questionData.fill_in.text.filter(t => t === '__GAP__').length;
+                          const totalGaps = questionData.fill_in.text.filter((t: any) => t === '__GAP__').length;
                           const correctCount = updated.filter(Boolean).length;
+
+                          // FOCUS NEXT INPUT
+                          if (isTrue) {
+                            const nextIdx = questionData.fill_in.text
+                              .map((t: any, i: any) => ({ type: t, i }))
+                              .filter((t: any) => t.type === '__GAP__')
+                              .map((t: any) => t.i)
+                              .find((i: any) => i > idx && !updated[i]);
+
+                            if (nextIdx !== undefined && inputRefs.current[nextIdx]) {
+                              inputRefs.current[nextIdx]?.focus();
+                            }
+                          }
 
                           if (correctCount === totalGaps) {
                             StateAnsweredAll("true");
@@ -252,19 +269,77 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
             }`}
           >
             {isCorrect ? <>
-            Correct!
-            <motion.p initial={{ y: 100, opacity: 0 }} animate={{y: 0, opacity: 1}} transition={{delay: 0.5}}>
-              You got it right!!
-            </motion.p>
+              Correct!
+              <motion.p initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
+                You got it right!!
+              </motion.p>
             </> : <>
-            Incorrect!
-            <motion.p initial={{ y: 100, opacity: 0 }} animate={{y: 0, opacity: 1}} transition={{delay: 0.5}}>
-              You got it wrong!!
-            </motion.p>
+              Incorrect!
+              <motion.p initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
+                You got it wrong!!
+              </motion.p>
             </>}
           </motion.div>
         )}
       </AnimatePresence>
     </QuizCard>
-  )
+  );
+}
+
+export function Flipcards({ formObject, onAnswered, questionData, quizData } : { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [cont, setContinue] = useState(false);
+
+  const flipCard = useRef<HTMLDivElement>(null);
+  const pItem = useRef<HTMLParagraphElement>(null);
+
+  function Flip() {
+    if (isFlipped) { return };
+    setTimeout(() => setIsFlipped(true), 500);
+
+    if (flipCard.current) {
+      animate(flipCard.current, { scaleX: 0, opacity: 0.7 }, { duration: 0.3 }).finished.then(() => {
+        if (flipCard.current) {
+          if (pItem.current) {
+            pItem.current.textContent = questionData.flipcard.a;
+          }
+
+          animate(flipCard.current, { scaleX: 1, opacity: 1 }, { duration: 0.3 })
+        } else {
+          if (pItem.current) {
+            pItem.current.textContent = questionData.flipcard.a;
+          }
+        }
+      });
+    }
+  };
+
+  function Continue() {
+    if (!isFlipped) { return }
+    if (cont) { return }
+
+    setContinue(true);
+    setTimeout(onAnswered, 2000);
+  }
+  
+  return <QuizCard>
+    <div className="flex flex-col gap-4 items-center justify-center">
+      <motion.div onClick={Flip} ref={flipCard} className={ isFlipped ? "bg-white w-3/4 p-5 rounded-xl" : "bg-white w-3/4 p-5 rounded-xl cursor-pointer"} initial={{scale: 0.8, opacity: 0}} transition={{delay: 0.5}} animate={{scale: 1, opacity: 1}}>
+        <p className="text-center" ref={pItem}>{questionData.flipcard.q}</p>
+      </motion.div>
+
+      { !isFlipped ? <motion.button initial={{opacity: 0}} transition={{delay: 0.8}} animate={{opacity: 1}} onClick={Flip} className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors">View Answer</motion.button>
+      : <button onClick={Continue} className={cont ? "p-5 rounded-full bg-white/20 cursor-default" : "p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>Continue</button>
+    }
+    </div>
+  </QuizCard>
+}
+
+export function FinalComponent({topic}: {topic: string}) {
+  return <QuizCard>
+    <div className="flex flex-col items-center justify-center"><h3 className="text-3xl text-center mb-4">Well done!</h3>
+    <p className="text-2xl text-center mb-6">You completed this quiz and with that secured this in your memory a little bit more.</p>
+
+    <Link className="text-lg underline text-center" href="../">Back to subject</Link></div>
+  </QuizCard>
 }
