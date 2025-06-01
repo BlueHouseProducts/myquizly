@@ -11,11 +11,16 @@ import { useRouter } from "next/navigation";
 
 export function QuizMainPage({ quiz_id, subject }: { quiz_id: string, subject: subjectType }) {
   const [quizData, setQuizData] = useState<any>("LOAD");
+  const [quizName, setQuizName] = useState<object>({});
+
   const r = useRouter();
 
   useEffect(() => {
     GetQuizData(quiz_id, subject).then(r => {
-      setQuizData(r);
+      if (r == "ERR") { window.location.href = "." }
+      
+      setQuizData(r[0]);
+      setQuizName(r[1] as object);
     });
   }, [quiz_id]);
 
@@ -34,5 +39,5 @@ export function QuizMainPage({ quiz_id, subject }: { quiz_id: string, subject: s
     );
   }
 
-  return <QuizBuilder data={quizData} />
+  return <QuizBuilder quiz={quizName} data={quizData} />
 }

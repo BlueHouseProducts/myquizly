@@ -48,7 +48,7 @@ export function QuizQuestionSidebar({pn, subject}: {pn: string, subject: subject
   return <>
     <NavItem href="#" icon={quiz_item} label="Quiz" active={true} />
     <NavItem href="." icon={<ChevronLeft size={20} />} label="Back to subject" active={false} />
-    <div className="w-full p-2 border-t-[1px] border-white"></div>
+    <div className="w-full p-2 border-t-[1px] border-black dark:border-white"></div>
   </>
 }
 

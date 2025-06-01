@@ -41,7 +41,7 @@ const example_quiz_data =
 ]
 
 export async function GetQuizData(quiz_id: string, subject: subjectType) {
-  function stripAnswers(quizData: any) {
+  function stripAnswers(quizData: any[]) {
     return quizData.map(({ answer, ...rest }: {answer: any}) => rest);
   }
   
@@ -70,5 +70,5 @@ export async function GetQuizData(quiz_id: string, subject: subjectType) {
     return "ERR";
   }
   
-  return stripAnswers(json_quiz_data);
+  return [stripAnswers(json_quiz_data), {name: quiz.name, topic: quiz.topic, id: quiz.$id, created: quiz.$createdAt, label: quiz.label}];
 }
