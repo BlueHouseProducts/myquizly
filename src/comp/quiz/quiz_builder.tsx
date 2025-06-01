@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { MultipleChoice, QuizCard, QuizItem } from "./quiz_components";
+import { FillIn, MultipleChoice, QuizCard, QuizItem } from "./quiz_components";
 
 function CreateDefaultValues(
   quiz_data: { q_id: string; type: string; [key: string]: object | string }[]
@@ -17,7 +17,7 @@ export default function QuizBuilder({
 }: {
   data: Array<any>;
   quiz: any;
-}) {
+}) { 
   const defaults = CreateDefaultValues(data);
   const form = useForm({
     defaultValues: defaults,
@@ -70,6 +70,10 @@ export default function QuizBuilder({
                         title={quizItem.multiple_choice.title}
                         options={quizItem.multiple_choice.options}
                         onAnswered={handleAnswered}
+
+                        questionid={id}
+                        quizid={quiz.id}
+                        subject={quiz.subject}
                       />
                     )}
                   </form.Field>
@@ -78,7 +82,13 @@ export default function QuizBuilder({
             }
 
             if (type === "fill_in") {
-              handleAnswered();
+              return <QuizItem key={id}>
+                <form.Field name={id}>
+                  {(field) => (
+                    <FillIn formObject={field} onAnswered={handleAnswered} questionData={quizItem} quizData={quiz} />
+                  )}
+                </form.Field>
+              </QuizItem>
             }
 
             return (
