@@ -336,7 +336,88 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
 }
 
 export function ExamQ({ formObject, onAnswered, questionData, quizData } : { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
-  return 
+  const [shown, setShown] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const [text, setText] = useState<string | undefined>("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  function ShowMarkScheme() {
+    if (shown) { return }
+    if (done) { return }
+    
+    setText(textareaRef.current?.value);
+    setShown(true);
+  }
+
+  function Continue() {
+    if (done) { return }
+    if (!shown) { return }
+    
+    setDone(true);
+    setTimeout(onAnswered, 2000);
+  }
+
+  function AutoGrowingTextarea({i}: {i: boolean}) {   
+    const handleInput = () => {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.style.height = 'auto'; // Reset height
+        textarea.style.height = `${textarea.scrollHeight}px`; // Set to scroll height
+      }
+    };
+
+    useEffect(() => {
+      handleInput(); // Initial adjustment
+    }, []);
+    
+    if (i) {
+      return (
+        <textarea
+          ref={textareaRef}
+          className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden"
+          autoComplete="off"
+          spellCheck={false}
+          readOnly={true}
+          value={text}
+          name={`_quizcard_question_${questionData.qid}_answer`}
+          onInput={handleInput}
+          rows={1}
+        />
+      )
+    }
+    return (
+      <textarea
+        ref={textareaRef}
+        className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden"
+        autoComplete="off"
+        spellCheck={false}
+        name={`_quizcard_question_${questionData.qid}_answer`}
+        onInput={handleInput}
+        rows={1}
+      />
+    );
+  }
+  
+  return <QuizCard>
+    <div className="flex flex-col items-center w-full">
+      <div className="w-full">
+        <h3 className="text-2xl font-bold">{questionData.examq.q}</h3>
+        <div></div>
+        
+        <AutoGrowingTextarea i={shown} />
+      </div>
+
+      {  shown && <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 0.7}} className="m-2 bg-gray-200 text-black w-full p-2">
+        <h3 className="font-bold">Mark Scheme</h3>
+        <p>{questionData.examq.a}</p>
+      </motion.div>  }
+
+      { !shown ?  <motion.button initial={{opacity: 0}} transition={{delay: 0.8}} animate={{opacity: 1}} onClick={ShowMarkScheme} className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors">Show mark scheme</motion.button>
+      : <button onClick={Continue} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>Continue</button>
+      }
+    </div>
+  </QuizCard>
 }
 
 export function FinalComponent({topic}: {topic: string}) {

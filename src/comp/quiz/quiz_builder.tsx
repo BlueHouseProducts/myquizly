@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { FillIn, FinalComponent, Flipcards, MultipleChoice, QuizCard, QuizItem } from "./quiz_components";
+import { ExamQ, FillIn, FinalComponent, Flipcards, MultipleChoice, QuizCard, QuizItem } from "./quiz_components";
 
 function CreateDefaultValues(
   quiz_data: { q_id: string; type: string; [key: string]: object | string }[]
@@ -109,6 +109,23 @@ export default function QuizBuilder({
                   <form.Field name={id}>
                     {(field) => (
                       <Flipcards
+                        formObject={field}
+                        onAnswered={handleAnswered}
+                        questionData={quizItem}
+                        quizData={quiz}
+                      />
+                    )}
+                  </form.Field>
+                </QuizItem>
+              );
+            }
+
+            if (type === "examq") {
+              return (
+                <QuizItem key={id}>
+                  <form.Field name={id}>
+                    {(field) => (
+                      <ExamQ
                         formObject={field}
                         onAnswered={handleAnswered}
                         questionData={quizItem}
