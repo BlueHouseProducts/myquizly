@@ -128,8 +128,11 @@ export async function CheckFillInItem(idx: number, text: string, quiz_id: string
     if (item.q_id === question_id) {
 
       const expectedAnswer = getAnswerForGap((item as any).fill_in.text, item.answer, idx);
-      if (expectedAnswer === text) {
-        isTrue = true;
+
+      if (expectedAnswer) {
+        if (expectedAnswer.toLowerCase() === text.toLowerCase()) {
+          isTrue = true;
+        }
       }
     }
   });

@@ -335,6 +335,10 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
   </QuizCard>
 }
 
+export function ExamQ({ formObject, onAnswered, questionData, quizData } : { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
+  return 
+}
+
 export function FinalComponent({topic}: {topic: string}) {
   return <QuizCard>
     <div className="flex flex-col items-center justify-center"><h3 className="text-3xl text-center mb-4">Well done!</h3>
