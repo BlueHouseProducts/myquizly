@@ -314,12 +314,14 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
     }
   };
 
-  function Continue() {
+  function Continue(correct: boolean) {
     if (!isFlipped) { return }
     if (cont) { return }
 
+    formObject.setValue(correct.toString());
+
     setContinue(true);
-    setTimeout(onAnswered, 2000);
+    setTimeout(onAnswered, 500);
   }
   
   return <QuizCard>
@@ -329,7 +331,7 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
       </motion.div>
 
       { !isFlipped ? <motion.button initial={{opacity: 0}} transition={{delay: 0.8}} animate={{opacity: 1}} onClick={Flip} className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors">View Answer</motion.button>
-      : <button onClick={Continue} className={cont ? "p-5 rounded-full bg-white/20 cursor-default" : "p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>Continue</button>
+      : <div className="flex flex-row gap-2"><button onClick={() => Continue(true)} className={cont ? "p-5 rounded-full bg-white/20 cursor-default" : "p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>I was correct</button><button onClick={() => Continue(false)} className={cont ? "p-5 rounded-full bg-white/20 cursor-default" : "p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"}>I was incorrect</button></div>
     }
     </div>
   </QuizCard>
@@ -355,7 +357,7 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
     if (!shown) { return }
     
     setDone(true);
-    setTimeout(onAnswered, 2000);
+    setTimeout(onAnswered, 500);
   }
 
   function AutoGrowingTextarea({i}: {i: boolean}) {   
@@ -375,7 +377,7 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
       return (
         <textarea
           ref={textareaRef}
-          className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden"
+          className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default"
           autoComplete="off"
           spellCheck={false}
           readOnly={true}
@@ -389,7 +391,7 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
     return (
       <textarea
         ref={textareaRef}
-        className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden"
+        className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl"
         autoComplete="off"
         spellCheck={false}
         name={`_quizcard_question_${questionData.qid}_answer`}
@@ -402,22 +404,68 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
   return <QuizCard>
     <div className="flex flex-col items-center w-full">
       <div className="w-full">
-        <h3 className="text-2xl font-bold">{questionData.examq.q}</h3>
+        <h3 className="text-2xl font-bold">Exam question</h3>
+        <p>{questionData.examq.q}</p>
         <div></div>
         
         <AutoGrowingTextarea i={shown} />
       </div>
 
-      {  shown && <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 0.7}} className="m-2 bg-gray-200 text-black w-full p-2">
+      {  shown && <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 0.7}} className="rounded-xl m-2 bg-gray-200 text-black w-full p-2">
         <h3 className="font-bold">Mark Scheme</h3>
         <p>{questionData.examq.a}</p>
       </motion.div>  }
 
       { !shown ?  <motion.button initial={{opacity: 0}} transition={{delay: 0.8}} animate={{opacity: 1}} onClick={ShowMarkScheme} className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors">Show mark scheme</motion.button>
-      : <button onClick={Continue} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>Continue</button>
+      : <div className="flex flex-row gap-2"><button onClick={Continue} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>I was correct</button><button onClick={Continue} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"}>I was incorrect</button></div>
       }
     </div>
   </QuizCard>
+}
+
+export function Answer({ formObject, onAnswered, questionData} : { formObject: any, onAnswered: any, questionData: any }) {
+  const [answered, setAnswered] = useState(false);
+  const [value, setValue] = useState<string>("");
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+
+  const RealAnswer = questionData.answer_.a;
+  const Answers = questionData.answer_.sa;
+
+  console.log(questionData);
+
+  return <QuizCard>
+    <div className="flex flex-col items-center w-full">
+      <h4 className="text-xl">{questionData.answer_.q}</h4>
+
+      <input type="text" autoComplete="off" value={value} readOnly={answered} spellCheck={false} className={"w-80 h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default " + ( isCorrect === false && "text-red-700" )} name={`_quizcard_question_${questionData.qid}_answer`} onChange={(e) => {
+        const inputValue = e.currentTarget.value.toLowerCase();
+        setValue(inputValue);
+
+        if (
+          inputValue === RealAnswer.toLowerCase() ||
+          Answers.map((a: string) => a.toLowerCase()).includes(inputValue)
+        ) {
+          if (answered) return;
+
+          setValue(RealAnswer);
+          setAnswered(true);
+          formObject.setValue("true");
+          onAnswered();
+        }
+      }} />
+
+      <div className="flex flex-row-reverse items-center mt-4">
+        <button onClick={() => {
+          if (answered) { return }
+          setValue(RealAnswer);
+          setAnswered(true);
+          formObject.setValue("false");
+          onAnswered();
+        }} className={!answered ? "bg-red-400 text-black hover:bg-red-300 transition-colors p-2 rounded-xl" : !isCorrect ? 'bg-red-300 text-black p-2 rounded-2xl cursor-default border-2 border-black' : 'bg-red-300 text-black p-2 rounded-2xl cursor-default'}>Give up!</button>
+      </div>
+    </div>
+  </QuizCard>
+
 }
 
 export function FinalComponent({topic}: {topic: string}) {
