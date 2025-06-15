@@ -2,6 +2,7 @@
 
 import { subjectType } from "@/lib/dbCompData";
 import { CheckFillInItem, CheckMultipleChoice, GetFillInItem } from "@/lib/dbQuiz";
+import { CirclePlay } from "lucide-react";
 import { animate } from "motion";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -45,6 +46,7 @@ type MultipleChoiceProps = {
 export function MultipleChoice({ options, title, formObject, onAnswered, quizid, subject, questionid }: MultipleChoiceProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+
 
   async function ChooseItem(o_id: string, e: React.MouseEvent<HTMLButtonElement>) {
     if (formObject.getValue() !== "") return;
@@ -103,7 +105,33 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
                   ? option.media
                   : option.media_type === "image"
                     ? <Image src={option.media} alt="Answer" width={200} height={50} />
-                    : null}
+                  : option.media_type === "audio" ? (() => {
+                    const audioRef = useRef<HTMLAudioElement>(null);
+
+                    const playAudio = (e: React.MouseEvent) => {
+                      e.stopPropagation(); // prevents triggering ChooseItem when just playing audio
+                      if (audioRef.current) {
+                        audioRef.current.play();
+                      }
+                    };
+
+                    return (
+                      <>
+                        <Link
+                        href={"#"}
+                          onClick={playAudio}
+                          className="bg-purple-200 text-black text-2xl flex flex-row gap-2 px-2 py-1 rounded-full hover:bg-purple-300 border-2 border-black"
+                        >
+                          <CirclePlay size={30} />
+                          Play Audio
+                        </Link>
+                        <audio ref={audioRef}>
+                          <source src={option.media} type="audio/mpeg" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </>
+                    );
+                  })() : null}
               </div>
             </button>
           );
