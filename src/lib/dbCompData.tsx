@@ -28,6 +28,9 @@ const dbData : {quiz_db: {id: string, collections: {[key in subjectType]: string
   }
 }
 
+function setCodes(codes: string[]): string[] {
+  return codes.map((s) => s.toLowerCase());
+}
 
 const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: string, icon: React.ElementType, subtopics: {codes: string[], name: string}[]}}} = {
   cs: {
@@ -37,7 +40,7 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
       icon: Cpu,
       subtopics: [
         {
-          codes: ["1.1.1"].map((s) => s.toLowerCase()),
+          codes: setCodes(["1.1.1"]),
           name: "Architecture of the CPU",
         }
       ]
@@ -51,7 +54,7 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
       icon: Calculator,
       subtopics: [
         {
-          codes: ["a1", "a2", "a3", "a4", "a5", "a6", "a7"].map((s) => s.toLowerCase()),
+          codes: setCodes(["a1", "a2", "a3", "a4", "a5", "a6", "a7"]),
           name: "Notation, vocabulary and manipulation",
         }
       ]
@@ -65,7 +68,7 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
       icon: CircleUser,
       subtopics: [
         {
-          codes: ["4.1.1.1"].map((s) => s.toLowerCase()),
+          codes: setCodes(["4.1.1.1"]),
           name: "Cell structure"
         }
       ]
@@ -80,7 +83,7 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
       subtopics: [
         {
           // PAPER.SECTION
-          codes: ["1.A"].map((s) => s.toLowerCase()),
+          codes: setCodes(["1.A"]),
           name: "Reading"
         }
       ]
@@ -95,7 +98,7 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
       icon: Axe,
       subtopics: [
         {
-          codes: [],
+          codes: setCodes([]),
           name: ""
         }
       ]
@@ -109,7 +112,7 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
       icon: BookA,
       subtopics: [
         {
-          codes: [],
+          codes: setCodes([]),
           name: "",
         }
       ]

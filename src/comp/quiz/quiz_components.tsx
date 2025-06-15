@@ -41,9 +41,10 @@ type MultipleChoiceProps = {
   quizid: string;
   subject: subjectType;
   questionid: string;
+  quizData: any;
 };
 
-export function MultipleChoice({ options, title, formObject, onAnswered, quizid, subject, questionid }: MultipleChoiceProps) {
+export function MultipleChoice({ options, title, formObject, onAnswered, quizid, subject, questionid, quizData }: MultipleChoiceProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
@@ -82,7 +83,9 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
 
   return (
     <QuizCard>
-      <p className="text-center text-xl pb-4 p-2">{title}</p>
+      { quizData.multiple_choice.title_media === "text" ? <p className="text-center text-xl pb-4 p-2">{title}</p>
+      : quizData.multiple_choice.title_media === "image" ? <Image src={title} alt="Quiz Title Image" width={200} height={50} className="mx-auto mb-4" />
+      :null} 
       <div className="flex flex-row gap-2 items-stretch justify-between">
         {options.map(option => {
           const isThisSelected = selected === option.o_id;
@@ -109,6 +112,8 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
                     const audioRef = useRef<HTMLAudioElement>(null);
 
                     const playAudio = (e: React.MouseEvent) => {
+                      if (!audioRef.current) return;
+                      if (selected) return; // prevent playing audio if an option is already selected
                       e.stopPropagation(); // prevents triggering ChooseItem when just playing audio
                       if (audioRef.current) {
                         audioRef.current.play();

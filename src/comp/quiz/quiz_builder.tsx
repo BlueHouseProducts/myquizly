@@ -79,6 +79,7 @@ export default function QuizBuilder({
                         questionid={id}
                         quizid={quiz.id}
                         subject={quiz.subject}
+                        quizData={quizItem}
                       />
                     )}
                   </form.Field>
