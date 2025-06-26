@@ -1,7 +1,7 @@
 "use client";
 
 import { subjectType } from "@/lib/dbCompData";
-import { CheckFillInItem, CheckMultipleChoice, GetFillInItem } from "@/lib/dbQuiz";
+import { CheckFillInItem, CheckMultipleChoice, GetFillInItem, GetMultipleChoiceAnswer } from "@/lib/dbQuiz";
 import { CirclePlay } from "lucide-react";
 import { animate } from "motion";
 import { AnimatePresence, motion } from "motion/react";
@@ -47,7 +47,10 @@ type MultipleChoiceProps = {
 export function MultipleChoice({ options, title, formObject, onAnswered, quizid, subject, questionid, quizData }: MultipleChoiceProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [correctAnswerMedia, setCorrectAnswerMedia] = useState<any>(null);
 
+  const correctAnswerSound = useRef<HTMLAudioElement>(null);
+  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   async function ChooseItem(o_id: string, e: React.MouseEvent<HTMLButtonElement>) {
     if (formObject.getValue() !== "") return;
@@ -76,18 +79,40 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
       correct = false;
     }
 
+    if (correct === true) {
+      correctAnswerSound.current?.play();
+    } else {
+      incorrectAnswerSound.current?.play();
+    }
+
     setIsCorrect(correct as boolean);
 
     formObject.setValue(correct.toString());
   }
+  useEffect(() => {
+    if (isCorrect === false) {
+      // Only fetch the correct answer when the answer is incorrect
+      GetMultipleChoiceAnswer(quizid, subject, questionid).then((result) => {
+        setCorrectAnswerMedia(result || "Unknown");
+      });
+    }
+  }, [isCorrect, quizid, subject, questionid]);
 
   return (
     <QuizCard>
       { quizData.multiple_choice.title_media === "text" ? <p className="text-center text-xl pb-4 p-2">{title}</p>
       : quizData.multiple_choice.title_media === "image" ? <Image src={title} alt="Quiz Title Image" width={200} height={50} className="mx-auto mb-4" />
       :null} 
+      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
       <div className="flex flex-row gap-2 items-stretch justify-between">
-        {options.map(option => {
+        {(options ?? []).map(option => {
           const isThisSelected = selected === option.o_id;
           let bgColor = selected ? "bg-white/50 text-black" : "bg-white/50 text-black hover:bg-fuchsia-200";
 
@@ -101,7 +126,7 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
             <button
               key={option.o_id}
               onClick={(e) => ChooseItem(option.o_id, e)}
-              className={`flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor}`}
+              className={ (selected && !isCorrect && option.o_id === correctAnswerMedia) ? `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor} border-2 border-green-800/80` : `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor}`}
             >
               <div className="w-full h-full flex items-center justify-center px-4 py-2">
                 {option.media_type === "text"
@@ -162,21 +187,25 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
             </> : <>
             Incorrect!
             <motion.p initial={{ y: 100, opacity: 0 }} animate={{y: 0, opacity: 1}} transition={{delay: 0.5}}>
-              You got it wrong!!
+              The correct answer was option {correctAnswerMedia}
             </motion.p>
             </>}
           </motion.div>
+          
         )}
       </AnimatePresence>
     </QuizCard>
   );
 }
 
+
 export function FillIn({ formObject, onAnswered, questionData, quizData }: { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
   const [answeredElms, setAE] = useState<any>([]);
   const [isCorrect, setCorrect] = useState<boolean | null>(null);
   const [answered, setAnswered] = useState(false);
   const [filledValues, setFilledValues] = useState<{ [key: number]: string }>({});
+
+  const correctAnswerSound = useRef<HTMLAudioElement>(null);
 
   // ADD: Refs to each input
   const inputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
@@ -195,6 +224,7 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
 
   function StateAnsweredAll(val: string) {
     if (val === "true") {
+      correctAnswerSound.current?.play();
       setCorrect(true);
     } else {
       setCorrect(false);
@@ -212,6 +242,10 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
 
   return (
     <QuizCard>
+      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
       <p className="text-center text-xl pb-4 p-2">{questionData.fill_in.title}</p>
 
       <div className="flex flex-row space-x-0 flex-wrap">
@@ -326,6 +360,9 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
   const flipCard = useRef<HTMLDivElement>(null);
   const pItem = useRef<HTMLParagraphElement>(null);
 
+  const correctAnswerSound = useRef<HTMLAudioElement>(null);
+  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
+
   function Flip() {
     if (isFlipped) { return };
     setTimeout(() => setIsFlipped(true), 500);
@@ -351,6 +388,12 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
     if (!isFlipped) { return }
     if (cont) { return }
 
+    if (correct) {
+      correctAnswerSound.current?.play();
+    } else {
+      incorrectAnswerSound.current?.play();
+    }
+
     formObject.setValue(correct.toString());
 
     setContinue(true);
@@ -358,6 +401,14 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
   }
   
   return <QuizCard>
+    <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
     <div className="flex flex-col gap-4 items-center justify-center">
       <motion.div onClick={Flip} ref={flipCard} className={ isFlipped ? "bg-white w-3/4 p-5 rounded-xl" : "bg-white w-3/4 p-5 rounded-xl cursor-pointer"} initial={{scale: 0.8, opacity: 0}} transition={{delay: 0.5}} animate={{scale: 1, opacity: 1}}>
         <p className="text-center" ref={pItem}>{questionData.flipcard.q}</p>
@@ -377,6 +428,9 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
   const [text, setText] = useState<string | undefined>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const correctAnswerSound = useRef<HTMLAudioElement>(null);
+  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
+
   function ShowMarkScheme() {
     if (shown) { return }
     if (done) { return }
@@ -385,11 +439,23 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
     setShown(true);
   }
 
-  function Continue() {
+  function Continue(correct: boolean) {
     if (done) { return }
     if (!shown) { return }
+
+    if (textareaRef.current) {
+      textareaRef.current.readOnly = true; // Make the textarea read-only
+    }
+
+    if (correct) {
+      correctAnswerSound.current?.play();
+      formObject.setValue("true");
+    } else {
+      incorrectAnswerSound.current?.play();
+      formObject.setValue("false");
+    }
     
-    setDone(true);
+    setDone(correct);
     setTimeout(onAnswered, 500);
   }
 
@@ -435,6 +501,14 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
   }
   
   return <QuizCard>
+    <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
     <div className="flex flex-col items-center w-full">
       <div className="w-full">
         <h3 className="text-2xl font-bold">Exam question</h3>
@@ -450,7 +524,7 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
       </motion.div>  }
 
       { !shown ?  <motion.button initial={{opacity: 0}} transition={{delay: 0.8}} animate={{opacity: 1}} onClick={ShowMarkScheme} className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors">Show mark scheme</motion.button>
-      : <div className="flex flex-row gap-2"><button onClick={Continue} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>I was correct</button><button onClick={Continue} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"}>I was incorrect</button></div>
+      : <div className="flex flex-row gap-2"><button onClick={() => Continue(true)} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>I was correct</button><button onClick={() => Continue(false)} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"}>I was incorrect</button></div>
       }
     </div>
   </QuizCard>
@@ -461,12 +535,21 @@ export function Answer({ formObject, onAnswered, questionData} : { formObject: a
   const [value, setValue] = useState<string>("");
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
+  const correctAnswerSound = useRef<HTMLAudioElement>(null);
+  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
+
   const RealAnswer = questionData.answer_.a;
   const Answers = questionData.answer_.sa;
 
-  console.log(questionData);
-
   return <QuizCard>
+    <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
     <div className="flex flex-col items-center w-full">
       <h4 className="text-xl">{questionData.answer_.q}</h4>
 
@@ -479,6 +562,8 @@ export function Answer({ formObject, onAnswered, questionData} : { formObject: a
           Answers.map((a: string) => a.toLowerCase()).includes(inputValue)
         ) {
           if (answered) return;
+          correctAnswerSound.current?.play();
+          setIsCorrect(true);
 
           setValue(RealAnswer);
           setAnswered(true);
@@ -490,6 +575,10 @@ export function Answer({ formObject, onAnswered, questionData} : { formObject: a
       <div className="flex flex-row-reverse items-center mt-4">
         <button onClick={() => {
           if (answered) { return }
+          
+          incorrectAnswerSound.current?.play();
+          setIsCorrect(false);
+
           setValue(RealAnswer);
           setAnswered(true);
           formObject.setValue("false");
