@@ -27,6 +27,13 @@ export default function QuizBuilder({
   });
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPrintPage,  setIsPrintPage] = useState(false);
+
+  if (isPrintPage) {
+    return <div className="flex flex-col items-center justify-start gap-4 mr-4 h-full">
+      <p>Print page</p>
+    </div>
+  }
 
   // Called when an answer is chosen for the current question to reveal the next
   const handleAnswered = () => {
@@ -49,6 +56,7 @@ export default function QuizBuilder({
             {quiz.label.toUpperCase()}
           </span>{" "}
         </h2>
+        <button onClick={() => setIsPrintPage(true)}>Use print version</button>
         <p>Part of {quiz.topic}</p>
       </QuizCard>
 

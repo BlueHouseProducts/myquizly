@@ -1,30 +1,45 @@
 "use client";
 
 import { subjectType } from "@/lib/dbCompData";
-import { CheckFillInItem, CheckMultipleChoice, GetFillInItem, GetMultipleChoiceAnswer } from "@/lib/dbQuiz";
+import {
+  CheckFillInItem,
+  CheckMultipleChoice,
+  GetFillInItem,
+  GetMultipleChoiceAnswer,
+} from "@/lib/dbQuiz";
 import { CirclePlay } from "lucide-react";
 import { animate } from "motion";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEventHandler, RefObject, useEffect, useRef, useState } from "react";
+import {
+  ChangeEventHandler,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-export function QuizCard({children}: {children: React.ReactNode}) {
-  return <div className="w-full bg-pink-300 dark:bg-blue-300 text-black px-6 py-8 rounded-xl shadow-lg shadow-pink-400/35 dark:shadow-blue-400/35">
-    {children}
-  </div>
+export function QuizCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="w-full bg-pink-300 dark:bg-blue-300 text-black px-6 py-8 rounded-xl shadow-lg shadow-pink-400/35 dark:shadow-blue-400/35">
+      {children}
+    </div>
+  );
 }
 
-export function QuizItem({children}: {children: React.ReactNode}) {
-  return <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.4 }}
-    className="w-full"
-  >
-    {children}
-  </motion.div>
+export function QuizItem({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      className="w-full"
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 type Option = {
@@ -44,7 +59,16 @@ type MultipleChoiceProps = {
   quizData: any;
 };
 
-export function MultipleChoice({ options, title, formObject, onAnswered, quizid, subject, questionid, quizData }: MultipleChoiceProps) {
+export function MultipleChoice({
+  options,
+  title,
+  formObject,
+  onAnswered,
+  quizid,
+  subject,
+  questionid,
+  quizData,
+}: MultipleChoiceProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [correctAnswerMedia, setCorrectAnswerMedia] = useState<any>(null);
@@ -52,22 +76,37 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
   const correctAnswerSound = useRef<HTMLAudioElement>(null);
   const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
-  async function ChooseItem(o_id: string, e: React.MouseEvent<HTMLButtonElement>) {
+  async function ChooseItem(
+    o_id: string,
+    e: React.MouseEvent<HTMLButtonElement>
+  ) {
     if (formObject.getValue() !== "") return;
 
     const button = e.currentTarget;
 
-    animate(button, { scale: 0.6 }, { duration: 0.2, type: 'spring', bounceStiffness: 400, bounceDamping: 10 }).finished
-    .then(() =>
-      animate(button, { scale: 1.6 }, { duration: 0.1, type: 'spring', bounceStiffness: 1000, bounceDamping: 60 }).finished
+    animate(
+      button,
+      { scale: 0.6 },
+      { duration: 0.2, type: "spring", bounceStiffness: 400, bounceDamping: 10 }
     )
-    .then(() =>
-      animate(button, { scale: 1 }, { duration: 0.2 })
-    );
+      .finished.then(
+        () =>
+          animate(
+            button,
+            { scale: 1.6 },
+            {
+              duration: 0.1,
+              type: "spring",
+              bounceStiffness: 1000,
+              bounceDamping: 60,
+            }
+          ).finished
+      )
+      .then(() => animate(button, { scale: 1 }, { duration: 0.2 }));
 
     setTimeout(() => {
       onAnswered();
-    }, 2000)
+    }, 2000);
 
     setSelected(o_id);
     formObject.setValue(o_id);
@@ -100,9 +139,17 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
 
   return (
     <QuizCard>
-      { quizData.multiple_choice.title_media === "text" ? <p className="text-center text-xl pb-4 p-2">{title}</p>
-      : quizData.multiple_choice.title_media === "image" ? <Image src={title} alt="Quiz Title Image" width={200} height={50} className="mx-auto mb-4" />
-      :null} 
+      {quizData.multiple_choice.title_media === "text" ? (
+        <p className="text-center text-xl pb-4 p-2">{title}</p>
+      ) : quizData.multiple_choice.title_media === "image" ? (
+        <Image
+          src={title}
+          alt="Quiz Title Image"
+          width={200}
+          height={50}
+          className="mx-auto mb-4"
+        />
+      ) : null}
       <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
         <source src={"/audio/correct-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
@@ -112,9 +159,11 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
         Your browser does not support the audio element.
       </audio>
       <div className="flex flex-row gap-2 items-stretch justify-between">
-        {(options ?? []).map(option => {
+        {(options ?? []).map((option) => {
           const isThisSelected = selected === option.o_id;
-          let bgColor = selected ? "bg-white/50 text-black" : "bg-white/50 text-black hover:bg-fuchsia-200";
+          let bgColor = selected
+            ? "bg-white/50 text-black"
+            : "bg-white/50 text-black hover:bg-fuchsia-200";
 
           if (isThisSelected && isCorrect !== null) {
             bgColor = isCorrect
@@ -126,14 +175,24 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
             <button
               key={option.o_id}
               onClick={(e) => ChooseItem(option.o_id, e)}
-              className={ (selected && !isCorrect && option.o_id === correctAnswerMedia) ? `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor} border-2 border-green-800/80` : `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor}`}
+              className={
+                selected && !isCorrect && option.o_id === correctAnswerMedia
+                  ? `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor} border-2 border-green-800/80`
+                  : `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor}`
+              }
             >
               <div className="w-full h-full flex items-center justify-center px-4 py-2">
-                {option.media_type === "text"
-                  ? option.media
-                  : option.media_type === "image"
-                    ? <Image src={option.media} alt="Answer" width={200} height={50} />
-                  : option.media_type === "audio" ? (() => {
+                {option.media_type === "text" ? (
+                  option.media
+                ) : option.media_type === "image" ? (
+                  <Image
+                    src={option.media}
+                    alt="Answer"
+                    width={200}
+                    height={50}
+                  />
+                ) : option.media_type === "audio" ? (
+                  (() => {
                     const audioRef = useRef<HTMLAudioElement>(null);
 
                     const playAudio = (e: React.MouseEvent) => {
@@ -148,7 +207,7 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
                     return (
                       <>
                         <Link
-                        href={"#"}
+                          href={"#"}
                           onClick={playAudio}
                           className="bg-purple-200 text-black text-2xl flex flex-row gap-2 px-2 py-1 rounded-full hover:bg-purple-300 border-2 border-black"
                         >
@@ -161,7 +220,8 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
                         </audio>
                       </>
                     );
-                  })() : null}
+                  })()
+                ) : null}
               </div>
             </button>
           );
@@ -176,34 +236,59 @@ export function MultipleChoice({ options, title, formObject, onAnswered, quizid,
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", bounce: 0.4, duration: 0.5 }}
             className={`mt-6 text-center text-xl font-semibold p-4 rounded-full w-full ${
-              isCorrect ? "bg-green-400 text-black border-2 border-black" : "bg-red-400 text-black border-2 border-black"
+              isCorrect
+                ? "bg-green-400 text-black border-2 border-black"
+                : "bg-red-400 text-black border-2 border-black"
             }`}
           >
-            {isCorrect ? <>
-            Correct!
-            <motion.p initial={{ y: 100, opacity: 0 }} animate={{y: 0, opacity: 1}} transition={{delay: 0.5}}>
-              You got it right!!
-            </motion.p>
-            </> : <>
-            Incorrect!
-            <motion.p initial={{ y: 100, opacity: 0 }} animate={{y: 0, opacity: 1}} transition={{delay: 0.5}}>
-              The correct answer was option {correctAnswerMedia}
-            </motion.p>
-            </>}
+            {isCorrect ? (
+              <>
+                Correct!
+                <motion.p
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  {quizData.explanation}
+                </motion.p>
+              </>
+            ) : (
+              <>
+                Incorrect!
+                <motion.p
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  The correct answer was option {correctAnswerMedia}
+                  <span className="block">{quizData.explanation}</span>
+                </motion.p>
+              </>
+            )}
           </motion.div>
-          
         )}
       </AnimatePresence>
     </QuizCard>
   );
 }
 
-
-export function FillIn({ formObject, onAnswered, questionData, quizData }: { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
+export function FillIn({
+  formObject,
+  onAnswered,
+  questionData,
+  quizData,
+}: {
+  formObject: any;
+  onAnswered: any;
+  questionData: any;
+  quizData: any;
+}) {
   const [answeredElms, setAE] = useState<any>([]);
   const [isCorrect, setCorrect] = useState<boolean | null>(null);
   const [answered, setAnswered] = useState(false);
-  const [filledValues, setFilledValues] = useState<{ [key: number]: string }>({});
+  const [filledValues, setFilledValues] = useState<{ [key: number]: string }>(
+    {}
+  );
 
   const correctAnswerSound = useRef<HTMLAudioElement>(null);
 
@@ -213,9 +298,14 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
   useEffect(() => {
     const load = async () => {
       questionData.fill_in.text.forEach(async (item: string, idx: number) => {
-        if (item === '__GAP__') {
-          const val = await GetFillInItem(idx, quizData.id, quizData.subject, questionData.q_id);
-          setFilledValues(prev => ({ ...prev, [idx]: val }));
+        if (item === "__GAP__") {
+          const val = await GetFillInItem(
+            idx,
+            quizData.id,
+            quizData.subject,
+            questionData.q_id
+          );
+          setFilledValues((prev) => ({ ...prev, [idx]: val }));
         }
       });
     };
@@ -236,7 +326,7 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
 
     formObject.setValue(val);
     setAnswered(true);
-    
+
     setTimeout(onAnswered, 2000);
   }
 
@@ -246,81 +336,111 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
         <source src={"/audio/correct-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
       </audio>
-      <p className="text-center text-xl pb-4 p-2">{questionData.fill_in.title}</p>
+      <p className="text-center text-xl pb-4 p-2">
+        {questionData.fill_in.title}
+      </p>
 
       <div className="flex flex-row space-x-0 flex-wrap">
-        {
-          questionData.fill_in.text.map((item: string, idx: number) => {
-            if (item === "__GAP__") {
-              const inputKey = answered ? `filled-${idx}` : `unfilled-${idx}`;
+        {questionData.fill_in.text.map((item: string, idx: number) => {
+          if (item === "__GAP__") {
+            const inputKey = answered ? `filled-${idx}` : `unfilled-${idx}`;
 
-              return (
-                <input
-                  key={inputKey}
-                  ref={el => { inputRefs.current[idx] = el; }}
-                  id={`${questionData.q_id}_${idx}`}
-                  name={idx.toString()}
-                  className={
-                    answered
-                      ? (answeredElms[idx] === true
-                        ? "text-lg bg-transparent text-black w-16 border-b-green-300 border-b-[4px] focus:ring-0 focus:outline-0 select-none cursor-default"
-                        : isCorrect
-                          ? "cursor-default text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-fuchsia-100 text-black w-16"
-                          : "text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-fuchsia-100 text-red-700 w-16 cursor-default")
-                      : (answeredElms[idx] === true
-                        ? "text-lg bg-transparent text-black w-16 border-b-green-300 border-b-[4px] focus:ring-0 focus:outline-0 select-none"
-                        : "text-lg border-b-[4px] border-b-fuchsia-300 bg-fuchsia-100 text-black w-16")
-                  }
-                  defaultValue={answered ? (filledValues[idx] ?? "") : undefined}
-                  readOnly={answered || answeredElms[idx] === true}
-                  onChange={
-                    answered
-                      ? undefined
-                      : async (event: React.ChangeEvent<HTMLInputElement>) => {
-                          if (answeredElms[idx] === true || answered) return;
+            return (
+              <input
+                key={inputKey}
+                ref={(el) => {
+                  inputRefs.current[idx] = el;
+                }}
+                id={`${questionData.q_id}_${idx}`}
+                name={idx.toString()}
+                className={
+                  answered
+                    ? answeredElms[idx] === true
+                      ? "text-lg bg-transparent text-black w-16 border-b-green-300 border-b-[4px] focus:ring-0 focus:outline-0 select-none cursor-default"
+                      : isCorrect
+                      ? "cursor-default text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-fuchsia-100 text-black w-16"
+                      : "text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-fuchsia-100 text-red-700 w-16 cursor-default"
+                    : answeredElms[idx] === true
+                    ? "text-lg bg-transparent text-black w-16 border-b-green-300 border-b-[4px] focus:ring-0 focus:outline-0 select-none"
+                    : "text-lg border-b-[4px] border-b-fuchsia-300 bg-fuchsia-100 text-black w-16"
+                }
+                defaultValue={answered ? filledValues[idx] ?? "" : undefined}
+                readOnly={answered || answeredElms[idx] === true}
+                onChange={
+                  answered
+                    ? undefined
+                    : async (event: React.ChangeEvent<HTMLInputElement>) => {
+                        if (answeredElms[idx] === true || answered) return;
 
-                          const isTrue = await CheckFillInItem(idx, event.currentTarget.value, quizData.id, quizData.subject, questionData.q_id);
-                          const updated = [...answeredElms];
-                          updated[idx] = isTrue;
-                          setAE(updated);
+                        const isTrue = await CheckFillInItem(
+                          idx,
+                          event.currentTarget.value,
+                          quizData.id,
+                          quizData.subject,
+                          questionData.q_id
+                        );
+                        const updated = [...answeredElms];
+                        updated[idx] = isTrue;
+                        setAE(updated);
 
-                          const totalGaps = questionData.fill_in.text.filter((t: any) => t === '__GAP__').length;
-                          const correctCount = updated.filter(Boolean).length;
+                        const totalGaps = questionData.fill_in.text.filter(
+                          (t: any) => t === "__GAP__"
+                        ).length;
+                        const correctCount = updated.filter(Boolean).length;
 
-                          // FOCUS NEXT INPUT
-                          if (isTrue) {
-                            const nextIdx = questionData.fill_in.text
-                              .map((t: any, i: any) => ({ type: t, i }))
-                              .filter((t: any) => t.type === '__GAP__')
-                              .map((t: any) => t.i)
-                              .find((i: any) => i > idx && !updated[i]);
+                        // FOCUS NEXT INPUT
+                        if (isTrue) {
+                          const nextIdx = questionData.fill_in.text
+                            .map((t: any, i: any) => ({ type: t, i }))
+                            .filter((t: any) => t.type === "__GAP__")
+                            .map((t: any) => t.i)
+                            .find((i: any) => i > idx && !updated[i]);
 
-                            if (nextIdx !== undefined && inputRefs.current[nextIdx]) {
-                              inputRefs.current[nextIdx]?.focus();
-                            }
-                          }
-
-                          if (correctCount === totalGaps) {
-                            StateAnsweredAll("true");
+                          if (
+                            nextIdx !== undefined &&
+                            inputRefs.current[nextIdx]
+                          ) {
+                            inputRefs.current[nextIdx]?.focus();
                           }
                         }
-                  }
-                  autoComplete="off"
-                  spellCheck={false}
-                />
-              );
-            }
 
-            return <p className="text-lg text-black" key={idx}>{item}</p>;
-          })
-        }
+                        if (correctCount === totalGaps) {
+                          StateAnsweredAll("true");
+                        }
+                      }
+                }
+                autoComplete="off"
+                spellCheck={false}
+              />
+            );
+          }
+
+          return (
+            <p className="text-lg text-black" key={idx}>
+              {item}
+            </p>
+          );
+        })}
       </div>
 
       <div className="flex flex-row-reverse items-center mt-4">
-        <button onClick={() => {
-          if (answered) { return }
-          StateAnsweredAll("false");
-        }} className={!answered ? "bg-red-400 text-black hover:bg-red-300 transition-colors p-2 rounded-xl" : !isCorrect ? 'bg-red-300 text-black p-2 rounded-2xl cursor-default border-2 border-black' : 'bg-red-300 text-black p-2 rounded-2xl cursor-default'}>Give up!</button>
+        <button
+          onClick={() => {
+            if (answered) {
+              return;
+            }
+            StateAnsweredAll("false");
+          }}
+          className={
+            !answered
+              ? "bg-red-400 text-black hover:bg-red-300 transition-colors p-2 rounded-xl"
+              : !isCorrect
+              ? "bg-red-300 text-black p-2 rounded-2xl cursor-default border-2 border-black"
+              : "bg-red-300 text-black p-2 rounded-2xl cursor-default"
+          }
+        >
+          Give up!
+        </button>
       </div>
 
       <AnimatePresence>
@@ -332,20 +452,34 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", bounce: 0.4, duration: 0.5 }}
             className={`mt-6 text-center text-xl font-semibold p-4 rounded-full w-full ${
-              isCorrect ? "bg-green-400 text-black border-2 border-black" : "bg-red-400 text-black border-2 border-black"
+              isCorrect
+                ? "bg-green-400 text-black border-2 border-black"
+                : "bg-red-400 text-black border-2 border-black"
             }`}
           >
-            {isCorrect ? <>
-              Correct!
-              <motion.p initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
-                You got it right!!
-              </motion.p>
-            </> : <>
-              Incorrect!
-              <motion.p initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
-                You got it wrong!!
-              </motion.p>
-            </>}
+            {isCorrect ? (
+              <>
+                Correct!
+                <motion.p
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  You got it right!!
+                </motion.p>
+              </>
+            ) : (
+              <>
+                Incorrect!
+                <motion.p
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  You got it wrong!!
+                </motion.p>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -353,7 +487,17 @@ export function FillIn({ formObject, onAnswered, questionData, quizData }: { for
   );
 }
 
-export function Flipcards({ formObject, onAnswered, questionData, quizData } : { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
+export function Flipcards({
+  formObject,
+  onAnswered,
+  questionData,
+  quizData,
+}: {
+  formObject: any;
+  onAnswered: any;
+  questionData: any;
+  quizData: any;
+}) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [cont, setContinue] = useState(false);
 
@@ -364,17 +508,27 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
   const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   function Flip() {
-    if (isFlipped) { return };
+    if (isFlipped) {
+      return;
+    }
     setTimeout(() => setIsFlipped(true), 500);
 
     if (flipCard.current) {
-      animate(flipCard.current, { scaleX: 0, opacity: 0.7 }, { duration: 0.3 }).finished.then(() => {
+      animate(
+        flipCard.current,
+        { scaleX: 0, opacity: 0.7 },
+        { duration: 0.3 }
+      ).finished.then(() => {
         if (flipCard.current) {
           if (pItem.current) {
             pItem.current.textContent = questionData.flipcard.a;
           }
 
-          animate(flipCard.current, { scaleX: 1, opacity: 1 }, { duration: 0.3 })
+          animate(
+            flipCard.current,
+            { scaleX: 1, opacity: 1 },
+            { duration: 0.3 }
+          );
         } else {
           if (pItem.current) {
             pItem.current.textContent = questionData.flipcard.a;
@@ -382,11 +536,15 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
         }
       });
     }
-  };
+  }
 
   function Continue(correct: boolean) {
-    if (!isFlipped) { return }
-    if (cont) { return }
+    if (!isFlipped) {
+      return;
+    }
+    if (cont) {
+      return;
+    }
 
     if (correct) {
       correctAnswerSound.current?.play();
@@ -399,29 +557,85 @@ export function Flipcards({ formObject, onAnswered, questionData, quizData } : {
     setContinue(true);
     setTimeout(onAnswered, 500);
   }
-  
-  return <QuizCard>
-    <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-      <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-      Your browser does not support the audio element.
-    </audio>
-    <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-      <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-      Your browser does not support the audio element.
-    </audio>
-    <div className="flex flex-col gap-4 items-center justify-center">
-      <motion.div onClick={Flip} ref={flipCard} className={ isFlipped ? "bg-white w-3/4 p-5 rounded-xl" : "bg-white w-3/4 p-5 rounded-xl cursor-pointer"} initial={{scale: 0.8, opacity: 0}} transition={{delay: 0.5}} animate={{scale: 1, opacity: 1}}>
-        <p className="text-center" ref={pItem}>{questionData.flipcard.q}</p>
-      </motion.div>
 
-      { !isFlipped ? <motion.button initial={{opacity: 0}} transition={{delay: 0.8}} animate={{opacity: 1}} onClick={Flip} className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors">View Answer</motion.button>
-      : <div className="flex flex-row gap-2"><button onClick={() => Continue(true)} className={cont ? "p-5 rounded-full bg-white/20 cursor-default" : "p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>I was correct</button><button onClick={() => Continue(false)} className={cont ? "p-5 rounded-full bg-white/20 cursor-default" : "p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"}>I was incorrect</button></div>
-    }
-    </div>
-  </QuizCard>
+  return (
+    <QuizCard>
+      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <div className="flex flex-col gap-4 items-center justify-center">
+        <motion.div
+          onClick={Flip}
+          ref={flipCard}
+          className={
+            isFlipped
+              ? "bg-white w-3/4 p-5 rounded-xl"
+              : "bg-white w-3/4 p-5 rounded-xl cursor-pointer"
+          }
+          initial={{ scale: 0.8, opacity: 0 }}
+          transition={{ delay: 0.5 }}
+          animate={{ scale: 1, opacity: 1 }}
+        >
+          <p className="text-center" ref={pItem}>
+            {questionData.flipcard.q}
+          </p>
+        </motion.div>
+
+        {!isFlipped ? (
+          <motion.button
+            initial={{ opacity: 0 }}
+            transition={{ delay: 0.8 }}
+            animate={{ opacity: 1 }}
+            onClick={Flip}
+            className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"
+          >
+            View Answer
+          </motion.button>
+        ) : (
+          <div className="flex flex-row gap-2">
+            <button
+              onClick={() => Continue(true)}
+              className={
+                cont
+                  ? "p-5 rounded-full bg-white/20 cursor-default"
+                  : "p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"
+              }
+            >
+              I was correct
+            </button>
+            <button
+              onClick={() => Continue(false)}
+              className={
+                cont
+                  ? "p-5 rounded-full bg-white/20 cursor-default"
+                  : "p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"
+              }
+            >
+              I was incorrect
+            </button>
+          </div>
+        )}
+      </div>
+    </QuizCard>
+  );
 }
 
-export function ExamQ({ formObject, onAnswered, questionData, quizData } : { formObject: any, onAnswered: any, questionData: any, quizData: any }) {
+export function ExamQ({
+  formObject,
+  onAnswered,
+  questionData,
+  quizData,
+}: {
+  formObject: any;
+  onAnswered: any;
+  questionData: any;
+  quizData: any;
+}) {
   const [shown, setShown] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -432,16 +646,24 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
   const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   function ShowMarkScheme() {
-    if (shown) { return }
-    if (done) { return }
-    
+    if (shown) {
+      return;
+    }
+    if (done) {
+      return;
+    }
+
     setText(textareaRef.current?.value);
     setShown(true);
   }
 
   function Continue(correct: boolean) {
-    if (done) { return }
-    if (!shown) { return }
+    if (done) {
+      return;
+    }
+    if (!shown) {
+      return;
+    }
 
     if (textareaRef.current) {
       textareaRef.current.readOnly = true; // Make the textarea read-only
@@ -454,16 +676,16 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
       incorrectAnswerSound.current?.play();
       formObject.setValue("false");
     }
-    
+
     setDone(correct);
     setTimeout(onAnswered, 500);
   }
 
-  function AutoGrowingTextarea({i}: {i: boolean}) {   
+  function AutoGrowingTextarea({ i }: { i: boolean }) {
     const handleInput = () => {
       const textarea = textareaRef.current;
       if (textarea) {
-        textarea.style.height = 'auto'; // Reset height
+        textarea.style.height = "auto"; // Reset height
         textarea.style.height = `${textarea.scrollHeight}px`; // Set to scroll height
       }
     };
@@ -471,7 +693,7 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
     useEffect(() => {
       handleInput(); // Initial adjustment
     }, []);
-    
+
     if (i) {
       return (
         <textarea
@@ -485,7 +707,7 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
           onInput={handleInput}
           rows={1}
         />
-      )
+      );
     }
     return (
       <textarea
@@ -499,38 +721,86 @@ export function ExamQ({ formObject, onAnswered, questionData, quizData } : { for
       />
     );
   }
-  
-  return <QuizCard>
-    <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-      <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-      Your browser does not support the audio element.
-    </audio>
-    <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-      <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-      Your browser does not support the audio element.
-    </audio>
-    <div className="flex flex-col items-center w-full">
-      <div className="w-full">
-        <h3 className="text-2xl font-bold">Exam question</h3>
-        <p>{questionData.examq.q}</p>
-        <div></div>
-        
-        <AutoGrowingTextarea i={shown} />
+
+  return (
+    <QuizCard>
+      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <div className="flex flex-col items-center w-full">
+        <div className="w-full">
+          <h3 className="text-2xl font-bold">Exam question</h3>
+          <p>{questionData.examq.q}</p>
+          <div></div>
+
+          <AutoGrowingTextarea i={shown} />
+        </div>
+
+        {shown && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
+            className="rounded-xl m-2 bg-gray-200 text-black w-full p-2"
+          >
+            <h3 className="font-bold">Mark Scheme</h3>
+            <p>{questionData.examq.a}</p>
+          </motion.div>
+        )}
+
+        {!shown ? (
+          <motion.button
+            initial={{ opacity: 0 }}
+            transition={{ delay: 0.8 }}
+            animate={{ opacity: 1 }}
+            onClick={ShowMarkScheme}
+            className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"
+          >
+            Show mark scheme
+          </motion.button>
+        ) : (
+          <div className="flex flex-row gap-2">
+            <button
+              onClick={() => Continue(true)}
+              className={
+                done
+                  ? "p-5 rounded-full bg-white/20 cursor-default"
+                  : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"
+              }
+            >
+              I was correct
+            </button>
+            <button
+              onClick={() => Continue(false)}
+              className={
+                done
+                  ? "p-5 rounded-full bg-white/20 cursor-default"
+                  : "w-fit p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"
+              }
+            >
+              I was incorrect
+            </button>
+          </div>
+        )}
       </div>
-
-      {  shown && <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 0.7}} className="rounded-xl m-2 bg-gray-200 text-black w-full p-2">
-        <h3 className="font-bold">Mark Scheme</h3>
-        <p>{questionData.examq.a}</p>
-      </motion.div>  }
-
-      { !shown ?  <motion.button initial={{opacity: 0}} transition={{delay: 0.8}} animate={{opacity: 1}} onClick={ShowMarkScheme} className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors">Show mark scheme</motion.button>
-      : <div className="flex flex-row gap-2"><button onClick={() => Continue(true)} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"}>I was correct</button><button onClick={() => Continue(false)} className={done ? "p-5 rounded-full bg-white/20 cursor-default" : "w-fit p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"}>I was incorrect</button></div>
-      }
-    </div>
-  </QuizCard>
+    </QuizCard>
+  );
 }
 
-export function Answer({ formObject, onAnswered, questionData} : { formObject: any, onAnswered: any, questionData: any }) {
+export function Answer({
+  formObject,
+  onAnswered,
+  questionData,
+}: {
+  formObject: any;
+  onAnswered: any;
+  questionData: any;
+}) {
   const [answered, setAnswered] = useState(false);
   const [value, setValue] = useState<string>("");
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -541,60 +811,99 @@ export function Answer({ formObject, onAnswered, questionData} : { formObject: a
   const RealAnswer = questionData.answer_.a;
   const Answers = questionData.answer_.sa;
 
-  return <QuizCard>
-    <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-      <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-      Your browser does not support the audio element.
-    </audio>
-    <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-      <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-      Your browser does not support the audio element.
-    </audio>
-    <div className="flex flex-col items-center w-full">
-      <h4 className="text-xl">{questionData.answer_.q}</h4>
+  return (
+    <QuizCard>
+      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <div className="flex flex-col items-center w-full">
+        <h4 className="text-xl">{questionData.answer_.q}</h4>
 
-      <input type="text" autoComplete="off" value={value} readOnly={answered} spellCheck={false} className={"w-80 h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default " + ( isCorrect === false && "text-red-700" )} name={`_quizcard_question_${questionData.qid}_answer`} onChange={(e) => {
-        const inputValue = e.currentTarget.value.toLowerCase();
-        setValue(inputValue);
+        <input
+          type="text"
+          autoComplete="off"
+          value={value}
+          readOnly={answered}
+          spellCheck={false}
+          className={
+            "w-80 h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default " +
+            (isCorrect === false && "text-red-700")
+          }
+          name={`_quizcard_question_${questionData.qid}_answer`}
+          onChange={(e) => {
+            const inputValue = e.currentTarget.value.toLowerCase();
+            setValue(inputValue);
 
-        if (
-          inputValue === RealAnswer.toLowerCase() ||
-          Answers.map((a: string) => a.toLowerCase()).includes(inputValue)
-        ) {
-          if (answered) return;
-          correctAnswerSound.current?.play();
-          setIsCorrect(true);
+            if (
+              inputValue === RealAnswer.toLowerCase() ||
+              Answers.map((a: string) => a.toLowerCase()).includes(inputValue)
+            ) {
+              if (answered) return;
+              correctAnswerSound.current?.play();
+              setIsCorrect(true);
 
-          setValue(RealAnswer);
-          setAnswered(true);
-          formObject.setValue("true");
-          onAnswered();
+              setValue(RealAnswer);
+              setAnswered(true);
+              formObject.setValue("true");
+              onAnswered();
+            }
+          }}
+        />
+
+        { 
+          answered && <p className="text-lg mt-4">{questionData.explanation}</p>
         }
-      }} />
 
-      <div className="flex flex-row-reverse items-center mt-4">
-        <button onClick={() => {
-          if (answered) { return }
-          
-          incorrectAnswerSound.current?.play();
-          setIsCorrect(false);
+        <div className="flex flex-row-reverse items-center mt-4">
+          <button
+            onClick={() => {
+              if (answered) {
+                return;
+              }
 
-          setValue(RealAnswer);
-          setAnswered(true);
-          formObject.setValue("false");
-          onAnswered();
-        }} className={!answered ? "bg-red-400 text-black hover:bg-red-300 transition-colors p-2 rounded-xl" : !isCorrect ? 'bg-red-300 text-black p-2 rounded-2xl cursor-default border-2 border-black' : 'bg-red-300 text-black p-2 rounded-2xl cursor-default'}>Give up!</button>
+              incorrectAnswerSound.current?.play();
+              setIsCorrect(false);
+
+              setValue(RealAnswer);
+              setAnswered(true);
+              formObject.setValue("false");
+              onAnswered();
+            }}
+            className={
+              !answered
+                ? "bg-red-400 text-black hover:bg-red-300 transition-colors p-2 rounded-xl"
+                : !isCorrect
+                ? "bg-red-300 text-black p-2 rounded-2xl cursor-default border-2 border-black"
+                : "bg-red-300 text-black p-2 rounded-2xl cursor-default"
+            }
+          >
+            Give up!
+          </button>
+        </div>
       </div>
-    </div>
-  </QuizCard>
-
+    </QuizCard>
+  );
 }
 
-export function FinalComponent({topic}: {topic: string}) {
-  return <QuizCard>
-    <div className="flex flex-col items-center justify-center"><h3 className="text-3xl text-center mb-4">Well done!</h3>
-    <p className="text-2xl text-center mb-6">You completed this quiz and with that secured this in your memory a little bit more.</p>
+export function FinalComponent({ topic }: { topic: string }) {
+  return (
+    <QuizCard>
+      <div className="flex flex-col items-center justify-center">
+        <h3 className="text-3xl text-center mb-4">Well done!</h3>
+        <p className="text-2xl text-center mb-6">
+          You completed this quiz and with that secured this in your memory a
+          little bit more.
+        </p>
 
-    <Link className="text-lg underline text-center" href="../">Back to subject</Link></div>
-  </QuizCard>
+        <Link className="text-lg underline text-center" href="../">
+          Back to subject
+        </Link>
+      </div>
+    </QuizCard>
+  );
 }

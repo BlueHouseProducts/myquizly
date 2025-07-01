@@ -4,10 +4,16 @@ import { AppLeftContents, AppLeftNav, NavItem, QuizMainSidebar, QuizQuestionSide
 import { databases } from "@/lib/appwriteClient";
 import { subjectType } from "@/lib/dbCompData";
 import { Calculator, ChevronLeft, FileQuestion, History, LayoutDashboard, List, Lock, User } from "lucide-react";
+import { Metadata } from "next";
 import { usePathname } from "next/navigation";
 
 const subject = "Maths"
 const id: subjectType = "maths";
+
+export const metadata: Metadata = {
+  title: "Quizly | " + subject,
+  description: "GCSE Revision Platform",
+};
 
 export default function MathsMainLayout({ children }: { children: React.ReactNode }) {
 
