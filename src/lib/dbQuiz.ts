@@ -18,7 +18,7 @@ export async function GetQuizesFromTopic(subject: subjectType, topic: string) {
   const re: any[] = [];
 
   x.documents.forEach(q => {
-    re.push({$id: q.$id, name: q.name, topic: q.topic, label: q.label});
+    re.push({$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type});
   });
 
   return re;

@@ -5,7 +5,7 @@ import { databases } from "@/lib/appwriteClient";
 import { dbData, subjectType } from "@/lib/dbCompData";
 import { GetQuizesFromTopic } from "@/lib/dbQuiz";
 import { Models, Query } from "appwrite";
-import { ChevronDown, ChevronRight, ChevronUp, CloudAlert } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, CloudAlert, FileQuestion } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -106,10 +106,14 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
               <div className="flex flex-col gap-2 mt-2 transition-colors hover:bg-pink-500/10 dark:hover:bg-blue-500/10 p-2 rounded-l-xl">
                 {subtopic.quizzes.map((quiz) => (
-                  <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="flex flex-row gap-2 rounded-full py-2 px-4 ml-10 mr-10 bg-pink-600/30 dark:bg-blue-800" key={quiz.$id}>
-                    <span className={`px-2 rounded-full bg-pink-400 text-black`}>{quiz.label.toUpperCase()}</span>
-                    {quiz.name}
-                  </Link>
+                  quiz.type === "quick_quiz" && <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800" key={quiz.$id}>
+                    <div className="h-full w-fit py-2 px-4 flex items-center justify-center text-black bg-pink-400"><FileQuestion /></div>
+                    <div className="flex flex-row gap-2 my-2 mx-4">
+                      <span className={`px-2 rounded-full bg-pink-400 text-black`}>{quiz.label.toUpperCase()}</span>
+                      {quiz.name}
+                    </div>
+                    
+                  </Link> 
                 ))}
               </div> )}
             </div>
