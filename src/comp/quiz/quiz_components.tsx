@@ -20,9 +20,10 @@ import {
   useState,
 } from "react";
 
-export function QuizCard({ children }: { children: React.ReactNode }) {
+//w-full bg-pink-300 dark:bg-blue-300 text-black px-6 py-8 rounded-xl shadow-lg shadow-pink-400/35 dark:shadow-blue-400/35
+export function QuizCard({ children, className }: { children: React.ReactNode, className?: string }) {
   return (
-    <div className="w-full bg-pink-300 dark:bg-blue-300 text-black px-6 py-8 rounded-xl shadow-lg shadow-pink-400/35 dark:shadow-blue-400/35">
+    <div className={className || "text-black w-full"}>
       {children}
     </div>
   );
@@ -52,7 +53,7 @@ type MultipleChoiceProps = {
   options: Option[];
   title: string;
   formObject: any;
-  onAnswered: () => void;
+  onAnswered: (s: boolean) => void;
   quizid: string;
   subject: subjectType;
   questionid: string;
@@ -80,7 +81,7 @@ export function MultipleChoice({
     o_id: string,
     e: React.MouseEvent<HTMLButtonElement>
   ) {
-    if (formObject.getValue() !== "") return;
+    if (formObject.getValue()) return;
 
     const button = e.currentTarget;
 
@@ -104,12 +105,9 @@ export function MultipleChoice({
       )
       .then(() => animate(button, { scale: 1 }, { duration: 0.2 }));
 
-    setTimeout(() => {
-      onAnswered();
-    }, 2000);
-
     setSelected(o_id);
     formObject.setValue(o_id);
+
 
     let correct = await CheckMultipleChoice(o_id, quizid, subject, questionid);
 
@@ -125,6 +123,10 @@ export function MultipleChoice({
     }
 
     setIsCorrect(correct as boolean);
+
+    setTimeout(() => {
+      onAnswered(correct as boolean);
+    }, 2000);
 
     formObject.setValue(correct.toString());
   }
@@ -162,8 +164,8 @@ export function MultipleChoice({
         {(options ?? []).map((option) => {
           const isThisSelected = selected === option.o_id;
           let bgColor = selected
-            ? "bg-white/50 text-black"
-            : "bg-white/50 text-black hover:bg-fuchsia-200";
+            ? "bg-white text-xl text-black"
+            : "bg-white text-xl text-black hover:bg-fuchsia-200";
 
           if (isThisSelected && isCorrect !== null) {
             bgColor = isCorrect
@@ -227,7 +229,7 @@ export function MultipleChoice({
           );
         })}
       </div>
-      <AnimatePresence>
+      {/*<AnimatePresence>
         {isCorrect !== null && (
           <motion.div
             key="feedback"
@@ -267,7 +269,7 @@ export function MultipleChoice({
             )}
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>*/}
     </QuizCard>
   );
 }
@@ -327,7 +329,7 @@ export function FillIn({
     formObject.setValue(val);
     setAnswered(true);
 
-    setTimeout(onAnswered, 2000);
+    setTimeout(() => onAnswered(val === "true"), 2000);
   }
 
   return (
@@ -336,7 +338,7 @@ export function FillIn({
         <source src={"/audio/correct-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
       </audio>
-      <p className="text-center text-xl pb-4 p-2">
+      <p className="text-black dark:text-white text-center text-xl pb-4 p-2">
         {questionData.fill_in.title}
       </p>
 
@@ -356,13 +358,13 @@ export function FillIn({
                 className={
                   answered
                     ? answeredElms[idx] === true
-                      ? "text-lg bg-transparent text-black w-16 border-b-green-300 border-b-[4px] focus:ring-0 focus:outline-0 select-none cursor-default"
+                      ? "text-lg bg-transparent w-16 border-b-green-300 border-b-[4px] focus:ring-0 text-black dark:text-white focus:outline-0 select-none cursor-default"
                       : isCorrect
-                      ? "cursor-default text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-fuchsia-100 text-black w-16"
-                      : "text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-fuchsia-100 text-red-700 w-16 cursor-default"
+                      ? "cursor-default text-black dark:text-white focus:ring-0 text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-transparen w-16"
+                      : "select-non focus:ring-0 text-lg border-b-[4px] focus:outline-0 border-b-fuchsia-300 bg-transparent text-red-700 w-16 cursor-default"
                     : answeredElms[idx] === true
-                    ? "text-lg bg-transparent text-black w-16 border-b-green-300 border-b-[4px] focus:ring-0 focus:outline-0 select-none"
-                    : "text-lg border-b-[4px] border-b-fuchsia-300 bg-fuchsia-100 text-black w-16"
+                    ? "text-lg bg-transparent text-black dark:text-white w-16 border-b-green-300 border-b-[4px] focus:ring-0 focus:outline-0 select-none"
+                    : "select-none text-black dark:text-white text-lg border-b-[4px] border-b-fuchsia-300 bg-transparent w-16 focus:ring-0 focus:outline-0"
                 }
                 defaultValue={answered ? filledValues[idx] ?? "" : undefined}
                 readOnly={answered || answeredElms[idx] === true}
@@ -416,7 +418,7 @@ export function FillIn({
           }
 
           return (
-            <p className="text-lg text-black" key={idx}>
+            <p className="text-lg text-black dark:text-white" key={idx}>
               {item}
             </p>
           );
@@ -443,46 +445,48 @@ export function FillIn({
         </button>
       </div>
 
-      <AnimatePresence>
-        {isCorrect !== null && (
-          <motion.div
-            key="feedback"
+      {/*
+        <AnimatePresence>
+          {isCorrect !== null && (
+            <motion.div
+          key="feedback"
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ type: "spring", bounce: 0.4, duration: 0.5 }}
+          className={`mt-6 text-center text-xl font-semibold p-4 rounded-full w-full ${
+            isCorrect
+              ? "bg-green-400 text-black border-2 border-black"
+              : "bg-red-400 text-black border-2 border-black"
+          }`}
+            >
+          {isCorrect ? (
+            <>
+              Correct!
+              <motion.p
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ type: "spring", bounce: 0.4, duration: 0.5 }}
-            className={`mt-6 text-center text-xl font-semibold p-4 rounded-full w-full ${
-              isCorrect
-                ? "bg-green-400 text-black border-2 border-black"
-                : "bg-red-400 text-black border-2 border-black"
-            }`}
-          >
-            {isCorrect ? (
-              <>
-                Correct!
-                <motion.p
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  You got it right!!
-                </motion.p>
-              </>
-            ) : (
-              <>
-                Incorrect!
-                <motion.p
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  You got it wrong!!
-                </motion.p>
-              </>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            transition={{ delay: 0.5 }}
+              >
+            You got it right!!
+              </motion.p>
+            </>
+          ) : (
+            <>
+              Incorrect!
+              <motion.p
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+              >
+            You got it wrong!!
+              </motion.p>
+            </>
+          )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      */}
     </QuizCard>
   );
 }
@@ -555,7 +559,7 @@ export function Flipcards({
     formObject.setValue(correct.toString());
 
     setContinue(true);
-    setTimeout(onAnswered, 500);
+    setTimeout(() => onAnswered(correct as boolean), 500);
   }
 
   return (
@@ -678,7 +682,7 @@ export function ExamQ({
     }
 
     setDone(correct);
-    setTimeout(onAnswered, 500);
+    setTimeout(() => onAnswered(correct as boolean), 500);
   }
 
   function AutoGrowingTextarea({ i }: { i: boolean }) {
@@ -734,8 +738,8 @@ export function ExamQ({
       </audio>
       <div className="flex flex-col items-center w-full">
         <div className="w-full">
-          <h3 className="text-2xl font-bold">Exam question</h3>
-          <p>{questionData.examq.q}</p>
+          <h3 className="text-2xl font-bold text-black dark:text-white/90">Exam question</h3>
+          <p className=" text-black dark:text-white/80">{questionData.examq.q}</p>
           <div></div>
 
           <AutoGrowingTextarea i={shown} />
@@ -746,10 +750,10 @@ export function ExamQ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7 }}
-            className="rounded-xl m-2 bg-gray-200 text-black w-full p-2"
+            className="rounded-xl m-2 bg-gray-200  text-black dark:text-white w-full p-2"
           >
-            <h3 className="font-bold">Mark Scheme</h3>
-            <p>{questionData.examq.a}</p>
+            <h3 className="font-bold  text-black">Mark Scheme</h3>
+            <p className=" text-black">{questionData.examq.a}</p>
           </motion.div>
         )}
 
@@ -822,7 +826,7 @@ export function Answer({
         Your browser does not support the audio element.
       </audio>
       <div className="flex flex-col items-center w-full">
-        <h4 className="text-xl">{questionData.answer_.q}</h4>
+        <h4 className="text-2xl text-black dark:text-white">{questionData.answer_.q}</h4>
 
         <input
           type="text"
@@ -850,14 +854,10 @@ export function Answer({
               setValue(RealAnswer);
               setAnswered(true);
               formObject.setValue("true");
-              onAnswered();
+              setTimeout(() => onAnswered(true), 2000);
             }
           }}
         />
-
-        { 
-          answered && <p className="text-lg mt-4">{questionData.explanation}</p>
-        }
 
         <div className="flex flex-row-reverse items-center mt-4">
           <button
@@ -872,7 +872,8 @@ export function Answer({
               setValue(RealAnswer);
               setAnswered(true);
               formObject.setValue("false");
-              onAnswered();
+              setTimeout(() => onAnswered(false), 2000);
+
             }}
             className={
               !answered
@@ -885,24 +886,6 @@ export function Answer({
             Give up!
           </button>
         </div>
-      </div>
-    </QuizCard>
-  );
-}
-
-export function FinalComponent({ topic }: { topic: string }) {
-  return (
-    <QuizCard>
-      <div className="flex flex-col items-center justify-center">
-        <h3 className="text-3xl text-center mb-4">Well done!</h3>
-        <p className="text-2xl text-center mb-6">
-          You completed this quiz and with that secured this in your memory a
-          little bit more.
-        </p>
-
-        <Link className="text-lg underline text-center" href="../">
-          Back to subject
-        </Link>
       </div>
     </QuizCard>
   );
