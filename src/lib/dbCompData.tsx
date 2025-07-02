@@ -128,6 +128,16 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
   }
 };
 
+export const validSubjects: subjectType[] = [
+  "maths",
+  "cs",
+  "science",
+  "history",
+  "french",
+  "english",
+  "rs",
+  "music"
+];
 
 export {dbData, subjectData};
 export type {subjectType};

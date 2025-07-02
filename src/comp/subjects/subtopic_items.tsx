@@ -20,8 +20,6 @@ export function TopicError({error, topic} : {error: string, topic: string}) {
 export async function TopicPage({topic, children, suject_full_name}: {topic: string, children: React.ReactNode, suject_full_name: string}) {
   return <>
     <p className="select-none text-lg flex flex-row gap-2">
-      <Link className="hover:dark:text-blue-300 hover:text-blue-700 underline-offset-4 underline transition-colors" href="..">{suject_full_name}</Link> 
-     <ChevronRight />
      <Link className="hover:dark:text-blue-300 hover:text-blue-700 underline-offset-4 underline transition-colors" href=".">Topics</Link> 
      <ChevronRight />
      {topic}</p>

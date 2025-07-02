@@ -1,7 +1,14 @@
+"use client";
+
 import { subjectType } from "@/lib/dbCompData";
-import { Calculator, ChevronLeft, Cpu, FileQuestion, List } from "lucide-react";
+import { Calculator, List } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+function capitalizeFirstLetter(val: string) {
+  return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
 
 export function NavItem({ href, icon, label, active }: { href: string, icon: React.ReactNode, label: string, active: boolean }) {
   return (
@@ -24,7 +31,7 @@ export function NavItem({ href, icon, label, active }: { href: string, icon: Rea
 export function AppLeftNav({title, children}: {title: string, children?: React.ReactNode}) {
   return <motion.nav initial={{x: -8}} animate={{x: 0}} className="min-w-32 sm:w-64 bg-pink-200 dark:bg-transparent p-4">
     <ul className="flex flex-col gap-3">
-      <h3 className="w-full text-center text-xl border-b-[1px] border-b-black dark:border-b-white pb-2">{title}</h3>
+      <h3 className="w-full text-center text-xl border-b-[1px] border-b-black dark:border-b-white pb-2">{capitalizeFirstLetter(title)}</h3>
       
       {children}
     </ul>
@@ -37,22 +44,10 @@ export function AppLeftContents({children}: {children: React.ReactNode}) {
   </motion.div>
 }
 
-export function QuizQuestionSidebar({pn, subject}: {pn: string, subject: subjectType}) {
-  if (!pn.startsWith(`/app/${subject}`)) { return <></> }
 
-  const quiz_item = 
-    subject === "maths" ? <Calculator size={20} />  
-    : subject === "cs" ? <Cpu size={20} />
-    : <></>
 
-  return <>
-    <NavItem href="#" icon={quiz_item} label="Quiz" active={true} />
-    <NavItem href="." icon={<ChevronLeft size={20} />} label="Back to subject" active={false} />
-    <div className="w-full p-2 border-t-[1px] border-black dark:border-white"></div>
-  </>
-}
-
-export function QuizMainSidebar({subject, pn}: {subject: subjectType, pn: string}) {
-  return <><NavItem href={`/app/${subject}/`} icon={<Calculator size={20} />} label="Overview" active={pn === `/app/${subject}`} />
-    <NavItem href={`/app/${subject}/topics`} icon={<List size={20} />} label="Topics" active={pn.startsWith(`/app/${subject}/topics`)} /></>
+export function QuizMainSidebar({subject}: {subject: subjectType}) {
+  const pn = usePathname();
+  
+  return <NavItem href={`/app/${subject}/topics`} icon={<List size={20} />} label="Topics" active={pn.startsWith(`/app/${subject}/topics`)} />
 }
