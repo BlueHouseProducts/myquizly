@@ -1,9 +1,10 @@
 import { TopicError, TopicPage } from "@/comp/subjects/subtopic_items";
 import ListTablePage from "@/comp/topic_list/list_table_page";
 import { subjectData, subjectType } from "@/lib/dbCompData";
+import { validateSubjectOrRedirect } from "@/lib/utils";
 
 export default async function MathsTopicPage({params} : {params: Promise<{topic: string, subject: string}>}) {
-  const subject = (await params).subject;
+  const subject = validateSubjectOrRedirect((await params).subject);
   const topics = subjectData[subject as subjectType];
   
   const topic_given = (await params).topic;

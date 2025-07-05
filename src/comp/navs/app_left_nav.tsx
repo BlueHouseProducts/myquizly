@@ -1,20 +1,22 @@
 "use client";
 
 import { subjectType } from "@/lib/dbCompData";
-import { Calculator, List } from "lucide-react";
+import { ArrowLeftCircle, ArrowLeftSquare, Calculator, List } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function capitalizeFirstLetter(val: string) {
   return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
-export function NavItem({ href, icon, label, active }: { href: string, icon: React.ReactNode, label: string, active: boolean }) {
+export function NavItem({ href, icon, label, active, onClick }: { href: string, icon: React.ReactNode, label: string, active: boolean, onClick?: () => void }) {
   return (
     <li>
       <Link
         href={href}
+        onClick={onClick ? onClick : undefined}
         className={`flex items-center justify-center sm:justify-start gap-3 px-4 py-2 rounded-xl transition-colors duration-200 ${
           active
             ? "bg-pink-200 text-black font-semibold shadow-inner shadow-pink-300 dark:shadow-blue-500 dark:bg-blue-800 dark:text-white"
@@ -46,8 +48,8 @@ export function AppLeftContents({children}: {children: React.ReactNode}) {
 
 
 
-export function QuizMainSidebar({subject}: {subject: subjectType}) {
+export function QuizMainSidebar({subject, spec}: {subject: subjectType, spec?: string}) {
   const pn = usePathname();
-  
-  return <NavItem href={`/app/${subject}/topics`} icon={<List size={20} />} label="Topics" active={pn.startsWith(`/app/${subject}/topics`)} />
+  const r = useRouter();
+  return <><NavItem href={`/app/${subject}/topics`} icon={<List size={20} />} label="Topics" active={pn.startsWith(`/app/${subject}/topics`)} />{spec === "page_inTopic" && <NavItem href="./" icon={<ArrowLeftSquare size={20} />} label="Back to Topic list" active={false} />}<NavItem href={`#`} onClick={r.back} icon={<ArrowLeftCircle size={20} />} label="Last Visited Page" active={false} /></>
 }

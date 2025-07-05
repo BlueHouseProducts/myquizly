@@ -25,7 +25,7 @@ export async function TopicPage({topic, children, suject_full_name}: {topic: str
      {topic}</p>
     
     <h1 className="text-3xl md:text-4xl font-bold my-4">{topic}</h1>
-    <h2 className="text-2xl md:text-3xl mb-2">Quizzes on {topic}</h2>
+    <h2 className="text-2xl md:text-3xl mb-2">Quizlets on {topic}</h2>
 
     {children}
   </>

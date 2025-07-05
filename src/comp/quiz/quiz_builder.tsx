@@ -13,9 +13,11 @@ import {
   BookOpenCheck,
   ListChecks,
   PlayCircle,
+  ArrowLeft,
 } from "lucide-react"
 import React from "react";
 import { AnswerHolder, ExamQHolder, FillInHolder, FlipcardHolder, MultipleChoiceHolder, FinalComponent } from "./quiz_top_components";
+import Link from "next/link";
 
 
 function CreateDefaultValues(
@@ -27,9 +29,11 @@ function CreateDefaultValues(
 export default function QuizBuilder({
   data,
   quiz,
+  desc
 }: {
   data: Array<any>;
   quiz: any;
+  desc?: string;
 }) { 
   const defaults = CreateDefaultValues(data);
   const form = useForm({
@@ -81,6 +85,14 @@ export default function QuizBuilder({
           </button>
         </div>
 
+        {
+          desc && (
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              {desc}
+            </p>
+          )
+        }
+
         <p className="text-gray-600 dark:text-gray-300 mb-4">
           Part of <span className="font-medium">{quiz.topic}</span> • Type:{" "}
           <span className="italic">Quick Quiz</span>
@@ -102,6 +114,7 @@ export default function QuizBuilder({
         </div>
       </QuizCard>
 
+      <div className="flex flex-row gap-2">
       <button
         onClick={() => {
           setStarted(true)
@@ -111,6 +124,14 @@ export default function QuizBuilder({
         <PlayCircle className="w-5 h-5" />
         <span className="font-medium text-base">Start Quick Quiz</span>
       </button>
+
+      <Link
+        href={`../topics/${quiz.topic}`}
+        className="flex items-center gap-2 px-5 py-3 rounded-lg bg-pink-500/50 hover:bg-pink-600/50 text-white dark:bg-blue-600/50 dark:hover:bg-blue-700/50 transition-all shadow-md"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="font-medium text-base">Back to {quiz.topic}</span>
+      </Link></div>
     </div>
   }
 

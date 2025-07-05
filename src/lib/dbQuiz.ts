@@ -2,6 +2,7 @@
 
 import { Client, Databases, Query } from "node-appwrite";
 import { dbData, subjectType } from "./dbCompData";
+import { ID } from "appwrite";
 
 export async function GetQuizesFromTopic(subject: subjectType, topic: string) {
   const client = new Client()
@@ -17,8 +18,9 @@ export async function GetQuizesFromTopic(subject: subjectType, topic: string) {
 
   const re: any[] = [];
 
+
   x.documents.forEach(q => {
-    re.push({$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type});
+    re.push( q.type === "web_link" ? {$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type, quiz_data: q.quiz_data, description: q.description} : {$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type, description: q.description});
   });
 
   return re;
@@ -55,6 +57,54 @@ export async function GetQuizData(quiz_id: string, subject: subjectType) {
   }
   
   return [stripAnswers(json_quiz_data), {name: quiz.name, topic: quiz.topic, id: quiz.$id, created: quiz.$createdAt, label: quiz.label, subject: subject}];
+}
+
+export async function GetQuizletDataV2(quiz_id: string, subject: subjectType) {
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
+    .setKey("standard_612670df39627ea636126ef36913cdef8e809cd2e54720a897b2b9d1e9a7faa655480910e4ee652fa9226a8a1c49ff5c60378bbfc12d65633013c3abc74c08014e9930702a62e14533b79ee50ae33d2becaa82f24d82fa693a37f2f2ed710c01697e12ee38a44bf1478beab431ec9ab2488af014e12ba589d8ab6cdfc40d324c");
+
+  const db = new Databases(client);
+
+  let quiz;
+
+  try { 
+    quiz = await db.getDocument(dbData.quiz_db.id, dbData.quiz_db.collections[subject], quiz_id);
+  } catch (e) {
+    return "ERR";
+  }
+
+  if (!quiz.quiz_data) {
+    return "ERR";
+  }
+
+  return quiz;
+}
+
+export async function CreateQuizletDEV(subject: subjectType, quiz_data: string, name: string, topic: string, label: string, type: string, description: string) {
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
+    .setKey("standard_612670df39627ea636126ef36913cdef8e809cd2e54720a897b2b9d1e9a7faa655480910e4ee652fa9226a8a1c49ff5c60378bbfc12d65633013c3abc74c08014e9930702a62e14533b79ee50ae33d2becaa82f24d82fa693a37f2f2ed710c01697e12ee38a44bf1478beab431ec9ab2488af014e12ba589d8ab6cdfc40d324c");
+
+  const db = new Databases(client);
+
+  try {
+    await db.createDocument(dbData.quiz_db.id, dbData.quiz_db.collections[subject], ID.unique(), {
+      quiz_data,
+      name,
+      topic,
+      label,
+      type,
+      description
+    });
+  } catch (e) {
+    console.log(e);
+    return "ERR";
+  }
+
+  return "OK";
 }
 
 export async function CheckMultipleChoice(chosen_o_id: string, quiz_id: string, subject: subjectType, question_id: string): Promise<string | boolean> {

@@ -6,21 +6,27 @@ import { Models } from "appwrite";
 import { LoaderCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import QuizBuilder from "./quiz_builder";
-import { GetQuizData } from "@/lib/dbQuiz";
+import { GetQuizData, GetQuizletDataV2 } from "@/lib/dbQuiz";
 import { useRouter } from "next/navigation";
 
 export function QuizMainPage({ quiz_id, subject }: { quiz_id: string, subject: subjectType }) {
   const [quizData, setQuizData] = useState<any>("LOAD");
   const [quizName, setQuizName] = useState<object>({});
+  const [qr, setQ] = useState<Models.Document | null>(null);
 
-  const r = useRouter();
 
   useEffect(() => {
     GetQuizData(quiz_id, subject).then(r => {
-      if (r == "ERR") { window.location.href = "." }
+      if (r === "ERR") { window.location.href = "."; return; }
       
       setQuizData(r[0]);
       setQuizName(r[1] as object);
+    });
+
+    GetQuizletDataV2(quiz_id, subject).then(r => {
+      if (r === "ERR") { window.location.href = "."; return; }
+      
+      setQ(r);
     });
   }, [quiz_id]);
 
@@ -39,5 +45,5 @@ export function QuizMainPage({ quiz_id, subject }: { quiz_id: string, subject: s
     );
   }
 
-  return <QuizBuilder quiz={quizName} data={quizData} />
+  return <QuizBuilder quiz={quizName} desc={qr ? qr.description : null} data={quizData} />
 }
