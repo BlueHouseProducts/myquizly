@@ -117,7 +117,7 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
               </button>
               
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
-              <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="w-fit flex flex-col gap-2 mt-2 p-2 pr-8 rounded-l-xl"><TooltipProvider>
+              <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="lg:w-fit mr-4 lg:mr-0 flex flex-col gap-2 mt-2 p-2 pr-8 rounded-l-xl"><TooltipProvider>
 
                 {subtopic.quizzes.map((quiz) => (
                   quiz.type === "quick_quiz" ? <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
@@ -211,7 +211,7 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
                     <div className="flex flex-row gap-2 my-2 mx-4">
                       <span className={`px-2 rounded-full bg-pink-400 text-black group-hover:bg-pink-500 transition-all `}>{quiz.label.toUpperCase()}</span>
                       {quiz.name}
-                      <span className="text-sm text-black/80 dark:text-gray-400">({ quiz && quiz.quiz_data ? JSON.parse(quiz.quiz_data).url : "Failed to get URL"})</span>
+                      <span className="text-sm text-black/80 dark:text-gray-400 hidden md:block">({ quiz && quiz.quiz_data ? JSON.parse(quiz.quiz_data).url : "Failed to get URL"})</span>
                     </div>
 
                       <Tooltip>

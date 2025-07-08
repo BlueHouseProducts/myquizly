@@ -1,7 +1,7 @@
 "use server";
 
 import { Client, Databases, Query } from "node-appwrite";
-import { dbData, subjectType } from "./dbCompData";
+import { dbData, subjectType, validQuizletTypes, validSubjects } from "./dbCompData";
 import { ID } from "appwrite";
 
 export async function GetQuizesFromTopic(subject: subjectType, topic: string) {
@@ -90,6 +90,22 @@ export async function CreateQuizletDEV(subject: subjectType, quiz_data: string, 
 
   const db = new Databases(client);
 
+  if (!validSubjects.includes(subject)) {
+    return "ERR";
+  }
+
+  if (!dbData.quiz_db.collections[subject]) {
+    return "ERR";
+  }
+
+  if (!quiz_data || !name || !topic || !label || !type) {
+    return "ERR";
+  }
+
+  if (validQuizletTypes.indexOf(type) === -1) {
+    return "ERR";
+  }
+
   try {
     await db.createDocument(dbData.quiz_db.id, dbData.quiz_db.collections[subject], ID.unique(), {
       quiz_data,
@@ -100,7 +116,6 @@ export async function CreateQuizletDEV(subject: subjectType, quiz_data: string, 
       description
     });
   } catch (e) {
-    console.log(e);
     return "ERR";
   }
 

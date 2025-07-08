@@ -139,5 +139,12 @@ export const validSubjects: subjectType[] = [
   "music"
 ];
 
+export const validQuizletTypes: string[] = [
+  "web_link",
+  "quick_quiz",
+  "video",
+  "pdf"
+];
+
 export {dbData, subjectData};
 export type {subjectType};

@@ -7,7 +7,7 @@ import { subjectType } from "@/lib/dbCompData";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { AppwriteException } from "appwrite";
-import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand, User, LogOut, HelpCircle } from "lucide-react";
+import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand, User, LogOut, HelpCircle, Terminal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -69,6 +69,10 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
                   <DropdownMenuItem onClick={() => window.location.href = "/app/settings"} className="focus:bg-purple-400/50 focus:underline text-lg focus:px-4 transition-all">
                     <Settings />
                     Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => window.location.href = "/quiz_manager"} className="focus:bg-purple-400/50 focus:underline text-lg focus:px-4 transition-all">
+                    <Terminal />
+                    Quizlet Manager
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

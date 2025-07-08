@@ -2,15 +2,13 @@
 
 import { subjectData, subjectType, validSubjects } from "@/lib/dbCompData";
 import { CreateQuizletDEV } from "@/lib/dbQuiz";
+import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 function QuizManager({ setPage }: { setPage: (page: string) => void }) {
-  return <div>hi</div>;
+  return <Link href="/app">Return to /app</Link>;
 }
 
-function EditorElement({label, value, setter}: {label: string, value: string, setter: Dispatch<SetStateAction<string>>}) {
-  return 
-}
 
 function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
   const [quizletType, setQuizletType] = useState("NOT_CHOSEN");
@@ -34,8 +32,10 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
   }
 
   useEffect(() => {
-    if (quizletType === "web_link") {
-      setData("{\n  \"url\": \"\"\n }");
+    if (quizletType !== "quick_quiz") {
+      setData("{\n  \"url\": \"\"\n}");
+    } else {
+      setData("{\n  \n}")
     }
   }, [quizletType]);
 
@@ -82,9 +82,9 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
           
         </div>
 
-        {quizletType === "web_link" ? (
+        { quizletType !== "NOT_CHOSEN" && quizletType !== "quick_quiz" ? (
           <div>
-            <h3>2. Enter Link Data</h3>
+            <h3>2. Enter Data</h3>
             
             <div className="mt-2">
               <p>Data</p>
@@ -108,7 +108,34 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
 
             <button onClick={() => CreateItem()}>Create Item</button>
           </div>
-        ) : null}
+        ) : (
+          <div>
+            <h3>2. Enter Data</h3>
+            
+            <div className="mt-2">
+              <p>Data</p>
+              <textarea
+                rows={3}
+                value={data}
+                onChange={e => setData(e.target.value)}
+                placeholder="Label (e.g. a2)"
+                className={`w-full p-2 border-2 border-gray-300 bg-transparent rounded-md ${
+                  (() => {
+                    try {
+                      const parsed = JSON.parse(data);
+                      return parsed ? "" : "border-red-600";
+                    } catch (error) {
+                      return "border-red-600";
+                    }
+                  })()
+                }`}
+              />
+            </div>
+            <button onClick={() => CreateItem()} className="mt-2">Create Item</button>
+          </div>
+        )}
+
+
       </div>
     </div>
   );
