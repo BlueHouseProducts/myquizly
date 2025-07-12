@@ -586,8 +586,8 @@ export function Flipcards({
           ref={flipCard}
           className={
             isFlipped
-              ? "bg-white w-3/4 p-5 rounded-xl"
-              : "bg-white w-3/4 p-5 rounded-xl cursor-pointer"
+              ? "dark:bg-white bg-pink-300 w-3/4 p-5 rounded-xl"
+              : "dark:bg-white bg-pink-300 w-3/4 p-5 rounded-xl cursor-pointer"
           }
           initial={ME && { scale: 0.8, opacity: 0 }}
           transition={{ delay: 0.5 }}
@@ -713,7 +713,7 @@ export function ExamQ({
       return (
         <textarea
           ref={textareaRef}
-          className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default"
+          className="bg-blue-300/50 dark:bg-white w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default"
           autoComplete="off"
           spellCheck={false}
           readOnly={true}
@@ -727,7 +727,7 @@ export function ExamQ({
     return (
       <textarea
         ref={textareaRef}
-        className="w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl"
+        className="bg-blue-300/50 dark:bg-white w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl"
         autoComplete="off"
         spellCheck={false}
         name={`_quizcard_question_${questionData.qid}_answer`}
@@ -849,7 +849,7 @@ export function Answer({
           readOnly={answered}
           spellCheck={false}
           className={
-            "w-80 h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default " +
+            "bg-blue-300/50 dark:bg-white w-80 h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default " +
             (isCorrect === false && "text-red-700")
           }
           name={`_quizcard_question_${questionData.qid}_answer`}

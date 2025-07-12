@@ -121,7 +121,7 @@ export default function Home() {
         </AnimatePresence>
 
         <footer className="bottom-0 absolute mb-4 z-30">
-          <Link className="flex flex-row gap-1 *:z-40" href="https://github.com/BlueHouseProducts/quizly-mygcse"><SiGithub color="black" /> <p className="text-black">View on Github</p></Link>
+          <Link className="flex flex-row gap-1 *:z-40" href="https://github.com/BlueHouseProducts/quizly-mygcse"><SiGithub color="blue" /> <p className="text-black">Check the project out on Github</p></Link>
         </footer>
       </div>
     </div>

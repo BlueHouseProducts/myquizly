@@ -19,8 +19,8 @@ export function NavItem({ href, icon, label, active, onClick }: { href: string, 
         onClick={onClick ? onClick : undefined}
         className={`flex items-center justify-center sm:justify-start gap-3 px-4 py-2 rounded-xl transition-colors duration-200 ${
           active
-            ? "bg-pink-200 text-black font-semibold shadow-inner shadow-pink-300 dark:shadow-blue-500 dark:bg-blue-800 dark:text-white"
-            : "hover:bg-blue-100 text-blue-950 dark:hover:bg-blue-950 dark:text-blue-300"
+            ? "bg-pink-400 text-black font-semibold shadow-inner shadow-pink-300 dark:shadow-blue-500 dark:bg-blue-800 dark:text-white"
+            : "hover:bg-pink-100 text-pink-950 dark:hover:bg-blue-950 dark:text-blue-300"
         }`}
       >
         {icon}
@@ -33,7 +33,7 @@ export function NavItem({ href, icon, label, active, onClick }: { href: string, 
 export function AppLeftNav({title, children}: {title: string, children?: React.ReactNode}) {
   return <motion.nav initial={{x: -8}} animate={{x: 0}} className="min-w-32 sm:w-64 bg-pink-200 dark:bg-transparent p-4">
     <ul className="flex flex-col gap-3">
-      <h3 className="w-full text-center text-xl border-b-[1px] border-b-black dark:border-b-white pb-2">{capitalizeFirstLetter(title)}</h3>
+      <h3 className="text-black dark:text-white w-full text-center text-xl border-b-[1px] border-b-black dark:border-b-white pb-2">{capitalizeFirstLetter(title)}</h3>
       
       {children}
     </ul>

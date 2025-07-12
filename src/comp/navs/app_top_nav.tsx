@@ -33,21 +33,21 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/app/dashboard" className="text-2xl font-bold text-blue-400 dark:text-white">
-              <span className="text-purple-900 dark:text-purple-400">Quizly</span>
+              <span className="text-blue-500 dark:text-purple-400">Quizly</span>
             </Link>
           </div>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex lg:flex-grow space-x-8 text-white/80 text-sm font-medium">
-            <Link href="/app/dashboard" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
-            <Link href="/app/maths" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
-            <Link href="/app/cs" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
-            <Link href="/app/science" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
-            <Link href="/app/english" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
-            <Link href="/app/history" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
-            <Link href="/app/french" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
-            <Link href="/app/music" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
-            <Link href="/app/rs" className="text-black dark:text-white hover:text-purple-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
+            <Link href="/app/dashboard" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
+            <Link href="/app/maths" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
+            <Link href="/app/cs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
+            <Link href="/app/science" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
+            <Link href="/app/english" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
+            <Link href="/app/history" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
+            <Link href="/app/french" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
+            <Link href="/app/music" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
+            <Link href="/app/rs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
           </nav>
 
           <div className="hidden xl:flex items-center space-x-4 flex-1 justify-end">
@@ -62,27 +62,27 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
                 <DropdownMenuLabel className="text-lg font-bold">My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => window.location.href = "/app/dashboard"} className="focus:bg-purple-400/50 focus:underline text-lg focus:px-4 transition-all">
+                  <DropdownMenuItem onClick={() => window.location.href = "/app/dashboard"} className="focus:bg-blue-400/50 focus:underline text-lg focus:px-4 transition-all">
                     <User />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = "/app/settings"} className="focus:bg-purple-400/50 focus:underline text-lg focus:px-4 transition-all">
+                  <DropdownMenuItem onClick={() => window.location.href = "/app/settings"} className="focus:bg-blue-400/50 focus:underline text-lg focus:px-4 transition-all">
                     <Settings />
                     Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = "/quiz_manager"} className="focus:bg-purple-400/50 focus:underline text-lg focus:px-4 transition-all">
+                  <DropdownMenuItem onClick={() => window.location.href = "/quiz_manager"} className="focus:bg-blue-400/50 focus:underline text-lg focus:px-4 transition-all">
                     <Terminal />
                     Quizlet Manager
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-blue-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "/support"}>
+                    <HelpCircle />
+                    Support
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "https://github.com/BlueHouseProducts/quizly-mygcse"}> <SiGithub /> GitHub</DropdownMenuItem>
-                <DropdownMenuItem className="focus:bg-purple-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "/support"}>
-                  <HelpCircle />
-                  Support
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={Logout} className="focus:bg-red-300 dark:focus:bg-red-400/50 focus:px-4 transition-all focus:text-red-700 dark:focus:text-red-300 text-lg">
+                <DropdownMenuItem onClick={Logout} className="focus:bg-red-300 dark:focus:bg-red-600/20 focus:px-4 transition-all focus:text-red-800 dark:focus:text-red-300 text-lg">
                   <LogOut />
                   Log out
                 </DropdownMenuItem>

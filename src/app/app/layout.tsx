@@ -5,6 +5,7 @@ import { account, client } from "@/lib/appwriteClient";
 import { Account, Client } from "appwrite";
 import { usePathname, useRouter } from "next/navigation";
 import path from "path";
+import { useEffect } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const client = new Client()
@@ -45,9 +46,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     "overview"; // Default to overview if no specific item is matched
 
   return (
+    <>    
     <div className="h-full flex flex-col bg-pink-200 dark:bg-blue-950/50">
       <AppTopNavbar enabled_item={enabled_item} />
       {children}
-    </div>
+    </div></>
   )
 }
