@@ -3,26 +3,24 @@ import { GetQuizletDataV2 } from "@/lib/dbQuiz";
 import { validateSubjectOrRedirect } from "@/lib/utils";
 import { ArrowLeft, DownloadIcon } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function PdfPage({ pdf_id, subject }: { pdf_id: string, subject: subjectType }) {
   const validateSubject = validateSubjectOrRedirect(subject);
   const quizlet = await GetQuizletDataV2(pdf_id, validateSubject);
 
   if (quizlet === "ERR") {
-    window.location.href = ".";
-    return <></>;
+    redirect(".");
   }
 
   if (!quizlet || !quizlet.quiz_data) {
-    window.location.href = ".";
-    return <></>;
+    redirect(".");
   }
 
   const data = JSON.parse(quizlet.quiz_data); // Ensure quiz_data is parsed, if needed
 
   if (!data) {
-    window.location.href = ".";
-    return <></>;
+    redirect(".");
   }
   
  return (
