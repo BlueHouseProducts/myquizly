@@ -20,7 +20,7 @@ export async function GetQuizesFromTopic(subject: subjectType, topic: string) {
 
 
   x.documents.forEach(q => {
-    re.push( q.type === "web_link" ? {$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type, quiz_data: q.quiz_data, description: q.description} : {$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type, description: q.description});
+    re.push( q.type === "web_link" ? {$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type, quiz_data: q.quiz_data, description: q.description} : {$id: q.$id, name: q.name, topic: q.topic, label: q.label, type: q.type, description: q.description, quiz_data: JSON.parse(q.quiz_data) } );
   });
 
   return re;

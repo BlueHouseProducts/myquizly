@@ -29,8 +29,8 @@ export function QuizCard({ children, className }: { children: React.ReactNode, c
   );
 }
 
-export function QuizItem({ children }: { children: React.ReactNode }) {
-  return (
+export function QuizItem({ children, useMotion = true }: { children: React.ReactNode, useMotion?: boolean }) {
+  return ( useMotion ?
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -39,7 +39,9 @@ export function QuizItem({ children }: { children: React.ReactNode }) {
       className="w-full"
     >
       {children}
-    </motion.div>
+    </motion.div> : <div className="w-full">
+      {children}
+    </div>
   );
 }
 
@@ -58,6 +60,7 @@ type MultipleChoiceProps = {
   subject: subjectType;
   questionid: string;
   quizData: any;
+  ME: boolean;
 };
 
 export function MultipleChoice({
@@ -69,6 +72,7 @@ export function MultipleChoice({
   subject,
   questionid,
   quizData,
+  ME
 }: MultipleChoiceProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -87,23 +91,23 @@ export function MultipleChoice({
 
     animate(
       button,
-      { scale: 0.6 },
-      { duration: 0.2, type: "spring", bounceStiffness: 400, bounceDamping: 10 }
+      ME ? { scale: 0.6 } : {},
+      ME ? { duration: 0.2, type: "spring", bounceStiffness: 400, bounceDamping: 10 } : {}
     )
       .finished.then(
         () =>
           animate(
             button,
-            { scale: 1.6 },
-            {
+            ME ? { scale: 1.6 } : {},
+            ME ? {
               duration: 0.1,
               type: "spring",
               bounceStiffness: 1000,
               bounceDamping: 60,
-            }
+            } : {}
           ).finished
       )
-      .then(() => animate(button, { scale: 1 }, { duration: 0.2 }));
+      .then(() => animate(button, ME ? { scale: 1 } : {}, ME ? { duration: 0.2 } : {}));
 
     setSelected(o_id);
     formObject.setValue(o_id);
@@ -126,7 +130,7 @@ export function MultipleChoice({
 
     setTimeout(() => {
       onAnswered(correct as boolean);
-    }, 2000);
+    }, ME ? 2000 : 1000);
 
     formObject.setValue(correct.toString());
   }
@@ -180,8 +184,8 @@ export function MultipleChoice({
               onClick={(e) => ChooseItem(option.o_id, e)}
               className={
                 selected && !isCorrect && option.o_id === correctAnswerMedia
-                  ? `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor} border-2 border-green-800/80`
-                  : `flex-1 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out cursor-pointer text-center activatable-button-motion ${bgColor}`
+                  ? `flex-1 flex items-center justify-center rounded-full ${ME && "transition-all"} duration-300 ease-in-out cursor-pointer text-center ${ME && "activatable-button-motion"} ${bgColor} border-2 border-green-800/80`
+                  : `flex-1 flex items-center justify-center rounded-full ${ME && "transition-all"} duration-300 ease-in-out cursor-pointer text-center ${ME && "activatable-button-motion"} ${bgColor}`
               }
             >
               <div className="w-full h-full flex items-center justify-center px-4 py-2">
@@ -498,11 +502,13 @@ export function Flipcards({
   onAnswered,
   questionData,
   quizData,
+  ME,
 }: {
   formObject: any;
   onAnswered: any;
   questionData: any;
   quizData: any;
+  ME: boolean;
 }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [cont, setContinue] = useState(false);
@@ -522,8 +528,8 @@ export function Flipcards({
     if (flipCard.current) {
       animate(
         flipCard.current,
-        { scaleX: 0, opacity: 0.7 },
-        { duration: 0.3 }
+        ME ? { scaleX: 0, opacity: 0.7 } : {},
+        ME ? { duration: 0.3 } : {}
       ).finished.then(() => {
         if (flipCard.current) {
           if (pItem.current) {
@@ -583,9 +589,9 @@ export function Flipcards({
               ? "bg-white w-3/4 p-5 rounded-xl"
               : "bg-white w-3/4 p-5 rounded-xl cursor-pointer"
           }
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={ME && { scale: 0.8, opacity: 0 }}
           transition={{ delay: 0.5 }}
-          animate={{ scale: 1, opacity: 1 }}
+          animate={ME && { scale: 1, opacity: 1 }}
         >
           <p className="text-center" ref={pItem}>
             {questionData.flipcard.q}

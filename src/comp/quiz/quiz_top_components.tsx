@@ -14,6 +14,7 @@ export function MultipleChoiceHolder({
   form,
   handleAnswered,
   quiz,
+  ME
 }: {
   quizItem: any;
   id: string;
@@ -21,6 +22,7 @@ export function MultipleChoiceHolder({
   form: any;
   handleAnswered: () => void;
   quiz: any;
+  ME: boolean;
 }) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
@@ -41,7 +43,7 @@ export function MultipleChoiceHolder({
   );
 
   return (
-    <QuizItem key={id}>
+    <QuizItem useMotion={ME} key={id}>
       <div className="p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
         {renderQuestionHeader(<ListChecks className="text-pink-500" />, quizItem.text_title || "Multiple Choice")}
         <form.Field name={id}>
@@ -58,6 +60,7 @@ export function MultipleChoiceHolder({
                 quizid={quiz.id}
                 subject={quiz.subject}
                 quizData={quizItem}
+                ME={ME}
               />
             )
           }
@@ -67,7 +70,7 @@ export function MultipleChoiceHolder({
   );
 }
 
-export function FillInHolder({id, handleAnswered, quizItem, quiz, form, questionNumber}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number}) {
+export function FillInHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -86,7 +89,7 @@ export function FillInHolder({id, handleAnswered, quizItem, quiz, form, question
     </div>
   );
   
-  return <QuizItem key={id}>
+  return <QuizItem useMotion={ME} key={id}>
     <div className="p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
       {renderQuestionHeader(<SquareStack className="text-pink-500" />, quizItem.text_title || "Gap Fill")}
       <form.Field name={id}>
@@ -107,7 +110,7 @@ export function FillInHolder({id, handleAnswered, quizItem, quiz, form, question
   </QuizItem>
 }
 
-export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questionNumber}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number}) {
+export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -126,7 +129,7 @@ export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questi
     </div>
   );
   
-  return <QuizItem key={id}>
+  return <QuizItem useMotion={ME} key={id}>
     <div className="p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
       {renderQuestionHeader(<FlipVertical className="text-pink-500" />, quizItem.text_title || "Flip card")}
       <form.Field name={id}>
@@ -135,6 +138,7 @@ export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questi
               correct ? <p className="flex flex-row gap-2"><CheckSquare /> You got this correct</p> : <><p className="flex flex-row gap-2"><MinusSquare /> You got this incorrect</p>{ quizItem.explanation && <p className="mt-2 text-black/80 dark:text-white/80"><b>Explanation:</b> {quizItem.explanation}</p> }</>
             ) : (
               <Flipcards
+                ME={ME}
                 formObject={field}
                 onAnswered={handleAnsweredLocal}
                 questionData={quizItem}
@@ -147,7 +151,7 @@ export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questi
   </QuizItem>
 }
 
-export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionNumber}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number}) {
+export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -166,7 +170,7 @@ export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionN
     </div>
   );
   
-  return <QuizItem key={id}>
+  return <QuizItem key={id} useMotion={ME}>
     <div className="p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
       {renderQuestionHeader(<NotepadText className="text-pink-500" />, quizItem.text_title || "Exam Style Question")}
       <form.Field name={id}>
@@ -187,7 +191,7 @@ export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionN
   </QuizItem>
 }
 
-export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber}: {id: string, handleAnswered: () => void, quizItem: any, form: any, questionNumber: number}) {
+export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, form: any, questionNumber: number, ME: boolean}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -206,7 +210,7 @@ export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber
     </div>
   );
   
-  return <QuizItem key={id}>
+  return <QuizItem useMotion={ME} key={id}>
     <div className="p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
       {renderQuestionHeader(<NotepadText className="text-pink-500" />, quizItem.text_title || "Word Answer")}
       <form.Field name={id}>
@@ -226,7 +230,7 @@ export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber
   </QuizItem>
 }
 
-export function FinalComponent({ quiz }: { quiz: any }) {
+export function FinalComponent({ quiz, ME }: { quiz: any, ME: boolean }) {
   const renderQuestionHeader = (icon: any, label: string) => (
     <div className="flex items-center gap-2 mb-4 text-gray-800 dark:text-white">
       {icon}
@@ -237,7 +241,7 @@ export function FinalComponent({ quiz }: { quiz: any }) {
   );
   
   return (
-    <QuizItem key={"QuizCompleted"}>
+    <QuizItem useMotion={ME} key={"QuizCompleted"}>
       <div className="p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
       {renderQuestionHeader(<Check className="text-pink-500" />, "Task Completed!")}
       <p className="text-xl mb-2">You completed {(quiz as any).name}</p>

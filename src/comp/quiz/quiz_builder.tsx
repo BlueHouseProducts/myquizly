@@ -16,6 +16,7 @@ import {
   ListChecks,
   PlayCircle,
   ArrowLeft,
+  ClockFading,
 } from "lucide-react"
 import React from "react";
 import { AnswerHolder, ExamQHolder, FillInHolder, FlipcardHolder, MultipleChoiceHolder, FinalComponent } from "./quiz_top_components";
@@ -94,6 +95,7 @@ export default function QuizBuilder({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [started, setStarted] = useState(false);
   const [submit, setSubmitted] = useState(false);
+  const [motionDisabled, setMotionDisabled] = useState(false);
 
   const [last_completion, setLastCompletion] = useState<any>(null);
 
@@ -148,10 +150,11 @@ export default function QuizBuilder({
           </h2>
 
           <button
-            className={ started ? "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 dark:bg-gray-800 rounded " : "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition"}
+            className={ started ? "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 dark:bg-gray-800 rounded " : motionDisabled ? "flex items-center gap-1 text-sm px-3 py-1 bg-pink-200 hover:bg-pink-300 dark:bg-gray-600 dark:hover:bg-gray-500 rounded transition" : "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition"}
+            onClick={() => { !started && (motionDisabled ? setMotionDisabled(false) : setMotionDisabled(true)) }}
           >
-            <Printer className="w-4 h-4" />
-            Example button
+            <ClockFading className="w-4 h-4" />
+            { started ? motionDisabled ? "Motion is disabled" : "Motion is enabled" : motionDisabled ? "Enable Motion" : "Disable Motion"}
           </button>
         </div>
 
@@ -233,7 +236,7 @@ export default function QuizBuilder({
         </p>
 
         <div className="w-full rounded-full overflow-hidden border-pink-400 border-2 border-solid">
-          <div id="SLIDER_PROGRESS" className="bg-pink-400 w-[0%] transition-all h-4"></div>
+          <div id="SLIDER_PROGRESS" className={`bg-pink-400 w-[0%] ${motionDisabled ? "" : "transition-all"} h-4`}></div>
         </div>
       </QuizCard>
 
@@ -254,31 +257,31 @@ export default function QuizBuilder({
 
               if (type === "multiple_choice") { 
                 return (
-                  <MultipleChoiceHolder key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} questionNumber={index + 1} quiz={quiz} quizItem={quizItem} />
+                  <MultipleChoiceHolder ME={!motionDisabled} key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} questionNumber={index + 1} quiz={quiz} quizItem={quizItem} />
                 );
               }
 
               if (type === "fill_in") {
                 return (
-                  <FillInHolder key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} questionNumber={questionNumber} />
+                  <FillInHolder ME={!motionDisabled}  key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} questionNumber={questionNumber} />
                 );
               }
 
               if (type === "flipcard") {
                 return (
-                 <FlipcardHolder key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
+                 <FlipcardHolder ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
                 );
               }
 
               if (type === "examq") {
                 return (
-                  <ExamQHolder key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
+                  <ExamQHolder ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
                 );
               }
 
               if (type === "answer") {
                 return (
-                  <AnswerHolder key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} form={form} questionNumber={questionNumber} />
+                  <AnswerHolder ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} form={form} questionNumber={questionNumber} />
                 );
               }
 
@@ -293,7 +296,7 @@ export default function QuizBuilder({
 
             {/* If this is the last question */}
             {currentIndex >= data.length && (
-              <FinalComponent quiz={quiz} />
+              <FinalComponent ME={!motionDisabled}  quiz={quiz} />
             )}
           </AnimatePresence>
       </form>

@@ -6,20 +6,29 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { databases } from "@/lib/appwriteClient";
 import { dbData, subjectType } from "@/lib/dbCompData";
 import { GetQuizesFromTopic } from "@/lib/dbQuiz";
+import { timeAgo } from "@/lib/utils";
 import { Item } from "@radix-ui/react-dropdown-menu";
-import { Models, Query } from "appwrite";
+import { Account, Client, Databases, Models, Query } from "appwrite";
 import { ChevronDown, ChevronRight, ChevronUp, CloudAlert, File, FileQuestion, FileSpreadsheetIcon, InfoIcon, LinkIcon, Menu, Rabbit, Video } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-function ItemDropdown({item, subject}: {item: Models.Document, subject: subjectType}) {
-  return <DropdownMenu>
-    <DropdownMenuTrigger className="hover:bg-pink-800 hover:dark:bg-blue-400 hover:dark:text-black rounded-lg aspect-square" asChild><Menu /></DropdownMenuTrigger>
-    <DropdownMenuContent>
-      <DropdownMenuLabel className="text-black dark:text-white">{item.name}</DropdownMenuLabel>
-    </DropdownMenuContent>
-  </DropdownMenu>
+const client = new Client()
+  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
+  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!);
+
+const db = new Databases(client);
+const account = new Account(client);
+
+function isMoreThanTwoMonthsAgo(dateString: string): boolean {
+  const date = new Date(dateString);
+  const time_now = new Date();
+
+  const twoMonthsAgo = new Date();
+  twoMonthsAgo.setMonth(time_now.getMonth() - 2);
+
+  return date < twoMonthsAgo;
 }
 
 export default function ListTablePage({subject, name, subtopics}: {name: string, subject: subjectType, subtopics: {codes: string[], name: string}[]}) {
@@ -27,24 +36,70 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
   const [loaded, setLoaded] = useState(false);
 
   const [openedSubTopics, setOpenedSubTopics] = useState([]);
-  
-  useEffect(() => {
-    try {if (dbData) {
-      let promise = GetQuizesFromTopic(subject, name);
 
-      promise.then((response) => {
-        setQuizes(response);
-        setLoaded(true);
-      })
-    } else {
-      setQuizes(null);
-      setLoaded(true);
-    } } catch (e) {
-      console.log(e);
+  const [completions, setCompletions] = useState<{ [quizId: string]: { score: number, date: string, max: number } }>({});
 
-      setQuizes(null);
-      setLoaded(true);
+
+  async function handleQuizCompletionGet(quiz: any): Promise<{ score: number, date: string, max: number } | null> {
+    const user = await account.get();
+
+    const res = await db.listDocuments(
+      dbData.users_db.id,
+      dbData.users_db.collections.quiz_answers,
+      [
+        Query.equal("quiz_id", quiz.$id), // not $id
+        Query.equal("user_id", user.$id),
+        Query.orderDesc("date"),
+        Query.limit(1)
+      ]
+    );
+
+    if (res.documents.length === 0) {
+      return null;
     }
+
+    const { score, date } = res.documents[0];
+    const max = Array.isArray(quiz.quiz_data) ? quiz.quiz_data.length : 0;
+
+    return { score, date, max };
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!dbData) {
+          setQuizes(null);
+          setLoaded(true);
+          return;
+        }
+
+        const response = await GetQuizesFromTopic(subject, name);
+        setQuizes(response);
+
+        // Fetch completions
+        const result: { [quizId: string]: { score: number, date: string, max: number } } = {};
+
+        await Promise.all(
+          response
+            .filter((quiz: any) => quiz.type === "quick_quiz")
+            .map(async (quiz: any) => {
+              const data = await handleQuizCompletionGet(quiz);
+              if (data) {
+                result[quiz.$id] = data;
+              }
+            })
+        );
+
+        setCompletions(result);
+      } catch (e) {
+        console.error("Failed to fetch quizzes or completions", e);
+        setQuizes(null);
+      } finally {
+        setLoaded(true); // ✅ this must run no matter what
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (quizes && quizes.length === 0) {
@@ -134,6 +189,24 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
                     <div className="flex flex-row gap-2 my-2 mx-4">
                       <span className={`px-2 rounded-full bg-pink-400 text-black group-hover:bg-pink-500 transition-all `}>{quiz.label.toUpperCase()}</span>
                       {quiz.name}
+                      
+                      <Tooltip>
+                        <TooltipTrigger className="ml-auto mr-2">
+                          <span className="text-sm text-black/80 dark:text-gray-400 hidden md:block">
+                            <span className={`text-sm text-black/80 dark:text-gray-400 hidden md:block ${
+                              isMoreThanTwoMonthsAgo(completions[quiz.$id]?.date || "") ? "line-through" : ""
+                            } `}>
+                              {completions[quiz.$id]
+                                ? `${completions[quiz.$id].score}/${completions[quiz.$id].max}`
+                                : "Not started"}
+                            </span>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white dark:bg-gray-900 cursor-pointer text-black dark:text-white text-md rounded-xl">
+                          <p>{timeAgo(completions[quiz.$id].date)}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      
                     </div>
 
                     <Tooltip>
