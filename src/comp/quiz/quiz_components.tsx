@@ -175,6 +175,7 @@ export function MultipleChoice({
 
           return (
             <button
+              type="button"
               key={option.o_id}
               onClick={(e) => ChooseItem(option.o_id, e)}
               className={
@@ -427,6 +428,7 @@ export function FillIn({
 
       <div className="flex flex-row-reverse items-center mt-4">
         <button
+          type="button"
           onClick={() => {
             if (answered) {
               return;
@@ -592,6 +594,7 @@ export function Flipcards({
 
         {!isFlipped ? (
           <motion.button
+            type="button"
             initial={{ opacity: 0 }}
             transition={{ delay: 0.8 }}
             animate={{ opacity: 1 }}
@@ -603,6 +606,7 @@ export function Flipcards({
         ) : (
           <div className="flex flex-row gap-2">
             <button
+              type="button"
               onClick={() => Continue(true)}
               className={
                 cont
@@ -613,6 +617,7 @@ export function Flipcards({
               I was correct
             </button>
             <button
+              type="button"
               onClick={() => Continue(false)}
               className={
                 cont
@@ -759,6 +764,7 @@ export function ExamQ({
 
         {!shown ? (
           <motion.button
+            type="button"
             initial={{ opacity: 0 }}
             transition={{ delay: 0.8 }}
             animate={{ opacity: 1 }}
@@ -770,6 +776,7 @@ export function ExamQ({
         ) : (
           <div className="flex flex-row gap-2">
             <button
+              type="button"
               onClick={() => Continue(true)}
               className={
                 done
@@ -780,6 +787,7 @@ export function ExamQ({
               I was correct
             </button>
             <button
+              type="button"
               onClick={() => Continue(false)}
               className={
                 done
@@ -861,6 +869,7 @@ export function Answer({
 
         <div className="flex flex-row-reverse items-center mt-4">
           <button
+            type="button"
             onClick={() => {
               if (answered) {
                 return;

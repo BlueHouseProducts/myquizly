@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { AnimatePresence } from "framer-motion";
 import { QuizCard, QuizItem } from "./quiz_components";
+
+import { Client, Account, Databases, Query } from "appwrite";
 
 import {
   Brain,
@@ -18,7 +20,34 @@ import {
 import React from "react";
 import { AnswerHolder, ExamQHolder, FillInHolder, FlipcardHolder, MultipleChoiceHolder, FinalComponent } from "./quiz_top_components";
 import Link from "next/link";
+import { start } from "repl";
+import { createUserCompletion } from "@/lib/dbQuizCompletions";
+import { dbData } from "@/lib/dbCompData";
+import { timeAgo } from "@/lib/utils";
 
+const client = new Client()
+  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
+  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!);
+
+const account = new Account(client);
+const db = new Databases(client);
+
+async function GetLastCompletion(quiz_id: string) {
+  const user = await account.get();
+
+  const result = await db.listDocuments(
+    dbData.users_db.id,
+    dbData.users_db.collections.quiz_answers,
+    [
+      Query.orderDesc("date"),
+      Query.limit(1),
+      Query.equal("user_id", user.$id),
+      Query.equal("quiz_id", quiz_id)
+    ],
+  );
+
+  return result.documents[0];
+}
 
 function CreateDefaultValues(
   quiz_data: { q_id: string; type: string; [key: string]: object | string }[]
@@ -39,12 +68,53 @@ export default function QuizBuilder({
   const form = useForm({
     defaultValues: defaults,
     onSubmit: ({ value }) => {
-      // your submit logic here
-    },
+      account.get().then((user) => {
+        const userId = user.$id;
+        const quizId = quiz.id || "";
+
+        const score = Object.values(value).filter((v) => v === "true").length;
+      
+        createUserCompletion(userId, quizId, quiz.subject, score).then((res) => {
+          if (res.error) {
+            console.error("Error creating user completion:", res.error);
+          } else {
+            console.log("User completion created with ID:", res.documentId);
+          }}
+        )
+        .catch((error) => {
+          console.error("Error creating user completion:", error);
+        });
+      }).catch((error) => {
+        console.error("Error fetching user account:", error);
+      });
+    }
   });
+
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [started, setStarted] = useState(false);
+  const [submit, setSubmitted] = useState(false);
+
+  const [last_completion, setLastCompletion] = useState<any>(null);
+
+  useEffect(() => {
+    // check if all items are answered
+    if (currentIndex >= data.length) {
+      if (!started) { return; }
+      if (submit) { return; }
+
+      form.handleSubmit(); setSubmitted(true);
+    }
+  }, [currentIndex]);
+
+  useEffect(() => {
+    GetLastCompletion(quiz.id).then((res) => {
+      setLastCompletion(res);
+    }).catch((error) => {
+      console.error("Error fetching last completion:", error);
+    });
+  }, []);
+
 
   // Called when an answer is chosen for the current question to reveal the next
   const handleAnswered = () => {
@@ -97,7 +167,8 @@ export default function QuizBuilder({
           Part of <span className="font-medium">{quiz.topic}</span> • Type:{" "}
           <span className="italic">Quick Quiz</span>
         </p>
-
+        
+        { last_completion ? 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-gray-200">
           <div className="flex items-center gap-2">
             <Brain className="w-5 h-5 text-pink-500" />
@@ -105,13 +176,20 @@ export default function QuizBuilder({
           </div>
           <div className="flex items-center gap-2">
             <History className="w-5 h-5 text-pink-500" />
-            Last beaten: <span className="font-semibold">2 days ago</span>
+            Last beaten: <span className="font-semibold">{ timeAgo( last_completion.date ) }</span>
           </div>
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-pink-500" />
-            Last score: <span className="font-semibold">8/10</span>
+            Last score: <span className="font-semibold">{last_completion.score}/{data.length}</span>
           </div>
-        </div>
+        </div> : <div>
+          <div className="flex flex-row gap-2">
+            <Brain className="w-5 h-5 text-pink-500" />
+            <History className="w-5 h-5 text-pink-500" />
+            <Trophy className="w-5 h-5 text-pink-500" />
+            <p>Complete this quiz first to view stats!</p>
+          </div>
+        </div> }
       </QuizCard>
 
       <div className="flex flex-row gap-2">
@@ -135,6 +213,7 @@ export default function QuizBuilder({
     </div>
   }
 
+  
   return (
     <div className="flex flex-col items-center overflow-y-auto overflow-x-hidden justify-start gap-4 mr-4 h-full">
       <QuizCard className="w-full p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
@@ -167,7 +246,7 @@ export default function QuizBuilder({
         id="_MAIN_CONTROL_FORM"
         className="w-full mt-2 mb-8 flex flex-col items-center justify-start gap-4 overflow-x-hidden flex-1 h-full"
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {data.slice(0, currentIndex + 1).map((quizItem, index) => {
               const type = quizItem.type;
               const id = quizItem.q_id;
@@ -212,7 +291,7 @@ export default function QuizBuilder({
               );
             })}
 
-            {/* ✅ Add this block AFTER all questions */}
+            {/* If this is the last question */}
             {currentIndex >= data.length && (
               <FinalComponent quiz={quiz} />
             )}

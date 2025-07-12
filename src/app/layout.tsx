@@ -18,11 +18,12 @@ export const metadata: Metadata = {
   description: "GCSE Revision Platform",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en" className="h-full">
       <body

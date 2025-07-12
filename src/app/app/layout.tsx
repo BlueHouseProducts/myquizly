@@ -2,10 +2,23 @@
 
 import { AppTopNavbar } from "@/comp/navs/app_top_nav";
 import { account, client } from "@/lib/appwriteClient";
+import { Account, Client } from "appwrite";
 import { usePathname, useRouter } from "next/navigation";
 import path from "path";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!);
+
+  const account = new Account(client);
+
+  try {
+    account.get();
+  } catch (error) {
+    window.location.href = "/onboarding";
+  }
+  
   const r = useRouter();
   
   try {
