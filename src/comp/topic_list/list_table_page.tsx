@@ -190,22 +190,23 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
                       <span className={`px-2 rounded-full bg-pink-400 text-black group-hover:bg-pink-500 transition-all `}>{quiz.label.toUpperCase()}</span>
                       {quiz.name}
                       
+                      { completions[quiz.$id] ? (
                       <Tooltip>
                         <TooltipTrigger className="ml-auto mr-2">
                           <span className="text-sm text-black/80 dark:text-gray-400 hidden md:block">
                             <span className={`text-sm text-black/80 dark:text-gray-400 hidden md:block ${
-                              isMoreThanTwoMonthsAgo(completions[quiz.$id]?.date || "") ? "line-through" : ""
+                              isMoreThanTwoMonthsAgo(completions[quiz.$id].date || "") ? "line-through" : ""
                             } `}>
-                              {completions[quiz.$id]
-                                ? `${completions[quiz.$id].score}/${completions[quiz.$id].max}`
-                                : "Not started"}
+                                {completions[quiz.$id].score}/{completions[quiz.$id].max}
                             </span>
                           </span>
                         </TooltipTrigger>
                         <TooltipContent className="bg-white dark:bg-gray-900 cursor-pointer text-black dark:text-white text-md rounded-xl">
                           <p>{timeAgo(completions[quiz.$id].date)}</p>
                         </TooltipContent>
-                      </Tooltip>
+                      </Tooltip>) : (
+                      <span className="ml-auto mr-2 text-sm text-black/80 dark:text-gray-400 hidden md:block">
+                        No completions <b>yet!</b></span>)}
                       
                     </div>
 

@@ -1,5 +1,5 @@
 import { TopicItem, TopicList } from "@/comp/subjects/topics_items";
-import { Book, Calculator, Cpu, Music, Sparkle, Sword, TestTube } from "lucide-react";
+import { Book, BookType, Calculator, Cpu, Music, Sparkle, Sword, TestTube } from "lucide-react";
 
 export default function DashboardSubjects() {
   return <div>
@@ -11,6 +11,7 @@ export default function DashboardSubjects() {
       <TopicItem Title="Science" Url="../../science" ImageLogo={TestTube} Badge="0%" />
       <TopicItem Title="English" Url="../../english" ImageLogo={Book} Badge="0%" />
       <TopicItem Title="History" Url="../../history" ImageLogo={Sword} Badge="0%" />
+      <TopicItem Title="French" Url="../../french" ImageLogo={BookType} Badge="0%" />
       <TopicItem Title="Music" Url="../../music" ImageLogo={Music} Badge="0%" />
       <TopicItem Title="RS" Url="../../rs" ImageLogo={Sparkle} Badge="0%" />
     </TopicList>

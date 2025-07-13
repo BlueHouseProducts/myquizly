@@ -9,10 +9,11 @@ import { TooltipContent } from "@radix-ui/react-tooltip";
 import { AppwriteException } from "appwrite";
 import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand, User, LogOut, HelpCircle, Terminal } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "overview" | "account"}) {
   const [isOpen, setIsOpen] = useState(false);
+  const [userName, setUserName] = useState("");
 
   async function Logout() {
     try {
@@ -24,6 +25,21 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
       }
     }
   }
+
+  useEffect(() => {
+    async function fetchUserName() {
+      try {
+        const user = await account.get();
+        setUserName(user.name || "User");
+      } catch (error) {
+        if (error instanceof AppwriteException) {
+          console.error("Failed to fetch user name:", error.message);
+        }
+      }
+    }
+
+    fetchUserName();
+  }, []);
 
   return (
     <header className={!isOpen ? "w-screen overflow-hidden z-50 bg-pink-200 dark:bg-blue-950/50" : "w-screen overflow-hidden z-50 xl:bg-pink-200 xl:dark:bg-blue-950/50 bg-pink-300 dark:bg-blue-900/50"}>
@@ -39,15 +55,15 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex lg:flex-grow space-x-8 text-white/80 text-sm font-medium">
-            <Link href="/app/dashboard" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
-            <Link href="/app/maths" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
-            <Link href="/app/cs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
-            <Link href="/app/science" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
-            <Link href="/app/english" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
-            <Link href="/app/history" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
-            <Link href="/app/french" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
-            <Link href="/app/music" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
-            <Link href="/app/rs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
+            <Link prefetch href="/app/dashboard" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
+            <Link prefetch href="/app/maths" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
+            <Link prefetch href="/app/cs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
+            <Link prefetch href="/app/science" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
+            <Link prefetch href="/app/english" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
+            <Link prefetch href="/app/history" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
+            <Link prefetch href="/app/french" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
+            <Link prefetch href="/app/music" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
+            <Link prefetch href="/app/rs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
           </nav>
 
           <div className="hidden xl:flex items-center space-x-4 flex-1 justify-end">
@@ -59,7 +75,7 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
               </DropdownMenuTrigger>
 
               <DropdownMenuContent style={{perspective: "1px"}} className="w-56 bg-blue-200 dark:bg-blue-950 mx-2 rounded-[8px] border-separate text-lg my-2">
-                <DropdownMenuLabel className="text-lg font-bold">My Account</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-lg font-bold">{userName}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem onClick={() => window.location.href = "/app/dashboard"} className="focus:bg-blue-400/50 focus:underline text-lg focus:px-4 transition-all">
@@ -107,8 +123,8 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
       {/* Mobile Nav */}
       {isOpen && (
         <div className="lg:hidden absolute w-full flex-1 h-fit bg-black/40 backdrop-blur-md text-white/80">
-          <Link href="/app/dashboard" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><LayoutDashboard />Overview</Link>
-          <Link href="/app/settings" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><Settings />Settings</Link>
+          <Link prefetch href="/app/dashboard" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><LayoutDashboard />Overview</Link>
+          <Link prefetch href="/app/settings" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><Settings />Settings</Link>
           <Link href="#" onClick={() => {setIsOpen(false); Logout()}} className="hover:text-red-200 text-red-500 w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-red-500/50 px-4 py-2"><LogOut />Logout</Link>
         </div>
       )}

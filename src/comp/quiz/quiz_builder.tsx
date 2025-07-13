@@ -65,6 +65,9 @@ export default function QuizBuilder({
   quiz: any;
   desc?: string;
 }) { 
+
+  const [scoreText, setScoreText] = useState("");
+
   const defaults = CreateDefaultValues(data);
   const form = useForm({
     defaultValues: defaults,
@@ -74,6 +77,8 @@ export default function QuizBuilder({
         const quizId = quiz.id || "";
 
         const score = Object.values(value).filter((v) => v === "true").length;
+
+        setScoreText(`${score} out of ${data.length}`);
       
         createUserCompletion(userId, quizId, quiz.subject, score).then((res) => {
           if (res.error) {
@@ -98,6 +103,7 @@ export default function QuizBuilder({
   const [motionDisabled, setMotionDisabled] = useState(false);
 
   const [last_completion, setLastCompletion] = useState<any>(null);
+
 
   useEffect(() => {
     // check if all items are answered
@@ -216,7 +222,7 @@ export default function QuizBuilder({
     </div>
   }
 
-  
+
   return (
     <div className="flex flex-col items-center overflow-y-auto overflow-x-hidden justify-start gap-4 mr-4 h-full">
       <QuizCard className="w-full p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
@@ -296,7 +302,7 @@ export default function QuizBuilder({
 
             {/* If this is the last question */}
             {currentIndex >= data.length && (
-              <FinalComponent ME={!motionDisabled}  quiz={quiz} />
+              <FinalComponent scoreText={scoreText || "No score text found, this is an error."} ME={!motionDisabled}  quiz={quiz} />
             )}
           </AnimatePresence>
       </form>

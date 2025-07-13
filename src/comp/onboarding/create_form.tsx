@@ -28,7 +28,7 @@ export const Onboarding_AccountForm = ({ type }: { type: "create" | "login" }) =
 
       try {
         if (type === "create") {
-          await account.create("unique()", value.email, value.password);
+          await account.create("unique()", value.email, value.password, value.email.split("@")[0]);
           await account.createEmailPasswordSession(value.email, value.password);
         } else {
           await account.createEmailPasswordSession(value.email, value.password);

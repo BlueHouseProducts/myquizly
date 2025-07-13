@@ -298,6 +298,7 @@ export function FillIn({
   );
 
   const correctAnswerSound = useRef<HTMLAudioElement>(null);
+  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   // ADD: Refs to each input
   const inputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
@@ -341,6 +342,10 @@ export function FillIn({
     <QuizCard>
       <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
         <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
       </audio>
       <p className="text-black dark:text-white text-center text-xl pb-4 p-2">
@@ -434,6 +439,7 @@ export function FillIn({
         <button
           type="button"
           onClick={() => {
+            incorrectAnswerSound.current?.play();
             if (answered) {
               return;
             }

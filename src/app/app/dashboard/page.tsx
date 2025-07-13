@@ -1,4 +1,24 @@
+"use client";
+
+import { client } from "@/lib/appwriteClient";
+import { Account } from "appwrite";
+import { useEffect, useState } from "react";
+
 export default function Dashboard() {
+  const [userName, setUserName] = useState("");
+
+  const account = new Account(client);
+
+  useEffect(() => {
+    account.get()
+      .then((user) => {
+        setUserName(user.name || user.email.toString().split("@")[0] || "User");
+      })
+      .catch(() => {
+        console.error("An error occurred while fetching user data.");
+      });
+  }, []);
+  
   return (
     <div className="max-w-3xl mx-auto px-6 py-8">
       
@@ -6,7 +26,7 @@ export default function Dashboard() {
       {/* Placeholder content box */}
       <div className="bg-white dark:bg-zinc-900 rounded shadow-md p-6 space-y-6">
         <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-100">
-          Subjects Overview
+          Hey, {userName}!
         </h1>
         
         <section>

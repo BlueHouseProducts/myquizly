@@ -1,6 +1,7 @@
 "use client";
 
 import { account } from "@/lib/appwriteClient";
+import { LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -20,7 +21,7 @@ export default function Root() {
     }).catch(() => {
       r.push("/onboarding");
     });
-  });
+  }, []);
 
-  return <p>Redirecting...</p>;
+  return null;
 }

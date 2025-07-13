@@ -5,32 +5,32 @@ import { account, client } from "@/lib/appwriteClient";
 import { Account, Client } from "appwrite";
 import { usePathname, useRouter } from "next/navigation";
 import path from "path";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!);
-
-  const account = new Account(client);
-
-  try {
-    account.get();
-  } catch (error) {
-    window.location.href = "/onboarding";
-  }
+  const router = useRouter();
+  const [show, setShow] = useState(false);
   
-  const r = useRouter();
-  
-  try {
-    account.get();
-  } catch (error) {
-    try {window.location.href = "/onboarding"; } catch (e) {
-      r.push("/onboarding");
+  useEffect(() => {
+
+    async function checkSession() {
+      try {
+        const account = new Account(client);
+        await account.get(); // User is logged in
+        setShow(true);
+      } catch {
+        router.push('/onboarding'); // Redirect if not logged in
+      }
     }
-  }
+
+    checkSession();
+  }, [router]);
   
   const pathname = usePathname();
+
+  if (!show) {
+    return null;
+  }
   
   const enabled_item = 
     pathname.startsWith("/app/dashboard") ? "overview" : 

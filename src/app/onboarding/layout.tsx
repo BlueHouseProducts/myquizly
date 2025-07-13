@@ -1,6 +1,7 @@
 "use client";
 
-import { account } from "@/lib/appwriteClient";
+import { client } from "@/lib/appwriteClient";
+import { Account } from "appwrite";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -20,19 +21,16 @@ const SvgComponent: React.FC = () => (
 export default function OnboardingLayout({children}: {children: React.ReactNode}) {
   const r = useRouter();
   
-  const ac = account || null;
-
-  if (!ac) { r.push("/onboarding") }
-
   const [lo, sLO] = useState(false);
   const [i, sI] = useState(false);
 
   useEffect(() => {
     async function checkLogin() {
       try {
+        const ac = new Account(client);
         const user = await ac.get();
         if (user.$id) {
-          r.push("/dashboard");
+          r.push("/app/dashboard");
         } else {
           sLO(true);
         }
@@ -41,10 +39,10 @@ export default function OnboardingLayout({children}: {children: React.ReactNode}
       }
     }
     checkLogin();
-  });
+  }, []);
 
   if (!lo) {
-    return <SvgComponent />
+    return null;
   }
 
   return children;

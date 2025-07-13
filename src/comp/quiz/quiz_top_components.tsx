@@ -230,7 +230,7 @@ export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber
   </QuizItem>
 }
 
-export function FinalComponent({ quiz, ME }: { quiz: any, ME: boolean }) {
+export function FinalComponent({ quiz, ME, scoreText }: { quiz: any, ME: boolean, scoreText: string }) {
   const renderQuestionHeader = (icon: any, label: string) => (
     <div className="flex items-center gap-2 mb-4 text-gray-800 dark:text-white">
       {icon}
@@ -244,7 +244,7 @@ export function FinalComponent({ quiz, ME }: { quiz: any, ME: boolean }) {
     <QuizItem useMotion={ME} key={"QuizCompleted"}>
       <div className="p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
       {renderQuestionHeader(<Check className="text-pink-500" />, "Task Completed!")}
-      <p className="text-xl mb-2">You completed {(quiz as any).name}</p>
+      <p className="text-xl mb-2">You completed {(quiz as any).name} and got {scoreText}</p>
       
       <div className="flex flex-row gap-2">
         <Link

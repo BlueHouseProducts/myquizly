@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Account, Client } from "appwrite";
 import { Settings } from "lucide-react";
 
@@ -12,32 +12,61 @@ const account = new Account(client);
 
 export default function PrivacySettingsPage() {
   const [email, setEmail] = useState("");
+  const [user_name, setUserName] = useState("");
+  const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  const sRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     account.get()
-      .then((user) => setEmail(user.email))
-      .catch(() => setMessage("Please log in to access privacy settings."));
+      .then((user) => {
+        setEmail(user.email); 
+        setUserName(user.name); 
+        setNewName(user.name || user.email.toString().split("@")[0] || "New Name");
+      })
+      .catch(() => setMessage("An error occured while attempting to access privacy settings."));
   }, []);
 
   const reloadPage = () => {
     setTimeout(() => {
       window.location.reload();
-    }, 1500); // reload after 1.5 seconds so user sees message
+    }, 10);
   };
 
   const updateEmail = async () => {
     try {
       await account.updateEmail(newEmail, password);
       setMessage("Verification email sent to new email address.");
+      sRef.current?.scrollIntoView({ behavior: "smooth" });
       setNewEmail("");
       setPassword("");
       reloadPage();
     } catch (error: any) {
       setMessage(error.message || "Error updating email.");
+      sRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const updateName = async () => {
+    try {
+      if (!newName.trim()) {
+        setMessage("Name cannot be empty.");
+        setNewName(user_name);
+        setTimeout(() => sRef.current?.scrollIntoView({ behavior: "smooth" }), 400);
+        return;
+      }
+      
+      await account.updateName(newName);
+      setMessage("Name updated successfully.");
+      setNewName("");
+      reloadPage();
+    } catch (error: any) {
+      setMessage(error.message || "Error updating name.");
+      setTimeout(() => sRef.current?.scrollIntoView({ behavior: "smooth" }), 400);
     }
   };
 
@@ -50,6 +79,7 @@ export default function PrivacySettingsPage() {
       reloadPage();
     } catch (error: any) {
       setMessage(error.message || "Error updating password.");
+      setTimeout(() => sRef.current?.scrollIntoView({ behavior: "smooth" }), 400);
     }
   };
 
@@ -60,6 +90,7 @@ export default function PrivacySettingsPage() {
       reloadPage();
     } catch (error: any) {
       setMessage(error.message || "Error logging out of other sessions.");
+      setTimeout(() => sRef.current?.scrollIntoView({ behavior: "smooth" }), 400);
     }
   };
 
@@ -69,6 +100,28 @@ export default function PrivacySettingsPage() {
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
         Privacy Settings
       </h2>
+
+      <section className="mb-8">
+        <h3 className="text-xl font-semibold mb-2 text-gray-700 dark:text-gray-300">
+          Update Name
+        </h3>
+        <p className="mb-2 text-gray-600 dark:text-gray-400">
+          Current Name: <span className="font-mono">{user_name || "{No name found}"}</span>
+        </p>
+        <input
+          type="text"
+          placeholder="New Name"
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          className="w-full p-2 mb-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-zinc-800 border-gray-300 dark:border-zinc-700"
+        />
+        <button
+          onClick={updateName}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Update Name
+        </button>
+      </section>
 
       {/* Update Email */}
       <section className="mb-8">
@@ -146,7 +199,7 @@ export default function PrivacySettingsPage() {
 
       {/* Message */}
       {message && (
-        <p className="mt-6 text-green-600 dark:text-green-400 font-medium text-center">
+        <p ref={sRef} className="mt-6 text-green-600 dark:text-green-400 font-medium text-center">
           {message}
         </p>
       )}
