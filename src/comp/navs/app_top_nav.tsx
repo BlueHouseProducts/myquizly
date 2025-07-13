@@ -2,35 +2,35 @@
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { account } from "@/lib/appwriteClient";
+import { account, client } from "@/lib/appwriteClient";
 import { subjectType } from "@/lib/dbCompData";
+import { UserAdmin } from "@/lib/dbQuiz";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { TooltipContent } from "@radix-ui/react-tooltip";
-import { AppwriteException } from "appwrite";
+import { Account, AppwriteException } from "appwrite";
 import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand, User, LogOut, HelpCircle, Terminal } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "overview" | "account"}) {
+export function AppTopNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [userName, setUserName] = useState("");
 
-  async function Logout() {
-    try {
-      await account.deleteSession("current");
-      window.location.href = "/";
-    } catch (error) {
-      if (error instanceof AppwriteException) {
-        alert("An error occurred while logging out: " + error.message);
-      }
-    }
-  }
+  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     async function fetchUserName() {
       try {
         const user = await account.get();
         setUserName(user.name || "User");
+        
+        const jwt = await account.createJWT();
+
+        const isAdmin = await UserAdmin(jwt);
+
+        setAdmin(isAdmin);
+
       } catch (error) {
         if (error instanceof AppwriteException) {
           console.error("Failed to fetch user name:", error.message);
@@ -40,6 +40,30 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
 
     fetchUserName();
   }, []);
+
+  const Logout = async () => {
+    try {
+      await account.deleteSession("current");
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const pathname = usePathname();
+
+  const enabled_item = 
+    pathname.startsWith("/app/dashboard") ? "overview" : 
+    pathname.startsWith("/app/settings") ? "account" :
+    pathname.startsWith("/app/maths") ? "maths" :
+    pathname.startsWith("/app/cs") ? "cs" :
+    pathname.startsWith("/app/science") ? "science" :
+    pathname.startsWith("/app/history") ? "history" :
+    pathname.startsWith("/app/music") ? "music" :
+    pathname.startsWith("/app/rs") ? "rs" :
+    pathname.startsWith("/app/french") ? "french" :
+    pathname.startsWith("/app/english") ? "english" :
+    "overview"; // Default to overview if no specific item is matched
 
   return (
     <header className={!isOpen ? "w-screen overflow-hidden z-50 bg-pink-200 dark:bg-blue-950/50" : "w-screen overflow-hidden z-50 xl:bg-pink-200 xl:dark:bg-blue-950/50 bg-pink-300 dark:bg-blue-900/50"}>
@@ -86,10 +110,10 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
                     <Settings />
                     Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = "/quiz_manager"} className="focus:bg-blue-400/50 focus:underline text-lg focus:px-4 transition-all">
+                  { admin  && <DropdownMenuItem onClick={() => window.location.href = "/quiz_manager"} className="focus:bg-blue-400/50 focus:underline text-lg focus:px-4 transition-all">
                     <Terminal />
                     Quizlet Manager
-                  </DropdownMenuItem>
+                  </DropdownMenuItem>}
                   <DropdownMenuItem className="focus:bg-blue-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "/app/settings/support"}>
                     <HelpCircle />
                     Support

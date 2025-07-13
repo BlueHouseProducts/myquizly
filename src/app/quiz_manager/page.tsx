@@ -1,7 +1,9 @@
 "use client";
 
+import { client } from "@/lib/appwriteClient";
 import { subjectData, subjectType, validSubjects } from "@/lib/dbCompData";
-import { CreateQuizletDEV } from "@/lib/dbQuiz";
+import { CreateQuizletDEV, UserAdmin } from "@/lib/dbQuiz";
+import { Account } from "appwrite";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
@@ -11,6 +13,8 @@ function QuizManager({ setPage }: { setPage: (page: string) => void }) {
 
 
 function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
+  const Acc = new Account(client);
+  
   const [quizletType, setQuizletType] = useState("NOT_CHOSEN");
   
   const [name, setName] = useState("");
@@ -20,16 +24,42 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
   const [topic, setTopic] = useState("");
   const [label, setLabel] = useState("");
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   function CreateItem() {
-    CreateQuizletDEV(subject as subjectType, data, name, topic, label, quizletType, description).then((res) => {
-      if (res === "ERR") {
-        alert("Error creating item. Please check your data.");
-      } else {
-        alert("Item created successfully!");
-        setPage("quiz_manager");
+    Acc.get().then(user => {
+      if (!user) {
+        alert("You must be logged in to create a quizlet item.");
+        return;
       }
-    })
-  }
+
+      Acc.createJWT().then(jwt => {
+        if (!jwt) {
+          alert("You must be logged in to create a quizlet item.");
+          return;
+        }
+
+        if (!validSubjects.includes(subject as subjectType)) {
+          alert("Invalid subject. Please choose a valid subject.");
+          return;
+        }
+    
+        CreateQuizletDEV(subject as subjectType, data, name, topic, label, quizletType, description, jwt).then((res) => {
+          if (res === "ERR") {
+            alert("Error creating item. Please check your data.");
+          } else {
+            alert("Item created successfully!");
+            setPage("quiz_manager");
+          }
+        }).catch(err => {
+          console.error("Error creating item:", err);
+          alert("An error occurred while creating the item. Please try again.");
+        });
+    }).catch(err => {
+      console.error("Error fetching user:", err);
+      alert("You must be logged in to create a quizlet item.");
+    });
+  })};
 
   useEffect(() => {
     if (quizletType !== "quick_quiz") {
@@ -38,6 +68,38 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
       setData("{\n  \n}")
     }
   }, [quizletType]);
+
+  useEffect(() => {
+    Acc.get().then(user => {
+      Acc.createJWT().then(jwt => {
+        if (!user || !jwt) {
+          setIsAdmin(false);
+          return;
+        }
+        UserAdmin(jwt).then(isAdmin => {
+          setIsAdmin(isAdmin);
+        }).catch(err => {
+          console.error("Error checking admin status:", err);
+          setIsAdmin(false);
+        })}).catch(err => {
+          console.error("Error creating JWT:", err);
+          setIsAdmin(false);
+        });
+    }).catch(err => {
+      console.error("Error fetching user:", err);
+      setIsAdmin(false);
+    });
+  }, []);
+
+  if (!isAdmin) {
+    return (
+      <div className="p-4">
+        <h3>Quizlet Item Creator</h3>
+        <p>You must be an admin to create quizlet items. (if you are an admin, please wait a few seconds)</p>
+        <button onClick={() => setPage("quiz_manager")} className="underline">Return to Manager</button>
+      </div>
+    );
+  }
 
   return (
     <div className="">
