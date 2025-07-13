@@ -90,7 +90,7 @@ export function AppTopNavbar({enabled_item}: {enabled_item?: subjectType | "over
                     <Terminal />
                     Quizlet Manager
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="focus:bg-blue-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "/support"}>
+                  <DropdownMenuItem className="focus:bg-blue-400/50 focus:underline focus:px-4 transition-all text-lg" onClick={() => window.location.href = "/app/settings/support"}>
                     <HelpCircle />
                     Support
                   </DropdownMenuItem>
