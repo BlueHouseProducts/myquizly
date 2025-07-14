@@ -57,7 +57,12 @@ export function AppTopNavbar() {
     pathname.startsWith("/app/settings") ? "account" :
     pathname.startsWith("/app/maths") ? "maths" :
     pathname.startsWith("/app/cs") ? "cs" :
+    
     pathname.startsWith("/app/science") ? "science" :
+    pathname.startsWith("/app/biology") ? "science" :
+    pathname.startsWith("/app/chemistry") ? "science" :
+    pathname.startsWith("/app/physics") ? "science" :
+
     pathname.startsWith("/app/history") ? "history" :
     pathname.startsWith("/app/music") ? "music" :
     pathname.startsWith("/app/rs") ? "rs" :
@@ -82,7 +87,7 @@ export function AppTopNavbar() {
             <Link prefetch href="/app/dashboard/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
             <Link prefetch href="/app/maths/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
             <Link prefetch href="/app/cs/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
-            <Link prefetch href="/app/science/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
+            <Link prefetch href="/app/science" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
             <Link prefetch href="/app/english/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
             <Link prefetch href="/app/history/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
             <Link prefetch href="/app/french/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>

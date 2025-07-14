@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 function QuizManager({ setPage }: { setPage: (page: string) => void }) {
-  return <Link href="/app">Return to /app</Link>;
+  return <Link href="/app/dashboard">Return to /app</Link>;
 }
 
 

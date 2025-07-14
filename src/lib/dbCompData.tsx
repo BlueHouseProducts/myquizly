@@ -1,7 +1,7 @@
-import { Axe, BookA, Calculator, CircleUser, Cpu, Flag, Globe } from "lucide-react";
+import { Axe, BookA, Calculator, CircleUser, Cpu, FileWarning, Flag, Globe } from "lucide-react";
 import { ReactElement } from "react";
 
-type subjectType = "maths" | "cs" | "science" | "history" | "french" | "english" | "rs" | "music";
+type subjectType = "maths" | "cs" | "history" | "french" | "english" | "rs" | "music" | "biology" | "chemistry" | "physics";
 
 const dbData : {quiz_db: {id: string, collections: {[key in subjectType]: string}}, users_db: {id: string, collections: {[key in "quiz_answers"]: string}}} = {
   quiz_db: {
@@ -10,12 +10,15 @@ const dbData : {quiz_db: {id: string, collections: {[key in subjectType]: string
     collections: {
       maths: "68358ff6000ec3022f90",
       cs: "6836fbb9000f0443a907",
-      science: "683857b9002cff1a5d56",
       history: "6838605c003214655265",
       french: "68386e6800017e81c56a",
       english: "68385d2d000d96fc007f",
       rs: "68387118000f1802d0ad",
-      music: "68386f840015553c0b2e"
+      music: "68386f840015553c0b2e",
+
+      chemistry: "68752ce400034041ab16",
+      physics: "68752d2a000237a02a78",
+      biology: "68752c790024f56bb436"
     }
   },
 
@@ -61,11 +64,25 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
     },
   },
 
-  science: {
-    bio_cell: {
-      name: "Bio - Cell Biology",
-      id: "bio_cell",
-      icon: CircleUser,
+  //science: {
+  //  bio_cell: {
+  //    name: "Bio - Cell Biology",
+  //    id: "bio_cell",
+  //    icon: CircleUser,
+  //    subtopics: [
+  //      {
+  //        codes: setCodes(["4.1.1.1"]),
+  //        name: "Cell structure"
+  //      }
+  //    ]
+  //  }
+  //},
+
+  biology: {
+    cellbio: {
+      name: "Cell Biology",
+      id: "cellbio",
+      icon: FileWarning,
       subtopics: [
         {
           codes: setCodes(["4.1.1.1"]),
@@ -73,6 +90,14 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
         }
       ]
     }
+  },
+
+  chemistry: {
+
+  },
+
+  physics: {
+
   },
 
   english: {
@@ -131,12 +156,15 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
 export const validSubjects: subjectType[] = [
   "maths",
   "cs",
-  "science",
   "history",
   "french",
   "english",
   "rs",
-  "music"
+  "music",
+
+  "biology",
+  "chemistry",
+  "physics"
 ];
 
 export const validQuizletTypes: string[] = [

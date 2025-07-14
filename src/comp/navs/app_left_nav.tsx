@@ -1,7 +1,7 @@
 "use client";
 
 import { subjectType } from "@/lib/dbCompData";
-import { ArrowLeftCircle, ArrowLeftSquare, Calculator, List } from "lucide-react";
+import { ArrowLeftCircle, ArrowLeftSquare, Atom, Calculator, Dog, FlaskConical, List } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -51,5 +51,35 @@ export function AppLeftContents({children}: {children: React.ReactNode}) {
 export function QuizMainSidebar({subject, spec}: {subject: subjectType, spec?: string}) {
   const pn = usePathname();
   const r = useRouter();
-  return <><NavItem href={`/app/${subject}/topics`} icon={<List size={20} />} label="Topics" active={pn.startsWith(`/app/${subject}/topics`)} />{spec === "page_inTopic" && <NavItem href="./" icon={<ArrowLeftSquare size={20} />} label="Back to Topic list" active={false} />}<NavItem href={`#`} onClick={r.back} icon={<ArrowLeftCircle size={20} />} label="Last Visited Page" active={false} /></>
+
+  const sci = 
+    subject === "biology" ? true :
+    subject === "chemistry" ? true :
+    subject === "physics" ? true : false;
+
+  return <>
+  <NavItem href={`/app/${subject}/topics`} icon={<List size={20} />} label="Topics" active={pn.startsWith(`/app/${subject}/topics`)} />{spec === "page_inTopic" && <NavItem href="./" icon={<ArrowLeftSquare size={20} />} label="Back to Topic list" active={false} />}
+  {
+    sci && <>
+      <div className="border-solid border-black dark:border-white w-full border-b-[1px]"></div>
+      <h3 className="text-black dark:text-white w-full text-center text-xl pt-2">Science</h3>
+      <NavItem href={`/app/biology/topics`} icon={<Dog size={20} />} label="Biology" active={pn.startsWith("/app/biology")} />
+      <NavItem href={`/app/physics/topics`} icon={<Atom size={20} />} label="Physics" active={pn.startsWith("/app/physics")} />
+      <NavItem href={`/app/chemistry/topics`} icon={<FlaskConical size={20} />} label="Chemistry" active={pn.startsWith("/app/chemistry")} />
+    </>
+  }
+  
+  <NavItem href={`#`} onClick={r.back} icon={<ArrowLeftCircle size={20} />} label="Last Visited Page" active={false} />
+  </>
+}
+
+export function ScienceMainSidebar() {
+  const pn = usePathname();
+  const r = useRouter();
+  return <>
+    <NavItem href={`/app/biology`} icon={<Dog size={20} />} label="Biology" active={false} />
+    <NavItem href={`/app/physics`} icon={<Atom size={20} />} label="Physics" active={false} />
+    <NavItem href={`/app/chemistry`} icon={<FlaskConical size={20} />} label="Chemistry" active={false} />
+    
+    <NavItem href={`#`} onClick={r.back} icon={<ArrowLeftCircle size={20} />} label="Last Visited Page" active={false} /></>
 }
