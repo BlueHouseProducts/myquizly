@@ -79,15 +79,15 @@ export function AppTopNavbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex lg:flex-grow space-x-8 text-white/80 text-sm font-medium">
-            <Link prefetch href="/app/dashboard" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
-            <Link prefetch href="/app/maths" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
-            <Link prefetch href="/app/cs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
-            <Link prefetch href="/app/science" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
-            <Link prefetch href="/app/english" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
-            <Link prefetch href="/app/history" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
-            <Link prefetch href="/app/french" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
-            <Link prefetch href="/app/music" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
-            <Link prefetch href="/app/rs" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
+            <Link prefetch href="/app/dashboard/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
+            <Link prefetch href="/app/maths/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
+            <Link prefetch href="/app/cs/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
+            <Link prefetch href="/app/science/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>
+            <Link prefetch href="/app/english/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Book strokeWidth={enabled_item === "english" ? 3 : 2} />English</Link>
+            <Link prefetch href="/app/history/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sword strokeWidth={enabled_item === "history" ? 3 : 2} />History</Link>
+            <Link prefetch href="/app/french/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><BookType strokeWidth={enabled_item === "french" ? 3 : 2} />French</Link>
+            <Link prefetch href="/app/music/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Music strokeWidth={enabled_item === "music" ? 3 : 2} />Music</Link>
+            <Link prefetch href="/app/rs/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Sparkle strokeWidth={enabled_item === "rs" ? 3 : 2} />RS</Link>
           </nav>
 
           <div className="hidden xl:flex items-center space-x-4 flex-1 justify-end">

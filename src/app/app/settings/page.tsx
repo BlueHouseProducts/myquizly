@@ -1,10 +1,13 @@
 "use client";
 
+import { client } from "@/lib/appwriteClient";
+import { Account, Models } from "appwrite";
 import { Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function SettingsPage() {
   const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
+  const [account, setAccount] = useState<Models.User<Models.Preferences>>();
 
   // Sync state from localStorage on mount
   useEffect(() => {
@@ -17,6 +20,21 @@ export default function SettingsPage() {
       applyTheme("system");
     }
   }, []);
+
+  useEffect(() => {
+    async function g() {
+      try {
+        const account = new Account(client);
+        const u = await account.get();
+
+        setAccount(u);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    g();
+  })
 
   // Apply selected theme
   const applyTheme = (newTheme: "light" | "dark" | "system") => {
@@ -43,9 +61,18 @@ export default function SettingsPage() {
     <><nav className="w-fit ml-4 mb-2 mt-4 bg-blue-500/20 py-2 px-4 rounded-xl"><Settings /></nav>
     
     <div className="max-w-md  p-6 mt-4">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+      <h1 className="text-3xl font-bold mb-3 text-gray-800 dark:text-gray-100">
         Settings
       </h1>
+
+      { account && <div className="mb-6">
+        <p className="text-lg">Hello, {account.name}!</p>
+        <div className="flex flex-row gap-2">
+          { account.labels.map((lbl, idx) => <p className="px-2 bg-blue-200 dark:bg-black rounded-full" key={idx}>{lbl}</p>) }
+        </div>
+      </div> }
+
+      <h2 className="text-2xl">Preferences</h2>
 
       <div>
         <label
@@ -64,9 +91,6 @@ export default function SettingsPage() {
           <option value="light">Light</option>
           <option value="dark">Dark</option>
         </select>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-          This setting does not save to other devices.
-        </p>
       </div>
     </div></>
   );
