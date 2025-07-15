@@ -84,7 +84,7 @@ export function AppTopNavbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex lg:flex-grow space-x-8 text-white/80 text-sm font-medium">
-            <Link prefetch href="/app/dashboard/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
+            <Link prefetch href="/app/dashboard/" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl hidden xl:flex flex-row gap-2"><LayoutDashboard strokeWidth={enabled_item === "overview" ? 3 : 2} />Overview</Link>
             <Link prefetch href="/app/maths/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Calculator strokeWidth={enabled_item === "maths" ? 3 : 2} />Maths</Link>
             <Link prefetch href="/app/cs/topics" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><Cpu strokeWidth={enabled_item === "cs" ? 3 : 2} />CS</Link>
             <Link prefetch href="/app/science" className="text-black dark:text-white hover:text-blue-800 dark:hover:text-pink-300 transition text-xl flex flex-row gap-2"><TestTube strokeWidth={enabled_item === "science" ? 3 : 2} />Science</Link>

@@ -6,13 +6,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { databases } from "@/lib/appwriteClient";
 import { dbData, subjectType } from "@/lib/dbCompData";
 import { GetQuizesFromTopic } from "@/lib/dbQuiz";
+import { AddOrRemoveSubtopic, SubtopicHasItem } from "@/lib/dbRevisionList";
 import { timeAgo } from "@/lib/utils";
 import { Item } from "@radix-ui/react-dropdown-menu";
 import { Account, Client, Databases, Models, Query } from "appwrite";
-import { ChevronDown, ChevronRight, ChevronUp, CloudAlert, File, FileQuestion, FileSpreadsheetIcon, InfoIcon, LinkIcon, Menu, Rabbit, Video } from "lucide-react";
+import { BookmarkPlus, ChevronDown, ChevronRight, ChevronUp, CloudAlert, File, FileQuestion, FileSpreadsheetIcon, InfoIcon, LinkIcon, Menu, Rabbit, Star, Video } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 
 const client = new Client()
   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
@@ -31,8 +32,10 @@ function isMoreThanTwoMonthsAgo(dateString: string): boolean {
   return date < twoMonthsAgo;
 }
 
-export default function ListTablePage({subject, name, subtopics}: {name: string, subject: subjectType, subtopics: {codes: string[], name: string}[]}) {
+
+export default function ListTablePage({subject, name, subtopics, topicName}: {name: string, subject: subjectType, subtopics: {codes: string[], name: string}[], topicName: string}) {
   const [quizes, setQuizes] = useState<any[] | null>();
+  const [tasksTodo, setTasksTodo] = useState<{[key: string]: boolean} | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   const [openedSubTopics, setOpenedSubTopics] = useState([]);
@@ -102,6 +105,22 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
     fetchData();
   }, []);
 
+  useEffect(() => {
+    async function fetchStarred() {
+      const entries = await Promise.all(
+        subtopics.map(async (value) => {
+          const has = await SubtopicHasItem(subject, topicName, value.name);
+          return [value.name, has] as const; 
+        })
+      );
+
+      const r = Object.fromEntries(entries);
+      setTasksTodo(r);
+    }
+
+    fetchStarred();
+  }, [subject, topicName, subtopics]);
+
   if (quizes && quizes.length === 0) {
     return <><div className="flex flex-row items-center gap-2 justify-start my-4 overflow-hidden">
         <CloudAlert size={40} />
@@ -120,6 +139,51 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
 
   if (!loaded) {
     return <p>Loading quizzes...</p>
+  }
+
+  function StarButton({subtopic, subject, topic}: {subtopic: string, subject: subjectType, topic: string}) {
+    const [starred, setStarred] = useState<boolean | null>(null);
+
+    useEffect(() => {
+      if (!tasksTodo) { return }
+      if (tasksTodo && subtopic in tasksTodo) {
+        setStarred(!!tasksTodo[subtopic]);
+      }
+    }, [tasksTodo, subtopic]);
+
+    if (tasksTodo === null) {
+      return <p>Loading...</p>
+    }
+    
+    async function starPress(event: React.MouseEvent<HTMLButtonElement>) {
+      
+      if (starred === null) { return }
+      
+      event.stopPropagation();
+
+      const result = await AddOrRemoveSubtopic(subject, topic, subtopic, starred);
+
+      if (!result.success) {
+        console.error(result.error);
+        alert("An error occured. View console for more info");
+      } else {
+        setStarred(!starred);
+      }
+
+      const entries = await Promise.all(
+        subtopics.map(async (value) => {
+          const has = await SubtopicHasItem(subject, topicName, value.name);
+          return [value.name, has] as const; 
+        })
+      );
+
+      const r = Object.fromEntries(entries);
+      setTasksTodo(r);
+    }
+
+    return <button onClick={(e) => starPress(e)} className="z-10 hover:bg-white/40 bg-white/0 transition-colors duration-200 rounded-full p-2">
+      <BookmarkPlus fill={starred ? "gold" : "transparent"} className="text-black" />
+    </button>
   }
   
   const quizzesBySubtopic = subtopics
@@ -147,7 +211,8 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
           <div key={`${subtopic.quizzes.toString()}.${idx.toString()}`} className="mb-6">
             <div className="flex flex-col">
               
-              <button
+              <div
+                role="button"
                 onClick={() => {
                   if (openedSubTopics.includes(subtopic.subtopicName as never)) {
                     // Remove the subtopic from the list (closing)
@@ -169,7 +234,9 @@ export default function ListTablePage({subject, name, subtopics}: {name: string,
                 <p className={`mx-2 px-2 rounded-full bg-pink-400 text-black text-md`}>
                   ({subtopics[idx].codes[0].toUpperCase()}{" – "}{subtopics[idx].codes.slice(-1)[0].toUpperCase()})
                 </p>
-              </button>
+
+                <StarButton topic={topicName} subject={subject} subtopic={subtopic.subtopicName} />
+              </div>
               
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
               <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="lg:w-fit mr-4 lg:mr-0 flex flex-col gap-2 mt-2 p-2 pr-8 rounded-l-xl"><TooltipProvider>

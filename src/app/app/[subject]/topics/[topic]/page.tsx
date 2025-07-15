@@ -20,6 +20,6 @@ export default async function MathsTopicPage({params} : {params: Promise<{topic:
   }
   
   return <TopicPage topic={topic.name} suject_full_name={subject}>
-    <ListTablePage subject={subject as subjectType} name={topic.id} subtopics={topic.subtopics} />
+    <ListTablePage subject={subject as subjectType} name={topic.id} topicName={topic_given} subtopics={topic.subtopics} />
   </TopicPage>
 }
