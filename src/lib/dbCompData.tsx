@@ -152,7 +152,7 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
   rs: {
 
   }
-};
+}; // REMEMBER ALSO UPDATE FUNCTIONS
 
 export const validSubjects: subjectType[] = [
   "maths",
@@ -166,7 +166,7 @@ export const validSubjects: subjectType[] = [
   "biology",
   "chemistry",
   "physics"
-];
+]; // REMEMBER ALSO UPDATE FUNCTIONS
 
 export const validQuizletTypes: string[] = [
   "web_link",

@@ -793,6 +793,67 @@
                 }
             ],
             "indexes": []
+        },
+        {
+            "$id": "6877caed00204de1c72f",
+            "$permissions": [],
+            "databaseId": "68358fde0037593b1096",
+            "name": "Current_Weekly",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "subjectName",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 99,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "topicName",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 99,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        }
+    ],
+    "functions": [
+        {
+            "$id": "6877c8a90029fea8c4a9",
+            "execute": [
+                "any"
+            ],
+            "name": "Weekly Revision Topic Function",
+            "enabled": true,
+            "logging": true,
+            "runtime": "node-16.0",
+            "scopes": [
+                "users.read",
+                "databases.read",
+                "databases.write",
+                "collections.read",
+                "collections.write",
+                "attributes.read",
+                "attributes.write",
+                "indexes.read",
+                "indexes.write",
+                "documents.read",
+                "documents.write"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "specification": "s-0.5vcpu-512mb",
+            "path": "functions/Weekly Revision Topic Function"
         }
     ]
 }

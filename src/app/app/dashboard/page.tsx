@@ -1,15 +1,18 @@
 "use client";
 
 import { client } from "@/lib/appwriteClient";
+import { dbData, subjectData, subjectType } from "@/lib/dbCompData";
 import { GetRevisionList } from "@/lib/dbRevisionList";
-import { Account, Models } from "appwrite";
-import { BookmarkPlus } from "lucide-react";
+import { Account, Databases, Models } from "appwrite";
+import { BookmarkPlus, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const [userName, setUserName] = useState("");
   const [revisionList, setRevisionList] = useState<Models.DocumentList<Models.Document> | null>(null);
+
+  const [weeklyTopic, setWeeklyTopic] = useState<{subject: string, topic: string} | null>(null);
 
   const account = new Account(client);
 
@@ -18,6 +21,14 @@ export default function Dashboard() {
       .then((user) => {
         setUserName(user.name || user.email.toString().split("@")[0] || "User");
         GetRevisionList().then(list => setRevisionList(list))
+
+        const d = new Databases(client);
+        d.listDocuments(dbData.quiz_db.id, "6877caed00204de1c72f").then(item => {
+          const i = item.documents[0];
+          setWeeklyTopic({ subject: i.subjectName, topic: i.topicName });
+        }).catch(() => {
+          console.error("Error getting weekly topic.");
+        })
 
       })
       .catch(() => {
@@ -36,7 +47,7 @@ export default function Dashboard() {
         </h1>
         
         <section>
-          <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1">
             Your Revision List
           </h2>
           <ul className="list-disc list-inside dark:text-gray-400">
@@ -47,9 +58,16 @@ export default function Dashboard() {
                   return <li key={document.$id}><Link className="underline" href={`/app/${document.subject}/topics/${document.topic}`}><span className=" text-blue-600">{document.subtopic}</span><span> in {document.subject}/{document.topic}</span></Link></li>
                 })}
               </>
-            : <p className="text-gray-700 block">You have no items here! Click the <BookmarkPlus className="inline-block" /> icon on a subtopic to add to your Revision List.</p>
-            : <p className="text-gray-700 block">You have no items here! Click the <BookmarkPlus className="inline-block" /> icon on a subtopic to add to your Revision List.</p> }
+            : <p className="text-gray-700 dark:text-gray-400 block">You have no items here! Click the <BookmarkPlus className="inline-block" /> icon on a subtopic to add to your Revision List.</p>
+            : <p className="text-gray-700 dark:text-gray-400 block">You have no items here! Click the <BookmarkPlus className="inline-block" /> icon on a subtopic to add to your Revision List.</p> }
           </ul>
+
+           { weeklyTopic && <><h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-1 mt-5">
+            The Weekly Topic is <Link className="underline" href={`/app/${weeklyTopic.subject}/topics/${weeklyTopic.topic}`}>{(subjectData[weeklyTopic.subject as subjectType][weeklyTopic.topic] || {name: "Unknown name"}).name} from {weeklyTopic.subject}</Link>
+          </h2>            <p className="text-gray-700 dark:text-gray-400 block"><RefreshCcw className="inline-block m-1" />There is a new weekly topic every Monday at 5AM.</p> 
+            </> }
+
+
         </section>
 
 
