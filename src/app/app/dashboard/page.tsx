@@ -2,7 +2,6 @@
 
 import { client } from "@/lib/appwriteClient";
 import { dbData, subjectData, subjectType } from "@/lib/dbCompData";
-import { GetRevisionList } from "@/lib/dbRevisionList";
 import { Account, Databases, Models } from "appwrite";
 import { BookmarkPlus, RefreshCcw } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +19,14 @@ export default function Dashboard() {
     account.get()
       .then((user) => {
         setUserName(user.name || user.email.toString().split("@")[0] || "User");
-        GetRevisionList().then(list => setRevisionList(list))
+        
+        async function GetRevisionItems() {
+          const db = new Databases(client);
+
+          return (await db.listDocuments(dbData.users_db.id, dbData.users_db.collections.revision_list));
+        }
+        
+        GetRevisionItems().then(list => setRevisionList(list));
 
         const d = new Databases(client);
         d.listDocuments(dbData.quiz_db.id, "6877caed00204de1c72f").then(item => {

@@ -1,6 +1,6 @@
 "use server";
 
-import { Account, Client, Databases, ID, Models, Query } from "node-appwrite";
+import { Account, Client, Databases, ID, Models, Permission, Query, Role } from "node-appwrite";
 
 import { dbData, subjectData, subjectType } from "./dbCompData";
 import { getUserServerCurrent } from "@/comp/ssr/auth";
@@ -51,7 +51,9 @@ export async function AddOrRemoveSubtopic(subject: subjectType, topic: string, s
       subject: subject,
       topic: topic,
       subtopic: subtopic
-    });
+    }, [
+      Permission.read(Role.user(user.$id))
+    ]);
 
     return d;
   }
@@ -108,21 +110,4 @@ export async function SubtopicHasItem(subject: string, topic: string, subtopic: 
   ]);
 
   return attempted.total !== 0;
-}
-
-export async function GetRevisionList() {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
-    .setKey("standard_612670df39627ea636126ef36913cdef8e809cd2e54720a897b2b9d1e9a7faa655480910e4ee652fa9226a8a1c49ff5c60378bbfc12d65633013c3abc74c08014e9930702a62e14533b79ee50ae33d2becaa82f24d82fa693a37f2f2ed710c01697e12ee38a44bf1478beab431ec9ab2488af014e12ba589d8ab6cdfc40d324c");
-
-  const db = new Databases(client);
-
-  const user = await getUserServerCurrent();
-
-  const attempted = await db.listDocuments(dbData.users_db.id, dbData.users_db.collections.revision_list, [
-    Query.equal("user_id", user.$id)
-  ]);
-
-  return attempted;
 }
