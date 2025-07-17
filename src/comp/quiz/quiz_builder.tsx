@@ -17,6 +17,7 @@ import {
   PlayCircle,
   ArrowLeft,
   ClockFading,
+  CircleStop,
 } from "lucide-react"
 import React from "react";
 import { AnswerHolder, ExamQHolder, FillInHolder, FlipcardHolder, MultipleChoiceHolder, FinalComponent } from "./quiz_top_components";
@@ -143,6 +144,12 @@ export default function QuizBuilder({
     }, 200); // slight delay for animation smoothness
   };
 
+  const cancelQuiz = () => {
+    form.reset();
+    setCurrentIndex(0);
+    setStarted(false);
+  }
+
   if (!started) {
     return <div className="flex flex-col items-center justify-start gap-4 mr-4 h-full">
       <QuizCard className="w-full p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
@@ -234,6 +241,13 @@ export default function QuizBuilder({
               {quiz.label.toUpperCase()}
             </span>
           </h2>
+
+          <button
+            className={ started ? "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 dark:bg-gray-800 rounded " : motionDisabled ? "flex items-center gap-1 text-sm px-3 py-1 bg-pink-200 hover:bg-pink-300 dark:bg-gray-600 dark:hover:bg-gray-500 rounded transition" : "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition"}
+            onClick={cancelQuiz}
+          >
+            <CircleStop className="mx-2" /> Close Quiz
+          </button>
         </div>
 
         <p className="text-gray-600 dark:text-gray-300 mb-4">
