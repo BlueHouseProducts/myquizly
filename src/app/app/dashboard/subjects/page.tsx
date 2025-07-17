@@ -6,14 +6,14 @@ export default function DashboardSubjects() {
     <h1 className="text-3xl md:text-4xl font-bold">Subjects</h1>
     
     <TopicList>
-      <TopicItem Title="Maths" Url="../../maths" ImageLogo={Calculator} Badge="0%" />
-      <TopicItem Title="CS" Url="../../cs" ImageLogo={Cpu} Badge="0%" />
-      <TopicItem Title="Science" Url="../../science" ImageLogo={TestTube} Badge="0%" />
-      <TopicItem Title="English" Url="../../english" ImageLogo={Book} Badge="0%" />
-      <TopicItem Title="History" Url="../../history" ImageLogo={Sword} Badge="0%" />
-      <TopicItem Title="French" Url="../../french" ImageLogo={BookType} Badge="0%" />
-      <TopicItem Title="Music" Url="../../music" ImageLogo={Music} Badge="0%" />
-      <TopicItem Title="RS" Url="../../rs" ImageLogo={Sparkle} Badge="0%" />
+      <TopicItem Title="Maths" Url="../../maths/topics/" ImageLogo={Calculator} Badge="0%" />
+      <TopicItem Title="CS" Url="../../cs/topics/" ImageLogo={Cpu} Badge="0%" />
+      <TopicItem Title="Science" Url="../../science/" ImageLogo={TestTube} Badge="0%" />
+      <TopicItem Title="English" Url="../../english/topics/" ImageLogo={Book} Badge="0%" />
+      <TopicItem Title="History" Url="../../history/topics/" ImageLogo={Sword} Badge="0%" />
+      <TopicItem Title="French" Url="../../french/topics/" ImageLogo={BookType} Badge="0%" />
+      <TopicItem Title="Music" Url="../../music/topics/" ImageLogo={Music} Badge="0%" />
+      <TopicItem Title="RS" Url="../../rs/topics/" ImageLogo={Sparkle} Badge="0%" />
     </TopicList>
   </div>
 }

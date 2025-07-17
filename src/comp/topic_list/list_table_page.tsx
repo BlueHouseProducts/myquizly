@@ -5,15 +5,16 @@ import { TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, T
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { databases } from "@/lib/appwriteClient";
 import { dbData, subjectType } from "@/lib/dbCompData";
-import { GetQuizesFromTopic } from "@/lib/dbQuiz";
+import { GetQuizesFromTopic, UserAdmin } from "@/lib/dbQuiz";
+import { getConsoleUrlForQuizlet } from "@/lib/dbQuizCompletions";
 import { AddOrRemoveSubtopic, SubtopicHasItem } from "@/lib/dbRevisionList";
 import { timeAgo } from "@/lib/utils";
 import { Item } from "@radix-ui/react-dropdown-menu";
 import { Account, Client, Databases, Models, Query } from "appwrite";
-import { BookmarkPlus, ChevronDown, ChevronRight, ChevronUp, CloudAlert, File, FileQuestion, FileSpreadsheetIcon, InfoIcon, LinkIcon, Menu, Rabbit, Star, Video } from "lucide-react";
+import { BookmarkPlus, ChevronDown, ChevronRight, ChevronUp, CloudAlert, Database, File, FileQuestion, FileSpreadsheetIcon, InfoIcon, LinkIcon, Menu, Rabbit, Star, Video } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler, Suspense, useEffect, useMemo, useState } from "react";
 
 const client = new Client()
   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
@@ -41,85 +42,251 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
   const [openedSubTopics, setOpenedSubTopics] = useState([]);
 
   const [completions, setCompletions] = useState<{ [quizId: string]: { score: number, date: string, max: number } }>({});
+  const [admin, setAdmin] = useState(false);
+  const [quizConsoleUrls, setQuizUrls] = useState<{ [quizId: string]: string }> ({});
 
+  // async function handleQuizCompletionGet(quiz: any): Promise<{ score: number, date: string, max: number } | null> {
+  //   const user = await account.get();
 
-  async function handleQuizCompletionGet(quiz: any): Promise<{ score: number, date: string, max: number } | null> {
-    const user = await account.get();
+  //   const res = await db.listDocuments(
+  //     dbData.users_db.id,
+  //     dbData.users_db.collections.quiz_answers,
+  //     [
+  //       Query.equal("quiz_id", quiz.$id), // not $id
+  //       Query.equal("user_id", user.$id),
+  //       Query.orderDesc("date"),
+  //       Query.limit(1)
+  //     ]
+  //   );
 
-    const res = await db.listDocuments(
-      dbData.users_db.id,
-      dbData.users_db.collections.quiz_answers,
-      [
-        Query.equal("quiz_id", quiz.$id), // not $id
-        Query.equal("user_id", user.$id),
-        Query.orderDesc("date"),
-        Query.limit(1)
-      ]
-    );
+  //   if (res.documents.length === 0) {
+  //     return null;
+  //   }
 
-    if (res.documents.length === 0) {
-      return null;
-    }
+  //   const { score, date } = res.documents[0];
+  //   const max = Array.isArray(quiz.quiz_data) ? quiz.quiz_data.length : 0;
 
-    const { score, date } = res.documents[0];
-    const max = Array.isArray(quiz.quiz_data) ? quiz.quiz_data.length : 0;
+  //   return { score, date, max };
+  // }
 
-    return { score, date, max };
-  }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       if (!dbData) {
+  //         setQuizes(null);
+  //         setLoaded(true);
+  //         return;
+  //       }
 
+  //       const response = await GetQuizesFromTopic(subject, name);
+  //       setQuizes(response);
+
+  //       // Fetch completions
+  //       const result: { [quizId: string]: { score: number, date: string, max: number } } = {};
+
+  //       await Promise.all(
+  //         response
+  //           .filter((quiz: any) => quiz.type === "quick_quiz")
+  //           .map(async (quiz: any) => {
+  //             const data = await handleQuizCompletionGet(quiz);
+  //             if (data) {
+  //               result[quiz.$id] = data;
+  //             }
+  //           })
+  //       );
+
+  //       setCompletions(result);
+  //     } catch (e) {
+  //       console.error("Failed to fetch quizzes or completions", e);
+  //       setQuizes(null);
+  //     } finally {
+  //       setLoaded(true); // ✅ this must run no matter what
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!quizes) { return }
+  //   if (admin) { return }
+  //   UserAdmin().then(answer => {
+  //     if (answer === true && quizes) {
+  //       setAdmin(true);
+  //       async function fetchUrls() {
+  //         let r: {[v: string]: string} = {};
+  //         await Promise.all(
+  //           quizes!.map(async (value) => {
+  //             const url = await getConsoleUrlForQuizlet(value.$id, subject);
+  //             r[value.$id] = url;
+  //           })
+  //         );
+  //         setQuizUrls(r);
+  //       }
+
+  //       fetchUrls();
+  //     }
+  //   });
+  // }, [quizes])
+
+  // useEffect(() => {
+  //   async function fetchStarred() {
+  //     const entries = await Promise.all(
+  //       subtopics.map(async (value) => {
+  //         const has = await SubtopicHasItem(subject, topicName, value.name);
+  //         return [value.name, has] as const; 
+  //       })
+  //     );
+
+  //     const r = Object.fromEntries(entries);
+  //     setTasksTodo(r);
+  //   }
+
+  //   fetchStarred();
+  // }, [subject, topicName, subtopics]);
+
+  // 1. Fetch quizzes and completions in parallel
   useEffect(() => {
-    const fetchData = async () => {
+    let cancelled = false;
+
+    async function fetchAll() {
       try {
-        if (!dbData) {
-          setQuizes(null);
-          setLoaded(true);
-          return;
-        }
+        const [user, quizzesRes] = await Promise.all([
+          account.get(),
+          GetQuizesFromTopic(subject, name),
+        ]);
 
-        const response = await GetQuizesFromTopic(subject, name);
-        setQuizes(response);
+        if (cancelled) return;
 
-        // Fetch completions
-        const result: { [quizId: string]: { score: number, date: string, max: number } } = {};
+        const quizzes = quizzesRes || [];
+        setQuizes(quizzes);
 
-        await Promise.all(
-          response
-            .filter((quiz: any) => quiz.type === "quick_quiz")
-            .map(async (quiz: any) => {
-              const data = await handleQuizCompletionGet(quiz);
-              if (data) {
-                result[quiz.$id] = data;
-              }
+        const completionEntries = await Promise.all(
+          quizzes
+            .filter((quiz) => quiz.type === "quick_quiz")
+            .map(async (quiz) => {
+              const res = await db.listDocuments(
+                dbData.users_db.id,
+                dbData.users_db.collections.quiz_answers,
+                [
+                  Query.equal("quiz_id", quiz.$id),
+                  Query.equal("user_id", user.$id),
+                  Query.orderDesc("date"),
+                  Query.limit(1),
+                ]
+              );
+
+              if (res.documents.length === 0) return [quiz.$id, null];
+
+              const { score, date } = res.documents[0];
+              const max = Array.isArray(quiz.quiz_data) ? quiz.quiz_data.length : 0;
+              return [quiz.$id, { score, date, max }];
             })
         );
 
-        setCompletions(result);
+        if (!cancelled) {
+          setCompletions(
+            Object.fromEntries(completionEntries.filter(([_, data]) => data !== null))
+          );
+        }
       } catch (e) {
         console.error("Failed to fetch quizzes or completions", e);
         setQuizes(null);
       } finally {
-        setLoaded(true); // ✅ this must run no matter what
+        if (!cancelled) setLoaded(true);
       }
-    };
+    }
 
-    fetchData();
+    fetchAll();
+    return () => {
+      cancelled = true;
+    };
+  }, [subject, name]);
+
+
+  // 2. Run UserAdmin immediately on mount
+  useEffect(() => {
+    let cancelled = false;
+    async function checkAdmin() {
+      try {
+        const isAdmin = await UserAdmin();
+        if (!cancelled && isAdmin) setAdmin(true);
+      } catch (e) {
+        console.error("Failed admin check", e);
+      }
+    }
+    checkAdmin();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  useEffect(() => {
-    async function fetchStarred() {
-      const entries = await Promise.all(
-        subtopics.map(async (value) => {
-          const has = await SubtopicHasItem(subject, topicName, value.name);
-          return [value.name, has] as const; 
-        })
-      );
 
-      const r = Object.fromEntries(entries);
-      setTasksTodo(r);
+  // 3. If admin & quizzes are loaded, fetch console URLs (only once)
+  useEffect(() => {
+    if (!admin || !quizes || Object.keys(quizConsoleUrls).length > 0) return;
+
+    let cancelled = false;
+
+    async function fetchUrls() {
+      try {
+        const entries = await Promise.all(
+          quizes!.map(async (quiz) => {
+            const url = await getConsoleUrlForQuizlet(quiz.$id, subject);
+            return [quiz.$id, url];
+          })
+        );
+        if (!cancelled) {
+          setQuizUrls(Object.fromEntries(entries));
+        }
+      } catch (e) {
+        console.error("Error fetching quiz URLs", e);
+      }
+    }
+
+    fetchUrls();
+    return () => {
+      cancelled = true;
+    };
+  }, [admin, quizes, subject, quizConsoleUrls]);
+
+
+  // 4. Fetch starred subtopics
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchStarred() {
+      try {
+        const entries = await Promise.all(
+          subtopics.map(async (subtopic) => {
+            const has = await SubtopicHasItem(subject, topicName, subtopic.name);
+            return [subtopic.name, has] as const;
+          })
+        );
+        if (!cancelled) setTasksTodo(Object.fromEntries(entries));
+      } catch (e) {
+        console.error("Failed to fetch starred subtopics", e);
+      }
     }
 
     fetchStarred();
+    return () => {
+      cancelled = true;
+    };
   }, [subject, topicName, subtopics]);
+
+  const quizzesBySubtopic = useMemo(() => {
+    return subtopics
+      .map((subtopic) => ({
+        subtopicName: subtopic.name,
+        quizzes: (quizes || []).filter(q => subtopic.codes.includes((q.label || "").toLowerCase()))
+          .sort((a, b) =>
+            subtopic.codes.indexOf((a.label || "").toLowerCase()) -
+            subtopic.codes.indexOf((b.label || "").toLowerCase())
+          )
+      }))
+      .filter(sub => sub.quizzes.length > 0);
+  }, [quizes, subtopics]);
 
   if (quizes && quizes.length === 0) {
     return <><div className="flex flex-row items-center gap-2 justify-start my-4 overflow-hidden">
@@ -185,24 +352,6 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
       <BookmarkPlus fill={starred ? "gold" : "transparent"} className="text-black" />
     </button>
   }
-  
-  const quizzesBySubtopic = subtopics
-  .map((subtopic) => {   
-    if (!quizes) return null;
-
-    return {
-      subtopicName: subtopic.name,
-      quizzes: quizes
-        .filter((quiz) =>
-          subtopic.codes.includes((quiz.label || "").toLowerCase())
-        )
-        .sort((a, b) =>
-          subtopic.codes.indexOf((a.label || "").toLowerCase()) -
-          subtopic.codes.indexOf((b.label || "").toLowerCase())
-        )
-    };
-  })
-  .filter((subtopic): subtopic is { subtopicName: string, quizzes: Models.Document[] } => !!subtopic); // removes nulls
 
   return <div>
     <div className="overflow-x-hidden overflow-y-auto">
@@ -240,8 +389,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
               
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
               <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="lg:w-fit mr-4 lg:mr-0 flex flex-col gap-2 mt-2 p-2 pr-8 rounded-l-xl"><TooltipProvider>
-
-                {subtopic.quizzes.map((quiz) => (
+                {subtopic.quizzes.map((quiz) => <div key={quiz.$id}><Suspense fallback={<p>Loading</p>}>{admin && <Link href={quizConsoleUrls[quiz.$id] ? quizConsoleUrls[quiz.$id] : "#"}><Database /></Link>}</Suspense>{
                   quiz.type === "quick_quiz" ? <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                     
                     <Tooltip>
@@ -370,7 +518,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
                    : <p key={"N_R_"+idx.toString()}>Item type not recognised: {quiz.type}</p>
 
                   
-                ))}
+                      }</div>)}
               </TooltipProvider ></motion.div> )}
             </div>
           </div>

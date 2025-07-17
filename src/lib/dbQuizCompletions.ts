@@ -2,6 +2,7 @@
 
 import { Client, Databases, ID, Permission, Query, Role, Users } from "node-appwrite";
 import { dbData, subjectType } from "./dbCompData";
+import { UserAdmin } from "./dbQuiz";
 
 const client = new Client()
   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
@@ -125,4 +126,12 @@ export async function createUserCompletion(userId: string, quizId: string, subje
     }
   }
 
+}
+
+export async function getConsoleUrlForQuizlet(quizId: string, subject: subjectType) {
+  if (!UserAdmin()) {
+    return "";
+  }
+  
+  return process.env.APP_CONSOLE! + `databases/database-${dbData.quiz_db.id}/collection-${dbData.quiz_db.collections[subject]}/document-${quizId}`
 }

@@ -49,7 +49,7 @@ export default function Dashboard() {
       {/* Placeholder content box */}
       <div className="bg-white dark:bg-zinc-900 rounded shadow-md p-6 space-y-6">
         <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-100">
-          Hey, {userName}!
+          Hey, {userName}! Revise Next:
         </h1>
         
         <section>
