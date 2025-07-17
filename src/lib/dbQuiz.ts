@@ -5,6 +5,7 @@ import { Account as UserAccount, Client as UserClient } from "appwrite";
 import { dbData, subjectType, validQuizletTypes, validSubjects } from "./dbCompData";
 import { ID } from "appwrite";
 import { ACTION_HEADER } from "next/dist/client/components/app-router-headers";
+import { getUserServerCurrent } from "@/comp/ssr/auth";
 
 export async function GetQuizesFromTopic(subject: subjectType, topic: string) {
   const client = new Client()
@@ -140,21 +141,11 @@ export async function CreateQuizletDEV(subject: subjectType, quiz_data: string, 
   return "OK";
 }
 
-export async function UserAdmin(jwt: Models.Jwt): Promise<boolean> {
-  if (!jwt) {
-    return false;
-  }
-
-  const authed_user_client = new UserClient()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
-    .setJWT(jwt.jwt);
-
-  const authed_user_account = new UserAccount(authed_user_client);
+export async function UserAdmin(): Promise<boolean> {
+  const authed_user_account = await getUserServerCurrent();
   
   try {
-    const user = await authed_user_account.get();
-    return user.labels.includes("admin");
+    return authed_user_account.labels.includes("admin");
   } catch (error) {
     console.error("Error fetching user:", error);
     return false;

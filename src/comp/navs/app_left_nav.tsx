@@ -74,12 +74,11 @@ export function QuizMainSidebar({subject, spec}: {subject: subjectType, spec?: s
 }
 
 export function ScienceMainSidebar() {
-  const pn = usePathname();
   const r = useRouter();
   return <>
-    <NavItem href={`/app/biology`} icon={<Dog size={20} />} label="Biology" active={false} />
-    <NavItem href={`/app/physics`} icon={<Atom size={20} />} label="Physics" active={false} />
-    <NavItem href={`/app/chemistry`} icon={<FlaskConical size={20} />} label="Chemistry" active={false} />
+    <NavItem href={`/app/biology/topics`} icon={<Dog size={20} />} label="Biology" active={false} />
+    <NavItem href={`/app/physics/topics`} icon={<Atom size={20} />} label="Physics" active={false} />
+    <NavItem href={`/app/chemistry/topics`} icon={<FlaskConical size={20} />} label="Chemistry" active={false} />
     
     <NavItem href={`#`} onClick={r.back} icon={<ArrowLeftCircle size={20} />} label="Last Visited Page" active={false} /></>
 }

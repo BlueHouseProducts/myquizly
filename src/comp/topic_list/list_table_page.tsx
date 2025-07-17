@@ -181,7 +181,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
       setTasksTodo(r);
     }
 
-    return <button onClick={(e) => starPress(e)} className="z-10 hover:bg-white/40 bg-white/0 transition-colors duration-200 rounded-full p-2">
+    return <button onClick={(e) => starPress(e)} className="z-10 hover:bg-purple-400/40 dark:hover:bg-blue-300/40 bg-black/10 dark:bg-white/10 transition-colors duration-200 rounded-full p-2">
       <BookmarkPlus fill={starred ? "gold" : "transparent"} className="text-black" />
     </button>
   }
@@ -285,8 +285,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">
                         {quiz.description || "No description provided."}
                       </TooltipContent>
-                      </Tooltip>
-                    
+                      </Tooltip>                    
                   </Link> : quiz.type === "pdf" ? <Link href={`/app/${subject.toLowerCase()}/p/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                    
 
