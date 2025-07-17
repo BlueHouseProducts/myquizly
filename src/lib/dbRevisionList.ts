@@ -1,14 +1,13 @@
 "use server";
 
 import { Account, Client, Databases, ID, Models, Query } from "node-appwrite";
-import { Client as UClient, Account as UAccount } from "appwrite";
 
-import { dbData } from "./dbCompData";
+import { dbData, subjectData, subjectType } from "./dbCompData";
 import { getUserServerCurrent } from "@/comp/ssr/auth";
 
 type AddOrRemoveSubtopicType = {success: true, type: "created", document: any} | {success: true, type: "destroyed"} | {success: false, error: string}
 
-export async function AddOrRemoveSubtopic(subject: string, topic: string, subtopic: string, exists: boolean): Promise<AddOrRemoveSubtopicType> {
+export async function AddOrRemoveSubtopic(subject: subjectType, topic: string, subtopic: string, exists: boolean): Promise<AddOrRemoveSubtopicType> {
   const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
@@ -24,6 +23,27 @@ export async function AddOrRemoveSubtopic(subject: string, topic: string, subtop
     Query.equal("topic", topic),
     Query.equal("subtopic", subtopic),
   ]);
+
+  if (!subjectData[subject]) {
+    return {
+      success: false,
+      error: `Subject '${subject}' not found`
+    }
+  }
+
+  if (!subjectData[subject][topic]) {
+    return {
+      success: false,
+      error: `Topic '${topic}' not found`
+    }
+  }
+
+  if (!subjectData[subject][topic].subtopics.some(item => item.name === subtopic)) {
+    return {
+      success: false,
+      error: `Subtopic '${subtopic}' not found`
+    }
+  }
 
   async function create(userid: string) {    
     const d = await db.createDocument(dbData.users_db.id, dbData.users_db.collections.revision_list, ID.unique(), {
