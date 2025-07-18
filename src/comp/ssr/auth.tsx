@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
+import { Models } from "node-appwrite";
 
-export async function getUserServerCurrent() {
+export async function getUserServerCurrent(): Promise<Models.User<Models.Preferences> | false> {
   try { const cookieHeader = (await cookies()).toString();
 
   const res = await fetch(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT! + "/account", {

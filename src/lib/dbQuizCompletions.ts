@@ -1,8 +1,9 @@
 "use server";
 
-import { Client, Databases, ID, Permission, Query, Role, Users } from "node-appwrite";
+import { Client, Databases, ID, Models, Permission, Query, Role, Users } from "node-appwrite";
 import { dbData, subjectType } from "./dbCompData";
 import { UserAdmin } from "./dbQuiz";
+import { getUserServerCurrent } from "@/comp/ssr/auth";
 
 const client = new Client()
   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
@@ -13,13 +14,13 @@ const db = new Databases(client);
 const users = new Users(client);
 
 
-async function doesUserExist(userId: string) {
+async function doesUserExist(userId: string):  Promise<[true, Models.User<Models.Preferences>] | [false]> {
   try {
     const user = await users.get(userId);
-    return true; // User exists
+    return [true, user]; // User exists
   } catch (error: any) {
     if (error.code === 404) {
-      return false; // User not found
+      return [false]; // User not found
     }
     console.error("Error checking user existence:", error);
     throw error; // Other errors (e.g. auth issues)
@@ -51,9 +52,23 @@ export async function createUserCompletion(userId: string, quizId: string, subje
   // check if user exists
   try {
     const userExists = await doesUserExist(userId);
-    if (!userExists) {
+    if (!userExists[0]) {
       return {
         error: "User does not exist"
+      }
+    }
+
+    const loggedUser = await getUserServerCurrent();
+
+    if (!loggedUser) {
+      return {
+        error: "Invalid userId or quizId"
+      }
+    }
+
+    if (loggedUser.$id !== userExists[1].$id) {
+      return {
+        error: "Invalid userId or quizId"
       }
     }
 
