@@ -354,6 +354,9 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
   }
 
   return <div>
+    { admin && <div className="my-3 bg-black/20 py-2 rounded-full px-4">
+      <Database className="inline-block mx-2" /><span className="font-bold">You're an admin! </span> You can see DB links for quizlets. <button className="underline mb-2" onClick={() => setAdmin(false)}>Hide DB links</button>
+    </div> }
     <div className="overflow-x-hidden overflow-y-auto">
       {quizzesBySubtopic.map((subtopic, idx) => (
         subtopic.quizzes.length > 0 ? (
@@ -389,7 +392,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
               
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
               <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="lg:w-fit mr-4 lg:mr-0 flex flex-col gap-2 mt-2 p-2 pr-8 rounded-l-xl"><TooltipProvider>
-                {subtopic.quizzes.map((quiz) => <div key={quiz.$id}><Suspense fallback={<p>Loading</p>}>{admin && <Link href={quizConsoleUrls[quiz.$id] ? quizConsoleUrls[quiz.$id] : "#"}><Database /></Link>}</Suspense>{
+                {subtopic.quizzes.map((quiz) => <div key={quiz.$id}><Suspense fallback={<p>Loading Db link</p>}>{admin && <Link className="px-1 py-2 bg-blue-300 hover:bg-blue-400 rounded-full" href={quizConsoleUrls[quiz.$id] ? quizConsoleUrls[quiz.$id] : "#"}><Database className="inline-block text-black" /></Link>}</Suspense>{
                   quiz.type === "quick_quiz" ? <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                     
                     <Tooltip>
