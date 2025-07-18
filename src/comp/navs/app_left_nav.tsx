@@ -31,6 +31,10 @@ export function NavItem({ href, icon, label, active, onClick }: { href: string, 
 }
 
 export function AppLeftNav({title, children}: {title: string, children?: React.ReactNode}) {
+  const pn = usePathname();
+
+  //if (pn)
+  
   return <motion.nav initial={{x: -8}} animate={{x: 0}} className="min-w-32 sm:w-64 bg-pink-200 dark:bg-transparent p-4">
     <ul className="flex flex-col gap-3">
       <h3 className="text-black dark:text-white w-full text-center text-xl border-b-[1px] border-b-black dark:border-b-white pb-2">{capitalizeFirstLetter(title)}</h3>
