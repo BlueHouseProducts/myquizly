@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 export function TopicItem({ImageLogo, Title, Url, Badge}: {ImageLogo: any, Title: string, Url: string, Badge?: string}) {
-  return <Link href={`topics/${Url}`} className="md:hover:scale-105 rounded-2xl md:hover:rounded-3xl md:hover:bg-pink-200 md:dark:hover:bg-blue-800 transition-all flex w-full p-3 gap-2 md:gap-0 flex-row md:flex-col items-center justify-start md:justify-center text-center md:h-40 md:w-40">
+  return <Link href={`topics/${Url}`} className="active:bg-white/10 md:hover:scale-105 rounded-2xl md:hover:rounded-3xl md:hover:bg-pink-200 md:dark:hover:bg-blue-800 transition-all flex w-full p-3 gap-2 md:gap-0 flex-row md:flex-col items-center justify-start md:justify-center text-center md:h-40 md:w-40">
     <div className="hidden md:flex flex-row-reverse items-start w-full"><p className="items-end px-2 bg-pink-400 text-black rounded-full">{Badge}</p></div>
     <ImageLogo size={20} className="size-7 md:size-36 text-black dark:text-white" />
     <p className="md:mt-4 text-md transition-all select-none text-black dark:text-white">{Title}</p>

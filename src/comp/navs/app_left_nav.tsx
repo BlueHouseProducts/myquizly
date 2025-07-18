@@ -35,7 +35,7 @@ export function AppLeftNav({title, children}: {title: string, children?: React.R
 
   //if (pn)
   
-  return <motion.nav initial={{x: -8}} animate={{x: 0}} className="min-w-32 sm:w-64 bg-pink-200 dark:bg-transparent p-4">
+  return <motion.nav initial={{x: -8}} animate={{x: 0}} className="w-20 sm:w-64 bg-pink-200 dark:bg-transparent p-4">
     <ul className="flex flex-col gap-3">
       <h3 className="text-black dark:text-white w-full text-center text-xl border-b-[1px] border-b-black dark:border-b-white pb-2">{capitalizeFirstLetter(title)}</h3>
       
@@ -45,7 +45,7 @@ export function AppLeftNav({title, children}: {title: string, children?: React.R
 }
 
 export function AppLeftContents({children}: {children: React.ReactNode}) {
-  return <motion.div initial={{scale: 0.99, opacity: 0}} animate={{scale: 1, opacity: 1}} transition={{duration: 0.3, easings: ["easeInOut"], delay: 0.2}} className="overflow-y-auto pt-4 flex-1 pl-4 bg-pink-100 dark:bg-blue-950 rounded-tl-[12px]">
+  return <motion.div initial={{scale: 0.99, opacity: 0}} animate={{scale: 1, opacity: 1}} transition={{duration: 0.3, easings: ["easeInOut"], delay: 0.2}} className="overflow-y-auto pt-4 flex-1 pl-2 md:pl-4 bg-pink-100 dark:bg-blue-950 rounded-tl-[12px]">
     {children}
   </motion.div>
 }

@@ -143,6 +143,10 @@ export async function CreateQuizletDEV(subject: subjectType, quiz_data: string, 
 
 export async function UserAdmin(): Promise<boolean> {
   const authed_user_account = await getUserServerCurrent();
+
+  if (!authed_user_account) {
+    return false;
+  }
   
   try {
     return authed_user_account.labels.includes("admin");

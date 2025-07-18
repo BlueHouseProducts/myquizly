@@ -152,21 +152,21 @@ export default function QuizBuilder({
 
   if (!started) {
     return <div className="flex flex-col items-center justify-start gap-4 mr-4 h-full">
-      <QuizCard className="w-full p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+      <QuizCard className="w-full px-2 py-3 sm:px-6 sm:py-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
+        <div className="flex items-center flex-col gap-1 sm:flex-row sm:gap-0 justify-between mb-4">
+          <h2 className="text-2xl flex font-semibold text-gray-800 dark:text-white items-center gap-2">
             <BookOpenCheck className="w-6 h-6 text-pink-500" />
             {quiz.name}
-            <span className="px-2 py-0.5 ml-2 text-sm rounded-full bg-pink-400 text-black">
+            <span className="px-2 py-0.5 ml-2 text-sm rounded-full bg-pink-400 text-black hidden sm:block">
               {quiz.label.toUpperCase()}
             </span>
           </h2>
 
           <button
-            className={ started ? "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 dark:bg-gray-800 rounded " : motionDisabled ? "flex items-center gap-1 text-sm px-3 py-1 bg-pink-200 hover:bg-pink-300 dark:bg-gray-600 dark:hover:bg-gray-500 rounded transition" : "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition"}
+            className={ started ? "flex items-center gap-1 text-sm px-3 py-2 sm:py-1 bg-gray-200 dark:bg-gray-800 rounded " : motionDisabled ? "flex items-center gap-1 text-sm px-3 py-2 sm:py-1 bg-pink-200 hover:bg-pink-300 dark:bg-gray-600 dark:hover:bg-gray-500 rounded transition" : "flex items-center gap-1 text-sm px-3 py-2 sm:py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition"}
             onClick={() => { !started && (motionDisabled ? setMotionDisabled(false) : setMotionDisabled(true)) }}
           >
-            <ClockFading className="w-4 h-4" />
+            <ClockFading className="w-4 h-4 inline-block" />
             { started ? motionDisabled ? "Motion is disabled" : "Motion is enabled" : motionDisabled ? "Enable Motion" : "Disable Motion"}
           </button>
         </div>
@@ -178,11 +178,6 @@ export default function QuizBuilder({
             </p>
           )
         }
-
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
-          Part of <span className="font-medium">{quiz.topic}</span> • Type:{" "}
-          <span className="italic">Quick Quiz</span>
-        </p>
         
         { last_completion ? 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-gray-200">
@@ -208,7 +203,7 @@ export default function QuizBuilder({
         </div> }
       </QuizCard>
 
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
       <button
         onClick={() => {
           setStarted(true)
@@ -233,24 +228,24 @@ export default function QuizBuilder({
   return (
     <div className="flex flex-col items-center overflow-y-auto overflow-x-hidden justify-start gap-4 mr-4 h-full">
       <QuizCard className="w-full p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-1 sm:flex-row sm:gap-0 items-center justify-between mb-4">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
             <BookOpenCheck className="w-6 h-6 text-pink-500" />
             {quiz.name}
-            <span className="px-2 py-0.5 ml-2 text-sm rounded-full bg-pink-400 text-black">
+            <span className="px-2 py-0.5 ml-2 text-sm rounded-full bg-pink-400 text-black hidden sm:block">
               {quiz.label.toUpperCase()}
             </span>
           </h2>
 
           <button
-            className={ started ? "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 dark:bg-gray-800 rounded " : motionDisabled ? "flex items-center gap-1 text-sm px-3 py-1 bg-pink-200 hover:bg-pink-300 dark:bg-gray-600 dark:hover:bg-gray-500 rounded transition" : "flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition"}
+            className={ started ? "flex items-center gap-1 text-sm px-3 py-2 bg-gray-200 dark:bg-gray-800 rounded " : motionDisabled ? "flex items-center gap-1 text-sm px-3 py-2 bg-pink-200 hover:bg-pink-300 dark:bg-gray-600 dark:hover:bg-gray-500 rounded transition" : "flex items-center gap-1 text-sm px-3 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 rounded transition"}
             onClick={cancelQuiz}
           >
-            <CircleStop className="mx-2" /> Close Quiz
+            <CircleStop className="inline-block" /> Close Quiz
           </button>
         </div>
 
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
+        <p className="text-gray-600 dark:text-gray-300 mb-4 hidden sm:block">
           Part of <span className="font-medium">{quiz.topic}</span> • Type:{" "}
           <span className="italic">Quick Quiz</span>
         </p>
@@ -267,7 +262,7 @@ export default function QuizBuilder({
           form.handleSubmit();
         }}
         id="_MAIN_CONTROL_FORM"
-        className="w-full mt-2 mb-8 flex flex-col items-center justify-start gap-4 overflow-x-hidden flex-1 h-full"
+        className="w-full mt-2 mb-8 flex flex-col items-center justify-start gap-4 sm:overflow-x-hidden flex-1 h-full"
         >
           <AnimatePresence>
             {data.slice(0, currentIndex + 1).map((quizItem, index) => {

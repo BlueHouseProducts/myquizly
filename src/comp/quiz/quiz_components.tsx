@@ -47,7 +47,7 @@ export function QuizItem({ children, useMotion = true }: { children: React.React
 
 type Option = {
   o_id: string;
-  media_type: "text" | "image";
+  media_type: "text" | "image" | "audio";
   media: any;
 };
 
@@ -62,6 +62,67 @@ type MultipleChoiceProps = {
   quizData: any;
   ME: boolean;
 };
+
+function AudioOption({ option, selected, isCorrect, correctAnswerMedia, ME, ChooseItem }: any) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const playAudio = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering ChooseItem
+    if (!audioRef.current || selected) return;
+    audioRef.current.play();
+  };
+
+  let bgColor = selected
+    ? "bg-blue-100 dark:bg-white text-xl text-black"
+    : "bg-blue-100 dark:bg-white text-xl text-black";
+
+  const isThisSelected = selected === option.o_id;
+  if (isThisSelected && isCorrect !== null) {
+    bgColor = isCorrect
+      ? "bg-green-400 text-black border-2 border-black"
+      : "bg-red-400 text-black border-2 border-black";
+  }
+
+  return (
+    <div
+    key={option.o_id}
+    className={`flex-1 flex flex-col items-center justify-center rounded-3xl border-2 ${
+      selected && !isCorrect && option.o_id === correctAnswerMedia
+        ? "border-green-800/40"
+        : "border-transparent"
+    } ${bgColor} p-4 sm:p-6 md:p-8 transition-all duration-300 ease-in-out text-center shadow-sm ${
+      ME ? "activatable-button-motion" : ""
+    }`}
+  >
+    {/* Audio Button */}
+    <button
+      type="button"
+      onClick={playAudio}
+      className="bg-purple-200 text-black flex items-center gap-2 px-4 py-4 sm:py-2 rounded-full border-2 border-black hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 text-base sm:text-lg md:text-xl mb-4"
+      aria-label="Play audio"
+    >
+      <CirclePlay size={24} className="shrink-0" />
+      Play Audio
+    </button>
+
+    <audio ref={audioRef} className="hidden">
+      <source src={option.media} type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    {/* Choose Button */}
+    <button
+      type="button"
+      onClick={(e) => ChooseItem(option.o_id, e)}
+      className="bg-blue-400 text-black text-sm sm:text-base md:text-lg font-semibold px-6 py-4 sm:py-2 rounded-full border border-black hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-colors"
+    >
+      Choose This
+    </button>
+  </div>
+
+  );
+}
+
 
 export function MultipleChoice({
   options,
@@ -130,7 +191,7 @@ export function MultipleChoice({
 
     setTimeout(() => {
       onAnswered(correct as boolean);
-    }, ME ? 2000 : 1000);
+    }, ME ? 3500 : 3000);
 
     formObject.setValue(correct.toString());
   }
@@ -156,6 +217,7 @@ export function MultipleChoice({
           className="mx-auto mb-4"
         />
       ) : null}
+      <div className="w-full border-b-[1px] border-black sm:border-transparent block sm:hidden h-[1px] my-4 sm:my-0"></div>
       <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
         <source src={"/audio/correct-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
@@ -164,17 +226,29 @@ export function MultipleChoice({
         <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
       </audio>
-      <div className="flex flex-row gap-2 items-stretch justify-between">
+      <div className="flex flex-col md:flex-row gap-2 items-stretch justify-between">
         {(options ?? []).map((option) => {
           const isThisSelected = selected === option.o_id;
           let bgColor = selected
-            ? "bg-white text-xl text-black"
-            : "bg-white text-xl text-black hover:bg-fuchsia-200";
+            ? "bg-blue-100 dark:bg-white text-xl text-black"
+            : "bg-blue-100 dark:bg-white text-xl text-black hover:bg-blue-200";
 
           if (isThisSelected && isCorrect !== null) {
             bgColor = isCorrect
               ? "bg-green-400 text-black border-2 border-black"
-              : "bg-red-400 text-black border-2 border-black";
+              : "bg-red-400 text-black border-2 border-black ";
+          }
+
+          if (option.media_type === "audio") {
+            return <AudioOption
+              key={option.o_id}
+              option={option}
+              selected={selected}
+              isCorrect={isCorrect}
+              correctAnswerMedia={correctAnswerMedia}
+              ME={ME}
+              ChooseItem={ChooseItem}
+            />
           }
 
           return (
@@ -184,8 +258,8 @@ export function MultipleChoice({
               onClick={(e) => ChooseItem(option.o_id, e)}
               className={
                 selected && !isCorrect && option.o_id === correctAnswerMedia
-                  ? `flex-1 flex items-center justify-center rounded-full ${ME && "transition-all"} duration-300 ease-in-out cursor-pointer text-center ${ME && "activatable-button-motion"} ${bgColor} border-2 border-green-800/80`
-                  : `flex-1 flex items-center justify-center rounded-full ${ME && "transition-all"} duration-300 ease-in-out cursor-pointer text-center ${ME && "activatable-button-motion"} ${bgColor}`
+                  ? `flex-1 p-2 sm:p-0 flex items-center justify-center rounded-3xl ${ME && "transition-all"} duration-300 ease-in-out cursor-pointer text-center ${ME && "activatable-button-motion"} ${bgColor} border-2 border-green-800/40`
+                  : `flex-1 p-2 sm:p-0 flex items-center justify-center rounded-3xl ${ME && "transition-all"} duration-300 ease-in-out cursor-pointer text-center ${ME && "activatable-button-motion"} ${bgColor}`
               }
             >
               <div className="w-full h-full flex items-center justify-center px-4 py-2">
@@ -212,20 +286,19 @@ export function MultipleChoice({
                     };
 
                     return (
-                      <>
+                      <div className="mb-10 sm:mb-2">
                         <Link
                           href={"#"}
                           onClick={playAudio}
-                          className="bg-purple-200 text-black text-2xl flex flex-row gap-2 px-2 py-1 rounded-full hover:bg-purple-300 border-2 border-black"
+                          className=" bg-purple-200 text-black text-2xl flex flex-row gap-2 px-2 py-1 m-5 rounded-full hover:bg-purple-300 border-2 border-black"
                         >
-                          <CirclePlay size={30} />
-                          Play Audio
+                          <CirclePlay size={30} />(Play)
                         </Link>
                         <audio ref={audioRef}>
                           <source src={option.media} type="audio/mpeg" />
                           Your browser does not support the audio element.
                         </audio>
-                      </>
+                      </div>
                     );
                   })()
                 ) : null}
@@ -359,6 +432,7 @@ export function FillIn({
 
             return (
               <input
+                style={{textTransform: "lowercase"}}
                 key={inputKey}
                 ref={(el) => {
                   inputRefs.current[idx] = el;
@@ -715,27 +789,17 @@ export function ExamQ({
       handleInput(); // Initial adjustment
     }, []);
 
-    if (i) {
-      return (
-        <textarea
-          ref={textareaRef}
-          className="bg-blue-300/50 dark:bg-white w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default"
-          autoComplete="off"
-          spellCheck={false}
-          readOnly={true}
-          value={text}
-          name={`_quizcard_question_${questionData.qid}_answer`}
-          onInput={handleInput}
-          rows={1}
-        />
-      );
-    }
+    const baseClasses = "bg-blue-300/50 dark:bg-white text-center sm:text-start w-full max-w-full h-fit my-2 text-lg p-2 resize-none overflow-auto rounded-xl box-border";
+    const readOnlyClasses = "focus:outline-none focus:ring-0 focus:cursor-default";
+
     return (
       <textarea
         ref={textareaRef}
-        className="bg-blue-300/50 dark:bg-white w-full h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl"
+        className={`${baseClasses} ${i ? readOnlyClasses : ''}`}
         autoComplete="off"
         spellCheck={false}
+        readOnly={i}
+        value={i ? text : undefined}
         name={`_quizcard_question_${questionData.qid}_answer`}
         onInput={handleInput}
         rows={1}
@@ -745,6 +809,7 @@ export function ExamQ({
 
   return (
     <QuizCard>
+      {/* Audio elements remain the same */}
       <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
         <source src={"/audio/correct-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
@@ -753,12 +818,11 @@ export function ExamQ({
         <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
         Your browser does not support the audio element.
       </audio>
-      <div className="flex flex-col items-center w-full">
+
+      <div className="w-full max-w-full sm:flex sm:flex-col sm:items-center px-2">
         <div className="w-full">
           <h3 className="text-2xl font-bold text-black dark:text-white/90">Exam question</h3>
-          <p className=" text-black dark:text-white/80">{questionData.examq.q}</p>
-          <div></div>
-
+          <p className="text-black dark:text-white/80 break-words">{questionData.examq.q}</p>
           <AutoGrowingTextarea i={shown} />
         </div>
 
@@ -767,10 +831,10 @@ export function ExamQ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7 }}
-            className="rounded-xl m-2 bg-gray-200  text-black dark:text-white w-full p-2"
+            className="rounded-xl m-2 bg-gray-200 dark:bg-gray-700 text-black dark:text-white w-full p-2 break-words"
           >
-            <h3 className="font-bold  text-black">Mark Scheme</h3>
-            <p className=" text-black">{questionData.examq.a}</p>
+            <h3 className="font-bold">Mark Scheme</h3>
+            <p className="break-words">{questionData.examq.a}</p>
           </motion.div>
         )}
 
@@ -781,19 +845,19 @@ export function ExamQ({
             transition={{ delay: 0.8 }}
             animate={{ opacity: 1 }}
             onClick={ShowMarkScheme}
-            className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"
+            className="p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors mx-auto"
           >
             Show mark scheme
           </motion.button>
         ) : (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
             <button
               type="button"
               onClick={() => Continue(true)}
               className={
                 done
                   ? "p-5 rounded-full bg-white/20 cursor-default"
-                  : "w-fit p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"
+                  : "p-5 rounded-full bg-green-300 hover:bg-green-100 transition-colors"
               }
             >
               I was correct
@@ -804,7 +868,7 @@ export function ExamQ({
               className={
                 done
                   ? "p-5 rounded-full bg-white/20 cursor-default"
-                  : "w-fit p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"
+                  : "p-5 rounded-full bg-red-300 hover:bg-red-100 transition-colors"
               }
             >
               I was incorrect
@@ -815,7 +879,6 @@ export function ExamQ({
     </QuizCard>
   );
 }
-
 export function Answer({
   formObject,
   onAnswered,
@@ -855,7 +918,7 @@ export function Answer({
           readOnly={answered}
           spellCheck={false}
           className={
-            "bg-blue-300/50 dark:bg-white w-80 h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default " +
+            " bg-blue-300/50 dark:bg-white max-w-full w-80 h-fit my-2 text-lg p-2 resize-none overflow-hidden rounded-xl focus:outline-none focus:ring-0 focus:cursor-default " +
             (isCorrect === false && "text-red-700")
           }
           name={`_quizcard_question_${questionData.qid}_answer`}

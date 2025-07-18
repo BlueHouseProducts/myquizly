@@ -8,7 +8,7 @@ import { UserAdmin } from "@/lib/dbQuiz";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { Account, AppwriteException } from "appwrite";
-import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand, User, LogOut, HelpCircle, Terminal } from "lucide-react";
+import { LayoutDashboard, Calculator, Cpu, TestTube, Book, Sword, BookType, Music, Sparkle, Settings, CircleX, Menu, Expand, User, LogOut, HelpCircle, Terminal, ListCollapse } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ export function AppTopNavbar() {
         
         const jwt = await account.createJWT();
 
-        const isAdmin = await UserAdmin(jwt);
+        const isAdmin = await UserAdmin();
 
         setAdmin(isAdmin);
 
@@ -153,6 +153,7 @@ export function AppTopNavbar() {
       {isOpen && (
         <div className="lg:hidden absolute w-full flex-1 h-fit bg-black/40 backdrop-blur-md text-white/80">
           <Link prefetch href="/app/dashboard" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><LayoutDashboard />Overview</Link>
+          <Link prefetch href="/app/dashboard/subjects" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><ListCollapse />Subjects</Link>
           <Link prefetch href="/app/settings" onClick={() => setIsOpen(false)} className="hover:text-white w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-pink-300/5 px-4 py-2"><Settings />Settings</Link>
           <Link href="#" onClick={() => {setIsOpen(false); Logout()}} className="hover:text-red-200 text-red-500 w-full flex items-center flex-row gap-2 text-2xl transition-all hover:bg-red-500/50 px-4 py-2"><LogOut />Logout</Link>
         </div>

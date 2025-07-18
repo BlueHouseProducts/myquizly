@@ -357,7 +357,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
     { admin && <div className="my-3 bg-black/20 py-2 rounded-full px-4">
       <Database className="inline-block mx-2" /><span className="font-bold">You're an admin! </span> You can see DB links for quizlets. <button className="underline mb-2" onClick={() => setAdmin(false)}>Hide DB links</button>
     </div> }
-    <div className="overflow-x-hidden overflow-y-auto">
+    <div className=" overflow-y-auto">
       {quizzesBySubtopic.map((subtopic, idx) => (
         subtopic.quizzes.length > 0 ? (
           <div key={`${subtopic.quizzes.toString()}.${idx.toString()}`} className="mb-6">
@@ -391,13 +391,13 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
               </div>
               
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
-              <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="lg:w-fit mr-4 lg:mr-0 flex flex-col gap-2 mt-2 p-2 pr-8 rounded-l-xl"><TooltipProvider>
+              <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="lg:w-fit md:mr-4 lg:mr-0 flex flex-col gap-2 mt-2 p-2 md:pr-8 rounded-l-xl"><TooltipProvider>
                 {subtopic.quizzes.map((quiz) => <div key={quiz.$id}><Suspense fallback={<p>Loading Db link</p>}>{admin && <Link className="px-1 py-2 bg-blue-300 hover:bg-blue-400 rounded-full" href={quizConsoleUrls[quiz.$id] ? quizConsoleUrls[quiz.$id] : "#"}><Database className="inline-block text-black" /></Link>}</Suspense>{
-                  quiz.type === "quick_quiz" ? <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
+                  quiz.type === "quick_quiz" ? <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-0 sm:gap-2 overflow-hidden rounded-full md:ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                     
                     <Tooltip>
                       <TooltipTrigger>
-                        <div className="group-hover:bg-pink-500 group-hover:scale-105 transition-all h-full w-fit py-2 px-4 flex items-center justify-center text-black bg-pink-400"><Rabbit /></div>
+                        <div className="group-hover:bg-pink-500 group-hover:scale-105 transition-all h-full w-fit py-2 px-1 sm:px-4 flex items-center justify-center text-black bg-pink-400"><Rabbit /></div>
                       </TooltipTrigger>
 
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">Quick Quiz</TooltipContent>
@@ -430,19 +430,19 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
 
                     <Tooltip>
                       <TooltipTrigger className="ml-auto mr-2">
-                        <InfoIcon />
+                        <InfoIcon className="hidden sm:block" />
                       </TooltipTrigger>
 
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">
                         {quiz.description || "No description provided."}
                       </TooltipContent>
                       </Tooltip>                    
-                  </Link> : quiz.type === "pdf" ? <Link href={`/app/${subject.toLowerCase()}/p/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
+                  </Link> : quiz.type === "pdf" ? <Link href={`/app/${subject.toLowerCase()}/p/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-0 sm:gap-2 overflow-hidden rounded-full md:ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                    
 
                     <Tooltip>
                       <TooltipTrigger>
-                        <div className="group-hover:bg-pink-500 group-hover:scale-105  transition-all h-full w-fit py-2 px-4 flex items-center justify-center text-black bg-pink-400"><FileSpreadsheetIcon /></div>
+                        <div className="group-hover:bg-pink-500 group-hover:scale-105  transition-all h-full w-fit py-2 px-1 sm:px-4 flex items-center justify-center text-black bg-pink-400"><FileSpreadsheetIcon /></div>
                       </TooltipTrigger>
 
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">PDF</TooltipContent>
@@ -457,7 +457,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
 
                     <Tooltip>
                       <TooltipTrigger className="ml-auto mr-2">
-                        <InfoIcon />
+                        <InfoIcon className="hidden sm:block" />
                       </TooltipTrigger>
 
                       <TooltipContent onClick={e => {e.stopPropagation(); e.preventDefault();}} className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">
@@ -466,10 +466,10 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
                       </Tooltip>
                     
                   </Link> :
-                  quiz.type === "video" ? <Link href={`/app/${subject.toLowerCase()}/v/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
+                  quiz.type === "video" ? <Link href={`/app/${subject.toLowerCase()}/v/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-0 sm:gap-2 overflow-hidden rounded-full md:ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                     <Tooltip>
                       <TooltipTrigger>
-                        <div className="group-hover:bg-pink-500 group-hover:scale-105  transition-all h-full w-fit py-2 px-4 flex items-center justify-center text-black bg-pink-400"><Video /></div>
+                        <div className="group-hover:bg-pink-500 group-hover:scale-105  transition-all h-full w-fit py-2 px-1 sm:px-4 flex items-center justify-center text-black bg-pink-400"><Video /></div>
                       </TooltipTrigger>
 
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">Video</TooltipContent>
@@ -482,7 +482,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
 
                     <Tooltip>
                       <TooltipTrigger className="ml-auto mr-2">
-                        <InfoIcon />
+                        <InfoIcon className="hidden sm:block" />
                       </TooltipTrigger>
 
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">
@@ -490,10 +490,10 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
                       </TooltipContent>
                       </Tooltip>
                   </Link> :
-                  quiz.type === "web_link" ? <Link href={`/app/${subject.toLowerCase()}/link/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-2 overflow-hidden rounded-full ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
+                  quiz.type === "web_link" ? <Link href={`/app/${subject.toLowerCase()}/link/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-0 sm:gap-2 overflow-hidden rounded-full md:ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                     <Tooltip>
                       <TooltipTrigger>
-                        <div className="group-hover:bg-pink-500 group-hover:scale-105  transition-all h-full w-fit py-2 px-4 flex items-center justify-center text-black bg-pink-400"><LinkIcon /></div>
+                        <div className="group-hover:bg-pink-500 group-hover:scale-105  transition-all h-full w-fit py-2 px-1 sm:px-4 flex items-center justify-center text-black bg-pink-400"><LinkIcon /></div>
                       </TooltipTrigger>
 
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">Link</TooltipContent>
@@ -507,7 +507,7 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
 
                       <Tooltip>
                       <TooltipTrigger className="ml-auto mr-2">
-                        <InfoIcon />
+                        <InfoIcon className="hidden sm:block" />
                       </TooltipTrigger>
 
                       <TooltipContent className="bg-white dark:bg-gray-900 text-black dark:text-white text-md rounded-xl">
