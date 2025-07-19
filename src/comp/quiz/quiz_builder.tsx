@@ -145,6 +145,12 @@ export default function QuizBuilder({
   };
 
   const cancelQuiz = () => {
+    const x = document.getElementById("SLIDER_PROGRESS");
+
+    if (x) {
+      x.style.width = `0%`;
+    }
+    
     form.reset();
     setCurrentIndex(0);
     setStarted(false);
