@@ -376,23 +376,26 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
                     setOpenedSubTopics(prev => [...prev, subtopic.subtopicName as never]);
                   }
                 }}
-                className="flex flex-row items-center space-x-4 transition-colors hover:bg-pink-400/30 dark:hover:bg-blue-400/30 p-2 rounded-l-xl"
+                className="flex flex-col gap-1 sm:gap-0 sm:flex-row items-center space-x-4 transition-colors hover:bg-pink-400/30 dark:hover:bg-blue-400/30 p-2 rounded-l-xl"
               >
-                {openedSubTopics.includes(subtopic.subtopicName as never) ? <ChevronDown /> : <ChevronRight />}
+                {openedSubTopics.includes(subtopic.subtopicName as never) ? <ChevronDown className="w-full text-start sm:w-fit" /> : <ChevronRight className="w-full text-start sm:w-fit" />}
                 <h2 className="text-xl font-bold">
                   {subtopic.subtopicName}
                   
                 </h2>
+
+                <div className="flex flex-row items-center">
                 <p className={`mx-2 px-2 rounded-full bg-pink-400 text-black text-md`}>
                   ({subtopics[idx].codes[0].toUpperCase()}{" – "}{subtopics[idx].codes.slice(-1)[0].toUpperCase()})
                 </p>
 
                 <StarButton topic={topicName} subject={subject} subtopic={subtopic.subtopicName} />
+                </div>
               </div>
               
               { openedSubTopics.includes(subtopic.subtopicName as never) && (
               <motion.div initial={{scaleY: 0.95, x: -15}} animate={{scaleY: 1, x:0}} className="lg:w-fit md:mr-4 lg:mr-0 flex flex-col gap-2 mt-2 p-2 md:pr-8 rounded-l-xl"><TooltipProvider>
-                {subtopic.quizzes.map((quiz) => <div key={quiz.$id}><Suspense fallback={<p>Loading Db link</p>}>{admin && <Link className="px-1 py-2 bg-blue-300 hover:bg-blue-400 rounded-full" href={quizConsoleUrls[quiz.$id] ? quizConsoleUrls[quiz.$id] : "#"}><Database className="inline-block text-black" /></Link>}</Suspense>{
+                {subtopic.quizzes.map((quiz) => <div key={quiz.$id}><Suspense fallback={<p>Loading Db link</p>}>{admin && <Link className="px-1 py-1 sm:px-1 sm:y-2 bg-blue-300 hover:bg-blue-400 rounded-full" href={quizConsoleUrls[quiz.$id] ? quizConsoleUrls[quiz.$id] : "#"}><Database className="inline-block text-black" /></Link>}</Suspense>{
                   quiz.type === "quick_quiz" ? <Link href={`/app/${subject.toLowerCase()}/q/${quiz.$id}`} className="group transition-colors hover:bg-pink-600/50 hover:dark:bg-blue-800/50 flex flex-row gap-0 sm:gap-2 overflow-hidden rounded-full md:ml-10 bg-pink-600/30 dark:bg-blue-800 w-full" key={quiz.$id}>
                     
                     <Tooltip>

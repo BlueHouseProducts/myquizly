@@ -43,7 +43,7 @@ export default function Dashboard() {
   }, []);
   
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto sm:px-6 sm:py-8">
       
 
       {/* Placeholder content box */}

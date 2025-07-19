@@ -7,7 +7,7 @@ import {
   GetFillInItem,
   GetMultipleChoiceAnswer,
 } from "@/lib/dbQuiz";
-import { CirclePlay } from "lucide-react";
+import { CirclePlay, Fullscreen } from "lucide-react";
 import { animate } from "motion";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -86,7 +86,7 @@ function AudioOption({ option, selected, isCorrect, correctAnswerMedia, ME, Choo
   return (
     <div
     key={option.o_id}
-    className={`flex-1 flex flex-col items-center justify-center rounded-3xl border-2 ${
+    className={`flex-1 gap-4 flex flex-col items-center justify-center rounded-3xl border-2 ${
       selected && !isCorrect && option.o_id === correctAnswerMedia
         ? "border-green-800/40"
         : "border-transparent"
@@ -95,16 +95,19 @@ function AudioOption({ option, selected, isCorrect, correctAnswerMedia, ME, Choo
     }`}
   >
     {/* Audio Button */}
+    <div className="flex flex-row gap-1 items-center justify-center">
     <button
       type="button"
       onClick={playAudio}
-      className="bg-purple-200 text-black flex items-center gap-2 px-4 py-4 sm:py-2 rounded-full border-2 border-black hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 text-base sm:text-lg md:text-xl mb-4"
+      className="bg-purple-200 text-black gap-2 px-4 py-4 sm:py-2 rounded-full border-2 border-black hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 text-base sm:text-lg md:text-xl"
       aria-label="Play audio"
     >
-      <CirclePlay size={24} className="shrink-0" />
+      <CirclePlay size={24} className="shrink-0 inline-block" />
       Play Audio
     </button>
 
+    <Link className="bg-pink-200 hover:border-black border-2 border-transparent group m-4 p-1 lg:p-2 rounded-2xl" onClick={(e) => e.stopPropagation()} href={option.media} aria-label="View Image fullscreen" target="_blank"><Fullscreen /></Link>
+    </div>
     <audio ref={audioRef} className="hidden">
       <source src={option.media} type="audio/mpeg" />
       Your browser does not support the audio element.
@@ -266,12 +269,12 @@ export function MultipleChoice({
                 {option.media_type === "text" ? (
                   option.media
                 ) : option.media_type === "image" ? (
-                  <Image
+                  <><Image
                     src={option.media}
                     alt="Answer"
                     width={200}
                     height={50}
-                  />
+                  /><Link className="bg-pink-200 hover:border-black border-2 border-transparent group lg:m-4 p-1 lg:p-2 rounded-2xl" onClick={(e) => e.stopPropagation()} href={option.media} aria-label="View Image fullscreen" target="_blank"><Fullscreen /></Link></>
                 ) : option.media_type === "audio" ? (
                   (() => {
                     const audioRef = useRef<HTMLAudioElement>(null);

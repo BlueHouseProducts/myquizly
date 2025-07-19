@@ -246,7 +246,7 @@ export function FinalComponent({ quiz, ME, scoreText }: { quiz: any, ME: boolean
       {renderQuestionHeader(<Check className="text-pink-500" />, "Task Completed!")}
       <p className="text-xl mb-2">You completed {(quiz as any).name} and got {scoreText}</p>
       
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Link
           href={`#`}
           onClick={() => window.location.reload()}
