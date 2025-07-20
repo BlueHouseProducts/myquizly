@@ -128,7 +128,7 @@ export function SearchClient() {
             <div className="font-semibold">Subjects</div>
             <ul>
               {items.subjects.map((item, index) => (
-                <li key={`subject-${index}`}>
+                <li key={`subject-${index}`} className="my-2 md:my-0 sm:p-0 sm:text-current">
                   <a
                     href={`/app/${item.subjectKey}/topics`}
                     className="text-blue-600 dark:text-blue-300 hover:underline"
@@ -146,7 +146,7 @@ export function SearchClient() {
             <div className="font-semibold">Topics</div>
             <ul>
               {items.topics.map((item, index) => (
-                <li key={`topic-${index}`}>
+                <li key={`topic-${index}`} className="my-2 md:my-0 sm:p-0 sm:text-current">
                   <a
                     href={`/app/${item.subjectKey}/topics/${item.topicKey}`}
                     className="text-blue-600 dark:text-blue-300 hover:underline"
@@ -164,7 +164,7 @@ export function SearchClient() {
             <div className="font-semibold">Subtopics</div>
             <ul>
               {items.subtopics.map((item, index) => (
-                <li key={`subtopic-${index}`}>
+                <li key={`subtopic-${index}`} className="my-2 md:my-0 sm:p-0 sm:text-current">
                   <a
                     href={`/app/${item.subjectKey}/topics/${item.topicKey}`}
                     className="text-blue-600 dark:text-blue-300 hover:underline"
