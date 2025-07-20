@@ -1,31 +1,46 @@
-# quizly-mygcse
-## GCSE quiz platform
+# **quizly-mygcse**
 
-> This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A personal GCSE quiz platform for my needs (and hopefully others), while getting experience in the coding world.
 
-## Getting Started
+## Installation
 
-```bash
-npm install
+### Setup the codebase
+Clone the repo
+   - With git: `git clone https://github.com/BlueHouseProducts/quizly-mygcse.git`
+   - With the Github CLI: `gh repo clone BlueHouseProducts/quizly-mygcse`
 
-npm run dev
-npm run start
-```
+### Setup Appwrite
+- You can [self host Appwrite](https://appwrite.io/docs/advanced/self-hosting) or use the [Appwrite cloud](https://cloud.appwrite.io)
+- Install the [Appwrite CLI](https://appwrite.io/docs/tooling/command-line/installation)<br>
+  *(With npm: `npm install -g appwrite-cli`)*
 
-## Setting Up Appwrite (Windows)
-> 📦 Make sure [Docker Desktop](https://www.docker.com/products/docker-desktop/) is installed and running.
+### Set Up Your Appwrite Project
+We'll use the Appwrite CLI to set up the project.
 
-Run this command in your terminal:
+1. **Log in to the Appwrite CLI**
+    - Run `appwrite login`
+    - If you're using a self-hosted instance you need to include the endpoint:
+        ```bash
+        appwrite login --endpoint "<URL_HERE>"
+        ```
+2. Push the project configuration to appwrite
 
-bat`docker compose up -d` in root/appwrite (where `docker-compose.yml` is)
+    We'll use the appwrite push command. You'll be prompted to select one option, please select the following options (only one can be selected each time you run the command):
 
-Turn off: bat`docker compose down` in same place.
+    - Settings
 
-> Setup:
-```bat
-docker run -it --rm ^
-    --volume //var/run/docker.sock:/var/run/docker.sock ^
-    --volume "%cd%"/appwrite:/usr/src/code/appwrite:rw ^
-    --entrypoint="install" ^
-    appwrite/appwrite:1.7.3
-```
+    - Functions
+
+    - Collections
+
+    - Teams
+
+    If you're unsure what to select, just run appwrite push for each option — it’s safe, and if there's nothing to push, nothing will happen. (And I might have forgotten one, I've not tried this yet)
+
+### Last steps
+1. Run `npm install` to install all npm packages used in the project
+2. **TODO**: To add the quizlets to the database, run `npm populate`
+
+Let's get started! Either:
+- Run `npm run dev` to start the developer server
+- Build the project with `npm run build` and start it with `npm run start`
