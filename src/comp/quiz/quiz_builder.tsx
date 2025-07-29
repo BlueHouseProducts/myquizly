@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { AnimatePresence } from "framer-motion";
 import { QuizCard, QuizItem } from "./quiz_components";
@@ -104,6 +104,9 @@ export default function QuizBuilder({
   const [motionDisabled, setMotionDisabled] = useState(false);
 
   const [last_completion, setLastCompletion] = useState<any>(null);
+
+  const correctAnswerSound = useRef<HTMLAudioElement>(null);
+  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
 
   useEffect(() => {
@@ -232,6 +235,15 @@ export default function QuizBuilder({
 
 
   return (
+    <><audio ref={correctAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/correct-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
+      <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
+    
     <div className="flex flex-col items-center overflow-y-auto overflow-x-hidden justify-start gap-4 mr-4 h-full">
       <QuizCard className="w-full p-6 border rounded-lg shadow-sm bg-white dark:bg-gray-900">
         <div className="flex flex-col gap-1 sm:flex-row sm:gap-0 items-center justify-between mb-4">
@@ -278,31 +290,31 @@ export default function QuizBuilder({
 
               if (type === "multiple_choice") { 
                 return (
-                  <MultipleChoiceHolder ME={!motionDisabled} key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} questionNumber={index + 1} quiz={quiz} quizItem={quizItem} />
+                  <MultipleChoiceHolder correctAudio={correctAnswerSound} incorrectAudio={incorrectAnswerSound} ME={!motionDisabled} key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} questionNumber={index + 1} quiz={quiz} quizItem={quizItem} />
                 );
               }
 
               if (type === "fill_in") {
                 return (
-                  <FillInHolder ME={!motionDisabled}  key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} questionNumber={questionNumber} />
+                  <FillInHolder correctAudio={correctAnswerSound} incorrectAudio={incorrectAnswerSound} ME={!motionDisabled}  key={questionNumber} id={id} form={form} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} questionNumber={questionNumber} />
                 );
               }
 
               if (type === "flipcard") {
                 return (
-                 <FlipcardHolder ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
+                 <FlipcardHolder correctAudio={correctAnswerSound} incorrectAudio={incorrectAnswerSound} ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
                 );
               }
 
               if (type === "examq") {
                 return (
-                  <ExamQHolder ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
+                  <ExamQHolder correctAudio={correctAnswerSound} incorrectAudio={incorrectAnswerSound} ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} quiz={quiz} form={form} questionNumber={questionNumber} />
                 );
               }
 
               if (type === "answer") {
                 return (
-                  <AnswerHolder ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} form={form} questionNumber={questionNumber} />
+                  <AnswerHolder correctAudio={correctAnswerSound} incorrectAudio={incorrectAnswerSound} ME={!motionDisabled}  key={questionNumber} id={id} handleAnswered={handleAnswered} quizItem={quizItem} form={form} questionNumber={questionNumber} />
                 );
               }
 
@@ -322,6 +334,6 @@ export default function QuizBuilder({
           </AnimatePresence>
       </form>
       
-    </div>
+    </div></>
   );
 }

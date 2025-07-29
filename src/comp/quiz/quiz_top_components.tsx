@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Answer, ExamQ, FillIn, Flipcards, MultipleChoice, QuizItem } from "./quiz_components";
 import { ArrowLeftCircle, Check, CheckSquare, FlipVertical, FolderOutput, ListChecks, MinusSquare, NotepadText, RefreshCcw, SquareStack } from "lucide-react";
 import Link from "next/link";
@@ -14,7 +14,8 @@ export function MultipleChoiceHolder({
   form,
   handleAnswered,
   quiz,
-  ME
+  ME,
+  correctAudio, incorrectAudio
 }: {
   quizItem: any;
   id: string;
@@ -23,6 +24,9 @@ export function MultipleChoiceHolder({
   handleAnswered: () => void;
   quiz: any;
   ME: boolean;
+
+  correctAudio: React.RefObject<HTMLAudioElement | null>;
+  incorrectAudio: React.RefObject<HTMLAudioElement | null>;
 }) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
@@ -61,6 +65,9 @@ export function MultipleChoiceHolder({
                 subject={quiz.subject}
                 quizData={quizItem}
                 ME={ME}
+
+                correctAnswer={correctAudio}
+                incorrectAnswer={incorrectAudio}
               />
             )
           }
@@ -70,7 +77,7 @@ export function MultipleChoiceHolder({
   );
 }
 
-export function FillInHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean}) {
+export function FillInHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME, correctAudio, incorrectAudio}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean, correctAudio: React.RefObject<HTMLAudioElement | null>, incorrectAudio: React.RefObject<HTMLAudioElement | null>}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -102,6 +109,9 @@ export function FillInHolder({id, handleAnswered, quizItem, quiz, form, question
                 onAnswered={handleAnsweredLocal}
                 questionData={quizItem}
                 quizData={quiz}
+                
+                correctAnswer={correctAudio}
+                incorrectAnswer={incorrectAudio}
               />
             )
           }
@@ -110,7 +120,7 @@ export function FillInHolder({id, handleAnswered, quizItem, quiz, form, question
   </QuizItem>
 }
 
-export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean}) {
+export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME, correctAudio, incorrectAudio}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean, correctAudio: React.RefObject<HTMLAudioElement | null>, incorrectAudio: React.RefObject<HTMLAudioElement | null>}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -143,6 +153,9 @@ export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questi
                 onAnswered={handleAnsweredLocal}
                 questionData={quizItem}
                 quizData={quiz}
+
+                correctAnswer={correctAudio}
+                incorrectAnswer={incorrectAudio}
               />
             )
           }
@@ -151,7 +164,7 @@ export function FlipcardHolder({id, handleAnswered, quizItem, quiz, form, questi
   </QuizItem>
 }
 
-export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean}) {
+export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionNumber, ME, correctAudio, incorrectAudio}: {id: string, handleAnswered: () => void, quizItem: any, quiz: any, form: any, questionNumber: number, ME: boolean, correctAudio: React.RefObject<HTMLAudioElement | null>, incorrectAudio: React.RefObject<HTMLAudioElement | null>}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -183,6 +196,9 @@ export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionN
                 onAnswered={handleAnsweredLocal}
                 questionData={quizItem}
                 quizData={quiz}
+
+                correctAnswer={correctAudio}
+                incorrectAnswer={incorrectAudio}
               />
             )
           }
@@ -191,7 +207,7 @@ export function ExamQHolder({id, handleAnswered, quizItem, quiz, form, questionN
   </QuizItem>
 }
 
-export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber, ME}: {id: string, handleAnswered: () => void, quizItem: any, form: any, questionNumber: number, ME: boolean}) {
+export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber, ME, correctAudio, incorrectAudio}: {id: string, handleAnswered: () => void, quizItem: any, form: any, questionNumber: number, ME: boolean, correctAudio: React.RefObject<HTMLAudioElement | null>, incorrectAudio: React.RefObject<HTMLAudioElement | null>}) {
   const [answered, setAnswered] = useState(false);
   const [correct, setCorrect] = useState(false);
 
@@ -222,6 +238,9 @@ export function AnswerHolder({id, handleAnswered, quizItem, form, questionNumber
                 formObject={field}
                 onAnswered={handleAnsweredLocal}
                 questionData={quizItem}
+
+                correctAnswer={correctAudio}
+                incorrectAnswer={incorrectAudio}
               />
             )
           }

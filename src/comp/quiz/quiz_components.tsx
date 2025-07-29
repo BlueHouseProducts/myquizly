@@ -12,7 +12,7 @@ import { animate } from "motion";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import {
+import React, {
   ChangeEventHandler,
   RefObject,
   useEffect,
@@ -61,6 +61,9 @@ type MultipleChoiceProps = {
   questionid: string;
   quizData: any;
   ME: boolean;
+
+  correctAnswer: React.RefObject<HTMLAudioElement | null>;
+  incorrectAnswer: React.RefObject<HTMLAudioElement | null>;
 };
 
 function AudioOption({ option, selected, isCorrect, correctAnswerMedia, ME, ChooseItem }: any) {
@@ -136,14 +139,13 @@ export function MultipleChoice({
   subject,
   questionid,
   quizData,
-  ME
+  ME,
+  correctAnswer,
+  incorrectAnswer
 }: MultipleChoiceProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [correctAnswerMedia, setCorrectAnswerMedia] = useState<any>(null);
-
-  const correctAnswerSound = useRef<HTMLAudioElement>(null);
-  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   async function ChooseItem(
     o_id: string,
@@ -185,9 +187,9 @@ export function MultipleChoice({
     }
 
     if (correct === true) {
-      correctAnswerSound.current?.play();
+      correctAnswer.current?.play();
     } else {
-      incorrectAnswerSound.current?.play();
+      incorrectAnswer.current?.play();
     }
 
     setIsCorrect(correct as boolean);
@@ -221,14 +223,6 @@ export function MultipleChoice({
         />
       ) : null}
       <div className="w-full border-b-[1px] border-black sm:border-transparent block sm:hidden h-[1px] my-4 sm:my-0"></div>
-      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
-      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
       <div className="flex flex-col md:flex-row gap-2 items-stretch justify-between">
         {(options ?? []).map((option) => {
           const isThisSelected = selected === option.o_id;
@@ -360,11 +354,15 @@ export function FillIn({
   onAnswered,
   questionData,
   quizData,
+  correctAnswer,
+  incorrectAnswer
 }: {
   formObject: any;
   onAnswered: any;
   questionData: any;
   quizData: any;
+  correctAnswer: React.RefObject<HTMLAudioElement | null>;
+  incorrectAnswer: React.RefObject<HTMLAudioElement | null>;
 }) {
   const [answeredElms, setAE] = useState<any>([]);
   const [isCorrect, setCorrect] = useState<boolean | null>(null);
@@ -372,9 +370,6 @@ export function FillIn({
   const [filledValues, setFilledValues] = useState<{ [key: number]: string }>(
     {}
   );
-
-  const correctAnswerSound = useRef<HTMLAudioElement>(null);
-  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   // ADD: Refs to each input
   const inputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
@@ -398,7 +393,7 @@ export function FillIn({
 
   function StateAnsweredAll(val: string) {
     if (val === "true") {
-      correctAnswerSound.current?.play();
+      correctAnswer.current?.play();
       setCorrect(true);
     } else {
       setCorrect(false);
@@ -416,14 +411,6 @@ export function FillIn({
 
   return (
     <QuizCard>
-      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
-      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
       <p className="text-black dark:text-white text-center text-xl pb-4 p-2">
         {questionData.fill_in.title}
       </p>
@@ -516,7 +503,7 @@ export function FillIn({
         <button
           type="button"
           onClick={() => {
-            incorrectAnswerSound.current?.play();
+            incorrectAnswer.current?.play();
             if (answered) {
               return;
             }
@@ -586,21 +573,24 @@ export function Flipcards({
   questionData,
   quizData,
   ME,
+
+  correctAnswer,
+  incorrectAnswer
 }: {
   formObject: any;
   onAnswered: any;
   questionData: any;
   quizData: any;
   ME: boolean;
+
+  correctAnswer: React.RefObject<HTMLAudioElement | null>;
+  incorrectAnswer: React.RefObject<HTMLAudioElement | null>;
 }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [cont, setContinue] = useState(false);
 
   const flipCard = useRef<HTMLDivElement>(null);
   const pItem = useRef<HTMLParagraphElement>(null);
-
-  const correctAnswerSound = useRef<HTMLAudioElement>(null);
-  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   function Flip() {
     if (isFlipped) {
@@ -642,9 +632,9 @@ export function Flipcards({
     }
 
     if (correct) {
-      correctAnswerSound.current?.play();
+      correctAnswer.current?.play();
     } else {
-      incorrectAnswerSound.current?.play();
+      incorrectAnswer.current?.play();
     }
 
     formObject.setValue(correct.toString());
@@ -655,14 +645,6 @@ export function Flipcards({
 
   return (
     <QuizCard>
-      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
-      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
       <div className="flex flex-col gap-4 items-center justify-center">
         <motion.div
           onClick={Flip}
@@ -728,20 +710,24 @@ export function ExamQ({
   onAnswered,
   questionData,
   quizData,
+
+  correctAnswer,
+  incorrectAnswer
 }: {
   formObject: any;
   onAnswered: any;
   questionData: any;
   quizData: any;
+
+  correctAnswer: React.RefObject<HTMLAudioElement | null>;
+  incorrectAnswer: React.RefObject<HTMLAudioElement | null>;
+  
 }) {
   const [shown, setShown] = useState(false);
   const [done, setDone] = useState(false);
 
   const [text, setText] = useState<string | undefined>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const correctAnswerSound = useRef<HTMLAudioElement>(null);
-  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   function ShowMarkScheme() {
     if (shown) {
@@ -768,10 +754,10 @@ export function ExamQ({
     }
 
     if (correct) {
-      correctAnswerSound.current?.play();
+      correctAnswer.current?.play();
       formObject.setValue("true");
     } else {
-      incorrectAnswerSound.current?.play();
+      incorrectAnswer.current?.play();
       formObject.setValue("false");
     }
 
@@ -812,16 +798,6 @@ export function ExamQ({
 
   return (
     <QuizCard>
-      {/* Audio elements remain the same */}
-      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
-      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
-
       <div className="w-full max-w-full sm:flex sm:flex-col sm:items-center px-2">
         <div className="w-full">
           <h3 className="text-2xl font-bold text-black dark:text-white/90">Exam question</h3>
@@ -882,35 +858,30 @@ export function ExamQ({
     </QuizCard>
   );
 }
+
 export function Answer({
   formObject,
   onAnswered,
   questionData,
+  correctAnswer,
+  incorrectAnswer
 }: {
   formObject: any;
   onAnswered: any;
   questionData: any;
+
+  correctAnswer: React.RefObject<HTMLAudioElement | null>;
+  incorrectAnswer: React.RefObject<HTMLAudioElement | null>;
 }) {
   const [answered, setAnswered] = useState(false);
   const [value, setValue] = useState<string>("");
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-
-  const correctAnswerSound = useRef<HTMLAudioElement>(null);
-  const incorrectAnswerSound = useRef<HTMLAudioElement>(null);
 
   const RealAnswer = questionData.answer_.a;
   const Answers = questionData.answer_.sa;
 
   return (
     <QuizCard>
-      <audio ref={correctAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/correct-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
-      <audio ref={incorrectAnswerSound} autoPlay={false} className="hidden">
-        <source src={"/audio/incorrect-answer.wav"} type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
       <div className="flex flex-col items-center w-full">
         <h4 className="text-2xl text-black dark:text-white">{questionData.answer_.q}</h4>
 
@@ -934,7 +905,7 @@ export function Answer({
               Answers.map((a: string) => a.toLowerCase()).includes(inputValue)
             ) {
               if (answered) return;
-              correctAnswerSound.current?.play();
+              correctAnswer.current?.play();
               setIsCorrect(true);
 
               setValue(RealAnswer);
@@ -953,7 +924,7 @@ export function Answer({
                 return;
               }
 
-              incorrectAnswerSound.current?.play();
+              incorrectAnswer.current?.play();
               setIsCorrect(false);
 
               setValue(RealAnswer);
