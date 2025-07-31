@@ -1,4 +1,4 @@
-import { Axe, BookA, Calculator, CircleUser, Cpu, FileWarning, Flag, Globe } from "lucide-react";
+import { Axe, BookA, Calculator, CircleUser, Cpu, FileWarning, Flag, Globe, Square } from "lucide-react";
 import { ReactElement } from "react";
 
 type subjectType = "maths" | "cs" | "history" | "french" | "english" | "rs" | "music" | "biology" | "chemistry" | "physics";
@@ -63,6 +63,17 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
         }
       ]
     },
+    geo: {
+      name: "Geometry",
+      id: "geo",
+      icon: Square,
+      subtopics: [
+        {
+          codes: setCodes(["g14", "g15", "g16", "g17", "g18", "g19", "g20", "g21", "g22", "g23"]),
+          name: "Mensuration and calculation"
+        }
+      ]
+    }
   },
 
   //science: {
