@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+
+    "pull:quizes": "node scripts/pull_db_quizes.js "
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^12.8.0",
