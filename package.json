@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-
-    "pull:quizes": "node scripts/pull_db_quizes.js "
+    "pull:quizes": "node scripts/pull_db_quizes.js ",
+    "push:quizes": "node scripts/push_db_quizes.js "
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^12.8.0",
@@ -20,6 +20,7 @@
     "appwrite": "^18.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.1",
     "lucide-react": "^0.511.0",
     "motion": "^12.12.2",
     "next": "^15.3.2",

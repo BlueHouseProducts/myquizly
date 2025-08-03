@@ -1,4 +1,5 @@
 const fs = require('fs');
+require('dotenv').config();
 const { Client, Databases } = require('node-appwrite');
 
 const databaseId = process.argv[2];
@@ -18,7 +19,7 @@ Hint:
   Make sure your environment variables for Appwrite are set correctly.
     - NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT
     - NEXT_PUBLIC_APPWRITE_PROJECT_ID
-    - APPWRITE_API_KEY
+    - API_KEY
 `);
     process.exit(1);
 }
@@ -26,7 +27,7 @@ Hint:
 const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setKey(process.env.API_KEY);
 
 const databases = new Databases(client);
 

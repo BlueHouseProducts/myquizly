@@ -1,0 +1,56 @@
+{
+  "68358ff6000ec3022f90": [
+    {
+      "name": "Trigonometry",
+      "label": "g20",
+      "topic": "geo",
+      "quiz_data": "[\n  {\n    \"q_id\": \"1\",\n    \"type\": \"answer\",\n    \"answer_\": {\n      \"a\": \"Right angled triangles\",\n      \"q\": \"What type of triangles do you use Trigonometry for?\",\n      \"sa\": [\n        \"right triangle\",\n        \"right angled\",\n        \"90 triangle\"\n      ]\n    },\n    \"explanation\": \"You need a hypotenuse to use Trigonometry: only right angled triangles have one.\"\n  },\n  {\n    \"q_id\": \"2\",\n    \"type\": \"multiple_choice\",\n    \"multiple_choice\": {\n      \"title\": \"What is the unknown angle shown with?\",\n      \"title_media\": \"text\",\n      \"options\": [\n        {\n          \"o_id\": \"1\",\n          \"media_type\": \"text\",\n          \"media\": \"𝑥\"\n        },\n        {\n          \"o_id\": \"2\",\n          \"media_type\": \"text\",\n          \"media\": \"θ\"\n        },\n        {\n          \"o_id\": \"3\",\n          \"media_type\": \"text\",\n          \"media\": \"∐\"\n        }\n      ]\n    },\n    \"answer\": \"2\"\n  },\n  {\n    \"q_id\": \"3\",\n    \"type\": \"fill_in\",\n    \"fill_in\": {\n      \"title\": \"Complete the equation\",\n      \"text\": [\"Sine = \", \"__GAP__\", \"/Hypotenuse\"]\n    },\n    \"answer\": \"opposite\"\n  },\n  {\n    \"q_id\": \"4\",\n    \"type\": \"flipcard\",\n    \"flipcard\": {\n      \"q\": \"If you had the Opposite and Hypotenuse, how would you find θ?\",\n      \"a\": \"θ = sin⁻¹(opposite ÷ hypotenuse)\"\n    }\n  },\n  {\n    \"q_id\": \"5\",\n    \"type\": \"answer\",\n    \"answer_\": {\n      \"a\": \"Hypotenuse\",\n      \"q\": \"In a right-angled triangle, the longest side is called what?\",\n      \"sa\": [\"hypotenuse\"]\n    }\n  },\n  {\n    \"q_id\": \"6\",\n    \"type\": \"fill_in\",\n    \"fill_in\": {\n      \"title\": \"Complete the equation\",\n      \"text\": [\"To find θ using the tangent, we need the Opposite and \", \"__GAP__\", \".\", \"We use the formula θ = tan⁻¹(Opposite/\", \"__GAP__\", \")\"]\n    },\n    \"answer\": \"adjacent,adjacent\"\n  }\n]",
+      "type": "quick_quiz",
+      "description": "Trig quiz",
+      "$id": "688b4433000cab00d1bc",
+      "$createdAt": "2025-07-31T10:23:32.463+00:00",
+      "$updatedAt": "2025-07-31T10:41:39.084+00:00",
+      "$permissions": [],
+      "$databaseId": "68358fde0037593b1096",
+      "$collectionId": "68358ff6000ec3022f90"
+    }
+  ],
+  "6836fbb9000f0443a907": [],
+  "68385d2d000d96fc007f": [],
+  "6838605c003214655265": [],
+  "68386e6800017e81c56a": [],
+  "68386f840015553c0b2e": [],
+  "68387118000f1802d0ad": [],
+  "68752c790024f56bb436": [
+    {
+      "name": "cool test link",
+      "topic": "cellbio",
+      "label": "4.1.1.1",
+      "quiz_data": "{\n  \"url\": \"https://roblox.com\"\n}",
+      "type": "web_link",
+      "description": "test link to test science seperation",
+      "$id": "68752fe0002f94305ebd",
+      "$createdAt": "2025-07-14T16:27:12.127+00:00",
+      "$updatedAt": "2025-07-14T16:27:12.127+00:00",
+      "$permissions": [],
+      "$databaseId": "68358fde0037593b1096",
+      "$collectionId": "68752c790024f56bb436"
+    }
+  ],
+  "68752ce400034041ab16": [],
+  "68752d2a000237a02a78": [],
+  "6877caed00204de1c72f": [
+    {
+      "subjectName": "biology",
+      "topicName": "cellbio",
+      "$id": "6877e16a003b8239e8d5",
+      "$createdAt": "2025-07-16T17:29:14.968+00:00",
+      "$updatedAt": "2025-07-16T17:41:58.263+00:00",
+      "$permissions": [
+        "read(\"users\")"
+      ],
+      "$databaseId": "68358fde0037593b1096",
+      "$collectionId": "6877caed00204de1c72f"
+    }
+  ]
+}
