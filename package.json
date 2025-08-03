@@ -9,7 +9,8 @@
     "lint": "next lint",
     "pull:quizes": "node scripts/pull_db_quizes.js ",
     "push:quizes": "node scripts/push_db_quizes.js ",
-    "clear:quizes":  "node scripts/clear_db_quizes.js "
+    "clear:quizes":  "node scripts/clear_db_quizes.js ",
+    "doctor": "node scripts/doctor.js "
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^12.8.0",
