@@ -39,7 +39,7 @@ We'll use the Appwrite CLI to set up the project.
 
 ### Last steps
 1. Run `npm install` to install all npm packages used in the project
-2. **TODO**: To add the quizlets to the database, run `npm populate`
+2. To add the quizlets to the database, install the latest quizlet data at [the github page](https://github.com/BlueHouseProducts/quizly-mygcse) (you should do this whenever a new update comes out), run `npm run push:quizes {document_id} {json file e.g. [v0.1.0_data.json] }`
 
 Let's get started! Either:
 - Run `npm run dev` to start the developer server
