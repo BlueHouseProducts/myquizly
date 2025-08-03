@@ -5,8 +5,6 @@ const { Client, Databases, ID } = require('node-appwrite');
 const databaseId = process.argv[2];
 const outputPath = process.argv[3] || 'export.json';
 
-console.log(flags)
-
 if (!databaseId) {
     console.error(`
 Missing databaseId field
