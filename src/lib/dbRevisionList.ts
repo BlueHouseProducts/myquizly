@@ -17,6 +17,11 @@ export async function AddOrRemoveSubtopic(subject: subjectType, topic: string, s
 
   const user = await getUserServerCurrent();
 
+  if (!user) { return {
+    success: false,
+    error: "An error occured getting current user"
+  } }
+
   const attempted = await db.listDocuments(dbData.users_db.id, dbData.users_db.collections.revision_list, [
     Query.equal("user_id", user.$id),
     Query.equal("subject", subject),
@@ -46,12 +51,14 @@ export async function AddOrRemoveSubtopic(subject: subjectType, topic: string, s
   }
 
   async function create(userid: string) {    
+    if (!user) { return }
+    
     const d = await db.createDocument(dbData.users_db.id, dbData.users_db.collections.revision_list, ID.unique(), {
       user_id: userid,
       subject: subject,
       topic: topic,
       subtopic: subtopic
-    }, [
+    }, [      
       Permission.read(Role.user(user.$id))
     ]);
 
@@ -101,6 +108,8 @@ export async function SubtopicHasItem(subject: string, topic: string, subtopic: 
   const db = new Databases(client);
 
   const user = await getUserServerCurrent();
+
+  if (!user) { return false }
 
   const attempted = await db.listDocuments(dbData.users_db.id, dbData.users_db.collections.revision_list, [
     Query.equal("user_id", user.$id),
