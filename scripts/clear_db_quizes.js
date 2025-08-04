@@ -9,11 +9,16 @@ const client = new Client()
     .setKey(process.env.API_KEY);
 
 const databases = new Databases(client);
-const databaseId = process.argv[2];
+let databaseId = process.argv[2];
+
+if (databaseId === "$default$" || databaseId === "@default@") {
+  databaseId = "68358fde0037593b1096"
+}
 
 if (!databaseId) {
     console.error(`
-Missing databaseId field
+Missing databaseId field, use %default% or @default@ to use default id instead
+(e.g. npm run clear:quizes %default%)
 
 Usage:
   npm run clear:quizes <DATABASE_ID>
@@ -30,6 +35,7 @@ Hint:
     process.exit(1);
 }
 
+console.log(`Using database id ${databaseId}\n`);
 
 const rl = readline.createInterface({
   input: process.stdin,

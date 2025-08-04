@@ -57,7 +57,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "Maths",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -122,7 +122,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "Computer Science",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -187,7 +187,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "English",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "topic",
@@ -252,7 +252,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "History",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "topic",
@@ -317,7 +317,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "French",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -382,7 +382,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "Music",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -447,7 +447,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "RS",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -512,7 +512,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "Biology",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -577,7 +577,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "Chemistry",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -642,7 +642,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "Physics",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -800,7 +800,7 @@
             "databaseId": "68358fde0037593b1096",
             "name": "Current_Weekly",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "subjectName",

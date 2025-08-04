@@ -1,13 +1,18 @@
-require('dotenv').config();
-const fs = require('fs');
-const { Client, Databases, ID } = require('node-appwrite');
+require("dotenv").config();
+const fs = require("fs");
+const { Client, Databases, ID } = require("node-appwrite");
 
-const databaseId = process.argv[2];
-const outputPath = process.argv[3] || 'export.json';
+let databaseId = process.argv[2];
+const outputPath = process.argv[3] || "export.json";
+
+if (databaseId === "$default$" || databaseId === "@default@") {
+  databaseId = "68358fde0037593b1096"
+}
 
 if (!databaseId) {
-    console.error(`
-Missing databaseId field
+  console.error(`
+Missing databaseId field, use %default% to or @default@ use default id instead
+(e.g. npm run push:quizes %default%)
 
 Usage:
   npm run push:quizes <DATABASE_ID> [inputPath (export.json)]
@@ -21,38 +26,49 @@ Hint:
     - NEXT_PUBLIC_APPWRITE_PROJECT_ID
     - API_KEY
 `);
-    process.exit(1);
+  process.exit(1);
 }
 
+console.log(`Using database id ${databaseId}\n`);
+
 const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
-    .setKey(process.env.API_KEY);
+  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT)
+  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+  .setKey(process.env.API_KEY);
 
 const databases = new Databases(client);
 
-async function pushQuizes(databaseId, inputPath = 'export.json') {
-    try {
-        const rawData = fs.readFileSync(inputPath);
-        const data = JSON.parse(rawData);
+async function pushQuizes(databaseId, inputPath = "export.json") {
+  try {
+    const rawData = fs.readFileSync(inputPath);
+    const data = JSON.parse(rawData);
 
-        for (const [collectionId, documents] of Object.entries(data)) {
-            for (const doc of documents) {
-                const { $id, $databaseId, $collectionId, $permissions, ...payload } = doc;
+    for (const [collectionId, documents] of Object.entries(data)) {
+      for (const doc of documents) {
+        const { $id, $databaseId, $collectionId, $permissions, ...payload } =
+          doc;
 
-                try {
-                    await databases.createDocument(databaseId, $collectionId, ID.custom($id), payload, $permissions);
-                    console.log(`Imported document ${$id} into collection ${collectionId}`);
-                } catch (err) {
-                    console.error(`Failed to import document ${$id}:`, err.message);
-                }
-            }
+        try {
+          await databases.createDocument(
+            databaseId,
+            $collectionId,
+            ID.custom($id),
+            payload,
+            $permissions
+          );
+          console.log(
+            `Imported document ${$id} into collection ${collectionId}`
+          );
+        } catch (err) {
+          console.error(`Failed to import document ${$id}:`, err.message);
         }
-
-        console.log('Import complete.');
-    } catch (err) {
-        console.error('Error importing documents:', err);
+      }
     }
+
+    console.log("Import complete.");
+  } catch (err) {
+    console.error("Error importing documents:", err);
+  }
 }
 
 pushQuizes(databaseId, outputPath);
