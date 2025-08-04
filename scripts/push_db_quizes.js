@@ -38,10 +38,10 @@ async function pushQuizes(databaseId, inputPath = 'export.json') {
 
         for (const [collectionId, documents] of Object.entries(data)) {
             for (const doc of documents) {
-                const { $id, $databaseId, $collectionId, ...payload } = doc;
+                const { $id, $databaseId, $collectionId, $permissions, ...payload } = doc;
 
                 try {
-                    await databases.createDocument(databaseId, $collectionId, ID.custom($id), payload);
+                    await databases.createDocument(databaseId, $collectionId, ID.custom($id), payload, $permissions);
                     console.log(`Imported document ${$id} into collection ${collectionId}`);
                 } catch (err) {
                     console.error(`Failed to import document ${$id}:`, err.message);
