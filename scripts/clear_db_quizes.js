@@ -11,7 +11,7 @@ const client = new Client()
 const databases = new Databases(client);
 let databaseId = process.argv[2];
 
-if (databaseId === "$default$" || databaseId === "@default@") {
+if (databaseId === "%default%" || databaseId === "@default@") {
   databaseId = "68358fde0037593b1096"
 }
 

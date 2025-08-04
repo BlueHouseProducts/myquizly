@@ -5,7 +5,7 @@ const { Client, Databases, ID } = require("node-appwrite");
 let databaseId = process.argv[2];
 const outputPath = process.argv[3] || "export.json";
 
-if (databaseId === "$default$" || databaseId === "@default@") {
+if (databaseId === "%default%" || databaseId === "@default@") {
   databaseId = "68358fde0037593b1096"
 }
 

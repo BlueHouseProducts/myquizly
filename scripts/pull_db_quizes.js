@@ -7,7 +7,7 @@ const outputPath = process.argv[3] || "export.json";
 
 const flags = process.argv.slice(2);
 
-if (databaseId === "$default$" || databaseId === "@default@") {
+if (databaseId === "%default%" || databaseId === "@default@") {
   databaseId = "68358fde0037593b1096"
 }
 
