@@ -22,6 +22,8 @@ We'll use the Appwrite CLI to set up the project.
 
 Go to http://localhost/console/ and create an account to access the dashboard.
 
+Go to Overview -> Integrations. Select API keys and create a new one which can be named anything. Copy the secret, we will use it later.
+
 1. **Log in to the Appwrite CLI**
     - Run `appwrite login` and login with the account you made before accessing the appwrite dashboard.
     - If you're using a self-hosted instance you need to include the endpoint:
