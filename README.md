@@ -15,13 +15,15 @@ Clone the repo
   *(With npm: `npm install -g appwrite-cli`)*
 
 **Self hosting guide**
-In the /appwrite folder, there is a docker compose file that has all appwrite config setup. You can then make an account and get started easily by using that composer.
+In the /appwrite folder, there is a docker compose file that has all appwrite config setup. You can then make an account and get started easily by using that docker compose file.
 
 ### Set Up Your Appwrite Project
 We'll use the Appwrite CLI to set up the project.
 
+Go to http://localhost/console/ and create an account to access the dashboard.
+
 1. **Log in to the Appwrite CLI**
-    - Run `appwrite login`
+    - Run `appwrite login` and login with the account you made before accessing the appwrite dashboard.
     - If you're using a self-hosted instance you need to include the endpoint:
         ```bash
         appwrite login --endpoint "<URL_HERE>"
