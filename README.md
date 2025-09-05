@@ -10,9 +10,12 @@ Clone the repo
    - With the Github CLI: `gh repo clone BlueHouseProducts/quizly-mygcse`
 
 ### Setup Appwrite
-- You can [self host Appwrite](https://appwrite.io/docs/advanced/self-hosting) or use the [Appwrite cloud](https://cloud.appwrite.io)
+- You can [self host Appwrite](https://appwrite.io/docs/advanced/self-hosting) (View the self-hosting section) or use the [Appwrite cloud](https://cloud.appwrite.io)
 - Install the [Appwrite CLI](https://appwrite.io/docs/tooling/command-line/installation)<br>
   *(With npm: `npm install -g appwrite-cli`)*
+
+**Self hosting guide**
+In the /appwrite folder, there is a docker compose file that has all appwrite config setup. You can then make an account and get started easily by using that composer.
 
 ### Set Up Your Appwrite Project
 We'll use the Appwrite CLI to set up the project.
