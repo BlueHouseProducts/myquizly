@@ -37,6 +37,8 @@ We'll use the Appwrite CLI to set up the project.
 
     If you're unsure what to select, just run appwrite push for each option — it’s safe, and if there's nothing to push, nothing will happen. (And I might have forgotten one, I've not tried this yet)
 
+3. In appwrite.json, set `projectId` to your appwrite project id. In .env, configure the variables to the new things. (self-explanitory)
+
 ### Last steps
 1. Run `npm install` to install all npm packages used in the project
 2. To add the quizlets to the database, install the latest quizlet data at [the quiz_collections folder on Github](https://github.com/BlueHouseProducts/quizly-mygcse/tree/main/quiz_collections) (you should do this whenever a new update comes out, view the **update** section), run `npm run push:quizes {document_id} {json file e.g. [v0.1.0_data.json] }`
