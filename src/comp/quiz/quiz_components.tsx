@@ -212,7 +212,7 @@ export function MultipleChoice({
   return (
     <QuizCard>
       {quizData.multiple_choice.title_media === "text" ? (
-        <p className="text-center text-xl pb-4 p-2">{title}</p>
+        <p className="text-center text-xl pb-4 p-2">{title}</p> //////// todo change colours to work
       ) : quizData.multiple_choice.title_media === "image" ? (
         <Image
           src={title}

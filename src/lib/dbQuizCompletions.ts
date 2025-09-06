@@ -111,7 +111,7 @@ export async function createUserCompletion(userId: string, quizId: string, subje
       user_id: userId,
       quiz_id: quizId,
       score: score,
-      date: date.toISOString(),
+      date: date.toISOString()
     };
 
     const d = await db.createDocument(

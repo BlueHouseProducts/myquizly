@@ -9,7 +9,7 @@
     "lint": "next lint",
     "pull:quizes": "node scripts/pull_db_quizes.js ",
     "push:quizes": "node scripts/push_db_quizes.js ",
-    "clear:quizes":  "node scripts/clear_db_quizes.js ",
+    "clear:quizes": "node scripts/clear_db_quizes.js ",
     "doctor": "node scripts/doctor.js "
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "node-appwrite": "^17.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "recharts": "^3.1.2",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7"
   },
