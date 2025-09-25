@@ -105,7 +105,17 @@ const subjectData: {[key in subjectType]: {[key: string]: {id: string, name: str
   },
 
   chemistry: {
-
+    atoms_and_bonding: {
+      name: "Atoms, Bonding and the Periodic Table",
+      id: "atoms_and_bonding",
+      icon: Flag,
+      subtopics: [
+        {
+          codes: setCodes([]),
+          name: "Year 9 Revision content"
+        }
+      ]
+    }
   },
 
   physics: {
