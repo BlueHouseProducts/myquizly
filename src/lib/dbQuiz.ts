@@ -85,6 +85,20 @@ export async function GetQuizletDataV2(quiz_id: string, subject: subjectType) {
   return quiz;
 }
 
+export async function GetAllQuizlets(subject: subjectType) {
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
+    .setKey(process.env.API_KEY!);
+
+  const db = new Databases(client);
+  
+  const x = await db.listDocuments(dbData.quiz_db.id, dbData.quiz_db.collections[subject]);
+
+  return x.documents;
+}
+
+
 export async function CreateQuizletDEV(subject: subjectType, quiz_data: string, name: string, topic: string, label: string, type: string, description: string, jwt: Models.Jwt) {
   if (!jwt) {
     return "ERR";

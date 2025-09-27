@@ -4,14 +4,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigg
 import { TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { databases } from "@/lib/appwriteClient";
-import { dbData, subjectType } from "@/lib/dbCompData";
+import { dbData, subjectData, subjectType } from "@/lib/dbCompData";
 import { GetQuizesFromTopic, UserAdmin } from "@/lib/dbQuiz";
 import { getConsoleUrlForQuizlet } from "@/lib/dbQuizCompletions";
 import { AddOrRemoveSubtopic, SubtopicHasItem } from "@/lib/dbRevisionList";
 import { timeAgo } from "@/lib/utils";
 import { Item } from "@radix-ui/react-dropdown-menu";
 import { Account, Client, Databases, Models, Query } from "appwrite";
-import { BookmarkPlus, ChevronDown, ChevronRight, ChevronUp, CloudAlert, Database, File, FileQuestion, FileSpreadsheetIcon, InfoIcon, LinkIcon, Menu, Rabbit, Star, Video } from "lucide-react";
+import { BookmarkPlus, ChevronDown, ChevronRight, ChevronUp, CloudAlert, Database, File, FileQuestion, FileSpreadsheetIcon, InfoIcon, Link2, LinkIcon, Menu, Rabbit, Star, Video } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { MouseEventHandler, Suspense, useEffect, useMemo, useState } from "react";
@@ -357,7 +357,8 @@ export default function ListTablePage({subject, name, subtopics, topicName}: {na
     { admin && <div className="my-3 bg-black/20 py-2 rounded-full px-4">
       <Database className="inline-block mx-2" /><span className="font-bold">You're an admin! </span> You can see DB links for quizlets. <button className="underline mb-2" onClick={() => setAdmin(false)}>Hide DB links</button>
     </div> }
-    <div className=" overflow-y-auto">
+
+    <div className=" overflow-y-auto mt-4">
       {quizzesBySubtopic.map((subtopic, idx) => (
         subtopic.quizzes.length > 0 ? (
           <div key={`${subtopic.quizzes.toString()}.${idx.toString()}`} className="mb-6">
