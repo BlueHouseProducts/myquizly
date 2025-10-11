@@ -19,7 +19,8 @@ export async function getUserServerCurrent(): Promise<Models.User<Models.Prefere
   });
 
   if (res.status === 401) {
-    console.log("ARE YOU USING THE SAME URL TO ACCESS AS EXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT")
+    console.log(res);
+    console.log("ARE YOU USING THE SAME URL TO ACCESS AS EXT_PUBLIC_APPWRITE_PUBLIC_ENDPOINT (do not use localhost pls)")
   }
 
   if (!res.ok) return false;
