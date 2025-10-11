@@ -10,7 +10,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   if (!u) {
     redirect("/onboarding");
-    return null;
   }
   
   //const pathname = usePathname();

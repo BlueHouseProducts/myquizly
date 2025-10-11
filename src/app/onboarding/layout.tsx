@@ -1,9 +1,7 @@
-"use client";
-
+import { getUserServerCurrent } from "@/comp/ssr/auth";
 import { client } from "@/lib/appwriteClient";
 import { Account } from "appwrite";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
 const SvgComponent: React.FC = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24}>
@@ -18,31 +16,11 @@ const SvgComponent: React.FC = () => (
   </svg>
 );
 
-export default function OnboardingLayout({children}: {children: React.ReactNode}) {
-  const r = useRouter();
-  
-  const [lo, sLO] = useState(false);
-  const [i, sI] = useState(false);
+export default async function OnboardingLayout({children}: {children: React.ReactNode}) {
+  const u = await getUserServerCurrent();
 
-  useEffect(() => {
-    async function checkLogin() {
-      try {
-        const ac = new Account(client);
-        const user = await ac.get();
-        if (user.$id) {
-          r.push("/app/dashboard");
-        } else {
-          sLO(true);
-        }
-      } catch (error) {
-        sLO(true);
-      }
-    }
-    checkLogin();
-  }, []);
-
-  if (!lo) {
-    return null;
+  if (u) {
+    redirect("/app/dashboard");
   }
 
   return children;

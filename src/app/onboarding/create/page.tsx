@@ -104,11 +104,11 @@ export default function Home() {
         >
           <Onboarding_AccountForm type="create" />
           <Link
-            href="/onboarding"
+            href="/onboarding/login"
             className="text-white mt-6 inline-flex items-center gap-2 text-lg md:text-xl hover:underline"
           >
             <ChevronLeft className="w-5 h-5" />
-            Back
+            Login instead
           </Link>
         </motion.div>
       </div>

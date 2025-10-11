@@ -85,7 +85,7 @@ export default function Home() {
           <Onboarding_AccountForm type="login" />
 
           <Link
-            href="/onboarding"
+            href="/onboarding/create"
             className="text-white mt-6 inline-flex items-center gap-2 text-lg md:text-xl hover:underline"
           >
             <ChevronLeft className="w-5 h-5" />
