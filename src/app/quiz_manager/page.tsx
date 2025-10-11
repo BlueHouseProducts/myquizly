@@ -62,10 +62,8 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
   })};
 
   useEffect(() => {
-    if (quizletType !== "quick_quiz" && quizletType !== "pydle") {
+    if (quizletType !== "quick_quiz") {
       setData("{\n  \"url\": \"\"\n}");
-    } else if (quizletType === "pydle") {
-      setData("{\n  \"id\": \"\"\n}");
     } else {
       setData("{\n  \n}")
     }
@@ -141,13 +139,12 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
             <button onClick={() => setQuizletType("video")} className={ quizletType === "video" ? "text-green-400" : "underline" }>Video</button>
             <button onClick={() => setQuizletType("pdf")} className={ quizletType === "pdf" ? "text-green-400" : "underline" }>PDF</button>
             <button onClick={() => setQuizletType("quick_quiz")} className={ quizletType === "quick_quiz" ? "text-green-400" : "underline" }>Quick Quiz</button>
-            <button onClick={() => setQuizletType("pydle")} className={ quizletType === "pydle" ? "text-green-400" : "underline" }>Pydle</button>
           </div>
 
           
         </div>
 
-        { quizletType !== "NOT_CHOSEN" && quizletType !== "quick_quiz" && quizletType !== "pydle" ? (
+        { quizletType !== "NOT_CHOSEN" && quizletType !== "quick_quiz" ? (
           <div>
             <h3>2. Enter Data</h3>
             
@@ -173,30 +170,7 @@ function QuizEditor({ setPage }: { setPage: (page: string) => void }) {
 
             <button onClick={() => CreateItem()}>Create Item</button>
           </div>
-        ) : quizletType === "pydle" ? <div>
-          <h3>2. Enter Data</h3>
-
-          <div className="mt-2">
-              <p>Data</p>
-              <textarea
-                rows={3}
-                value={data}
-                onChange={e => setData(e.target.value)}
-                placeholder="Label (e.g. a2)"
-                className={`w-full p-2 border-2 border-gray-300 bg-transparent rounded-md ${
-                  (() => {
-                    try {
-                      const parsed = JSON.parse(data);
-                      return parsed ? "" : "border-red-600";
-                    } catch (error) {
-                      return "border-red-600";
-                    }
-                  })()
-                }`}
-              />
-            </div>
-            <button onClick={() => CreateItem()} className="mt-2">Create Item</button>
-          </div>
+        ) 
          : (
           <div>
             <h3>2. Enter Data</h3>

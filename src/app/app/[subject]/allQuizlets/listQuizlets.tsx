@@ -29,7 +29,7 @@ function Quizes({ subject }: { subject: subjectType }) {
         <li key={quiz.$id}>
           <a
             className="underline"
-            href={`/app/${subject}/${quiz.type === "quick_quiz" ? "q" : quiz.type === "pdf" ? "p" : quiz.type === "video" ? "v" : quiz.type === "web_link" ? "link" : quiz.type === "pydle" ? "pydle" : ""}/${quiz.$id.toString()}`}
+            href={`/app/${subject}/${quiz.type === "quick_quiz" ? "q" : quiz.type === "pdf" ? "p" : quiz.type === "video" ? "v" : quiz.type === "web_link" ? "link" : ""}/${quiz.$id.toString()}`}
           >
             {quiz.name}
           </a>

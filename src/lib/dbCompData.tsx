@@ -193,8 +193,7 @@ export const validQuizletTypes: string[] = [
   "web_link",
   "quick_quiz",
   "video",
-  "pdf",
-  "pydle"
+  "pdf"
 ];
 
 export {dbData, subjectData};
