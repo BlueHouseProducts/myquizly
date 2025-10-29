@@ -1,7 +1,5 @@
 # **quizly-mygcse**
 
-A personal GCSE quiz platform for my needs (and hopefully others), while getting experience in the coding world.
-
 ## Installation
 
 ### Setup the codebase
